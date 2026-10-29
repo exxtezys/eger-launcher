@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 public final class LauncherApp {
     private static final Pattern NICK = Pattern.compile("[A-Za-z0-9_]{3,16}");
     private static final int CARD_W = 340;
-    static final String VERSION = "0.1.0";
+    static final String VERSION = "0.1.1";
     private static final String[][] STEPS = {
             {"java", "Java 21"},
             {"game", "Minecraft"},

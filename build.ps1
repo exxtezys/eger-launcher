@@ -71,8 +71,9 @@ if ($Publish) {
     Copy-Item $jar "$root\release\EliumLauncher.jar"
     $sha1 = (Get-FileHash $jar -Algorithm SHA1).Hash.ToLower()
     $tag = "v$version-" + $sha1.Substring(0, 7)
-    $notes = "Лаунчер «Егерь» $version (тестовая версия)`n`nsha1: $sha1"
-    gh release create $tag "$root\release\EliumLauncher.jar" $outExe --repo $repo --title "Егерь $version" --notes $notes --latest
+    $notesFile = "$out\release-notes.md"
+    [IO.File]::WriteAllText($notesFile, "Лаунчер «Егерь» $version (тестовая версия)`n`nsha1: $sha1`n", (New-Object Text.UTF8Encoding $false))
+    gh release create $tag "$root\release\EliumLauncher.jar" $outExe --repo $repo --title "Eger $version" --notes-file $notesFile --latest
     if ($LASTEXITCODE -ne 0) { throw 'gh release create failed' }
     Write-Host "OK: опубликован $tag в $repo"
 }
