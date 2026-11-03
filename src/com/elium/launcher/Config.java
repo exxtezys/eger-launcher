@@ -11,7 +11,7 @@ import java.util.Properties;
 
 /**
  * Project settings come from /launcher.properties inside the jar (edit before building).
- * Player settings (nick, RAM) are stored in <gameDir>/launcher-user.properties.
+ * Player settings (nick, RAM, UI, downloads, custom mods) are stored in <gameDir>/launcher-user.properties.
  */
 public final class Config {
     public final String projectName;
@@ -33,14 +33,16 @@ public final class Config {
             if (in == null) throw new IOException("launcher.properties missing from jar");
             p.load(new java.io.InputStreamReader(in, StandardCharsets.UTF_8));
         }
-        projectName = p.getProperty("project.name", "Elium");
-        gameDirName = p.getProperty("game.dir", ".elium");
+        projectName = p.getProperty("project.name", "Eger");
+        gameDirName = p.getProperty("game.dir", ".eger");
         minecraftVersion = p.getProperty("minecraft.version", "1.21.1");
         neoforgeVersion = p.getProperty("neoforge.version", "latest").trim();
         serverHost = p.getProperty("server.host", "").trim();
         serverPort = Integer.parseInt(p.getProperty("server.port", "25565").trim());
-        modpackUrl = System.getProperty("elium.modpack.url", p.getProperty("modpack.url", "")).trim();
+        String modpackUrlValue = p.getProperty("modpack.url", "").trim();
         updateGithub = System.getProperty("elium.update.github", p.getProperty("update.github", "")).trim();
+        modpackUrlValue = System.getProperty("elium.modpack.url", modpackUrlValue).trim();
+        modpackUrl = modpackUrlValue;
 
         String appData = System.getenv("APPDATA");
         Path base = appData != null ? Path.of(appData) : Path.of(System.getProperty("user.home"));
@@ -54,13 +56,94 @@ public final class Config {
     }
 
     public String nick() { return user.getProperty("nick", ""); }
-    public int ramMb() { return Integer.parseInt(user.getProperty("ram", "4096")); }
-    public boolean autoConnect() { return Boolean.parseBoolean(user.getProperty("autoConnect", "true")); }
+
+    public int ramMb() { return intProp("ram", 4096, 1024, 32768); }
+
+    public boolean autoConnect() { return boolProp("autoConnect", true); }
+
+    public int maxDownloads() { return intProp("maxDownloads", 12, 1, 64); }
+
+    public boolean autoUpdate() { return boolProp("autoUpdate", true); }
+
+    public String modpackUrlOverride() { return strProp("modpackUrlOverride", ""); }
+
+    public String effectiveModpackUrl() {
+        String v = modpackUrlOverride();
+        return v.isBlank() ? modpackUrl : v;
+    }
+
+    public String extraJvmArgs() { return strProp("extraJvmArgs", ""); }
+
+    public String uiStyle() { return strProp("uiStyle", "clean"); }
+
+    public boolean keepLogs() { return boolProp("keepLogs", true); }
+
+    public String serverHostOverride() { return strProp("serverHostOverride", ""); }
+
+    public String effectiveServerHost() {
+        String v = serverHostOverride();
+        return v.isBlank() ? serverHost : v;
+    }
+
+    public int serverPortOverride() { return intProp("serverPortOverride", serverPort, 1, 65535); }
+
+    public int effectiveServerPort() {
+        String v = user.getProperty("serverPortOverride", "").trim();
+        return v.isBlank() ? serverPort : serverPortOverride();
+    }
+
+    public Path customModsDir() {
+        String v = strProp("customModsDir", "");
+        if (v.isBlank()) return gameDir.resolve("custom-mods");
+        Path p = Path.of(v);
+        return p.isAbsolute() ? p : gameDir.resolve(p);
+    }
 
     public void saveUser(String nick, int ram, boolean autoConnect) throws IOException {
-        user.setProperty("nick", nick);
+        saveUserSettings(nick, ram, autoConnect, maxDownloads(), autoUpdate(), modpackUrlOverride(),
+                extraJvmArgs(), uiStyle(), keepLogs(), customModsDir().toString(),
+                serverHostOverride(), serverPortOverride());
+    }
+
+    public void saveUserSettings(String nick, int ram, boolean autoConnect, int maxDownloads, boolean autoUpdate,
+                                 String modpackUrlOverride, String extraJvmArgs, String uiStyle, boolean keepLogs,
+                                 String customModsDir, String serverHostOverride, int serverPortOverride) throws IOException {
+        user.setProperty("nick", nick == null ? "" : nick);
         user.setProperty("ram", Integer.toString(ram));
         user.setProperty("autoConnect", Boolean.toString(autoConnect));
-        try (Writer w = Files.newBufferedWriter(userFile, StandardCharsets.UTF_8)) { user.store(w, projectName + " launcher"); }
+        user.setProperty("maxDownloads", Integer.toString(maxDownloads));
+        user.setProperty("autoUpdate", Boolean.toString(autoUpdate));
+        user.setProperty("modpackUrlOverride", modpackUrlOverride == null ? "" : modpackUrlOverride.trim());
+        user.setProperty("extraJvmArgs", extraJvmArgs == null ? "" : extraJvmArgs.trim());
+        user.setProperty("uiStyle", uiStyle == null || uiStyle.isBlank() ? "clean" : uiStyle.trim());
+        user.setProperty("keepLogs", Boolean.toString(keepLogs));
+        user.setProperty("customModsDir", customModsDir == null ? "" : customModsDir.trim());
+        user.setProperty("serverHostOverride", serverHostOverride == null ? "" : serverHostOverride.trim());
+        user.setProperty("serverPortOverride", Integer.toString(serverPortOverride));
+        try (Writer w = Files.newBufferedWriter(userFile, StandardCharsets.UTF_8)) {
+            user.store(w, projectName + " launcher");
+        }
+    }
+
+    private String strProp(String key, String def) {
+        String v = user.getProperty(key);
+        return v == null ? def : v.trim();
+    }
+
+    private boolean boolProp(String key, boolean def) {
+        String v = user.getProperty(key);
+        if (v == null || v.isBlank()) return def;
+        return Boolean.parseBoolean(v.trim());
+    }
+
+    private int intProp(String key, int def, int min, int max) {
+        String v = user.getProperty(key);
+        if (v == null || v.isBlank()) return def;
+        try {
+            int n = Integer.parseInt(v.trim());
+            return Math.max(min, Math.min(max, n));
+        } catch (NumberFormatException e) {
+            return def;
+        }
     }
 }

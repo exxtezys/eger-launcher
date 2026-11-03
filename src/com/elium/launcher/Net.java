@@ -22,6 +22,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public final class Net {
+    private static volatile int maxParallelDownloads = 12;
+
+    public static void setMaxParallelDownloads(int n) {
+        maxParallelDownloads = Math.max(1, Math.min(64, n));
+    }
+
     private static final HttpClient HTTP = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
             .followRedirects(HttpClient.Redirect.ALWAYS)
@@ -183,7 +189,7 @@ public final class Net {
         p.bytes(0, total);
         Counter counter = n -> p.bytes(bytes.addAndGet(n), total);
 
-        ExecutorService pool = Executors.newFixedThreadPool(12);
+        ExecutorService pool = Executors.newFixedThreadPool(maxParallelDownloads);
         try {
             List<Future<?>> fs = new java.util.ArrayList<>();
             for (Task t : todo) {

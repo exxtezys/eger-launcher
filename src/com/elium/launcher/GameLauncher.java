@@ -47,21 +47,28 @@ public final class GameLauncher {
         cmd.add("-Xms" + Math.min(ramMb, 1024) + "M");
         cmd.add("-XX:+UseG1GC");
         cmd.add("-Dfile.encoding=UTF-8");
+        for (String arg : cfg.extraJvmArgs().split("\\s+")) {
+            if (!arg.isBlank()) cmd.add(arg);
+        }
         addArgs(prof.jvmArgs(), v, cmd);
         cmd.add(prof.mainClass());
         addArgs(prof.gameArgs(), v, cmd);
-        if (connect && !cfg.serverHost.isEmpty()) {
+        if (connect && !cfg.effectiveServerHost().isEmpty()) {
             cmd.add("--quickPlayMultiplayer");
-            cmd.add(cfg.serverHost + ":" + cfg.serverPort);
+            cmd.add(cfg.effectiveServerHost() + ":" + cfg.effectiveServerPort());
         }
 
         Files.writeString(dir.resolve("last-launch.txt"),
                 String.join("\n", cmd).replace(v.get("classpath"), "<classpath>"), StandardCharsets.UTF_8);
-        return new ProcessBuilder(cmd)
+        ProcessBuilder pb = new ProcessBuilder(cmd)
                 .directory(dir.toFile())
-                .redirectErrorStream(true)
-                .redirectOutput(dir.resolve("game-output.log").toFile())
-                .start();
+                .redirectErrorStream(true);
+        if (cfg.keepLogs()) {
+            pb.redirectOutput(dir.resolve("game-output.log").toFile());
+        } else {
+            pb.redirectOutput(new java.io.File("NUL"));
+        }
+        return pb.start();
     }
 
     private static void addArgs(List<Object> args, Map<String, String> v, List<String> out) {

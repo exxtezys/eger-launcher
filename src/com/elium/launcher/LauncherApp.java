@@ -3,6 +3,8 @@ package com.elium.launcher;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -26,7 +28,7 @@ import java.util.regex.Pattern;
 public final class LauncherApp {
     private static final Pattern NICK = Pattern.compile("[A-Za-z0-9_]{3,16}");
     private static final int CARD_W = 340;
-    static final String VERSION = "0.1.1";
+    static final String VERSION = "0.2.0";
     private static final String[][] STEPS = {
             {"java", "Java 21"},
             {"game", "Minecraft"},
@@ -61,7 +63,8 @@ public final class LauncherApp {
 
     private LauncherApp(Config cfg) {
         this.cfg = cfg;
-        this.t = Theme.load(cfg.projectName, cfg.minecraftVersion);
+        Net.setMaxParallelDownloads(cfg.maxDownloads());
+        this.t = Theme.load(cfg.projectName, cfg.minecraftVersion, cfg.uiStyle());
         long totalMb = ((com.sun.management.OperatingSystemMXBean)
                 java.lang.management.ManagementFactory.getOperatingSystemMXBean()).getTotalMemorySize() / 1048576;
         this.maxRam = (int) Math.max(2048, totalMb - 2048);
@@ -72,7 +75,7 @@ public final class LauncherApp {
     public static void main(String[] args) {
         try {
             Config cfg = new Config();
-            if (SelfUpdate.run(cfg)) {
+            if (cfg.autoUpdate() && SelfUpdate.run(cfg)) {
                 System.exit(0);
                 return;
             }
@@ -132,7 +135,7 @@ public final class LauncherApp {
 
         server = new UI.Pill(t);
         server.setLocation(48, y + 124);
-        if (!cfg.serverHost.isEmpty()) {
+        if (!cfg.effectiveServerHost().isEmpty()) {
             server.set("Проверка сервера...", t.muted);
             root.add(server);
         }
@@ -156,7 +159,7 @@ public final class LauncherApp {
         frame.setVisible(true);
         if (nickField.getText().isEmpty()) nickField.requestFocusInWindow(); else play.requestFocusInWindow();
 
-        if (!cfg.serverHost.isEmpty()) {
+        if (!cfg.effectiveServerHost().isEmpty()) {
             pingServer();
             new Timer(30_000, e -> pingServer()).start();
         }
@@ -164,7 +167,7 @@ public final class LauncherApp {
 
     private UI.Card buildLoginCard() {
         int ch = 330, pad = 28, iw = CARD_W - pad * 2;
-        UI.Card card = new UI.Card(t.panel, t.radius);
+        UI.Card card = new UI.Card(t, t.panel);
         card.setSize(CARD_W, ch);
 
         JLabel head = text("ЯВКА НА ФРОНТ", Font.BOLD, 24f, t.text);
@@ -212,7 +215,7 @@ public final class LauncherApp {
         int pad = 28, iw = CARD_W - pad * 2;
         int stepsH = STEPS.length * UI.Steps.rowHeight();
         int ch = 70 + stepsH + 150;
-        UI.Card card = new UI.Card(t.panel, t.radius);
+        UI.Card card = new UI.Card(t, t.panel);
         card.setSize(CARD_W, ch);
 
         JLabel head = text("СБОРЫ", Font.BOLD, 24f, t.text);
@@ -247,55 +250,156 @@ public final class LauncherApp {
     }
 
     private void openSettings() {
-        JDialog d = new JDialog(frame, "Настройки", true);
+        JDialog d = new JDialog(frame, "Настройки лаунчера", true);
         d.setUndecorated(true);
-        int dw = 420, dh = 330;
+        int dw = 720, dh = 600;
         d.setSize(dw, dh);
         d.setShape(new RoundRectangle2D.Double(0, 0, dw, dh, t.radius * 2, t.radius * 2));
-        UI.Card root = new UI.Card(t.dialog, t.radius);
+        UI.Card root = new UI.Card(t, t.dialog);
         d.setContentPane(root);
         dragMove(root, d);
 
-        JLabel head = text("Настройки", Font.BOLD, 20f, t.text);
-        head.setBounds(28, 22, 300, 28);
+        JLabel head = text("Настройки", Font.BOLD, 22f, t.text);
+        head.setBounds(28, 20, 300, 30);
         root.add(head);
 
+        int lx = 28, rx = 372, cw = 320;
+
         JLabel ramLabel = text("", Font.PLAIN, 14f, t.text);
-        ramLabel.setBounds(28, 70, 360, 20);
+        ramLabel.setBounds(lx, 62, cw, 20);
         root.add(ramLabel);
         UI.Slider ram = new UI.Slider(t, 1024, maxRam, 512, ramMb,
                 v -> ramLabel.setText("Оперативная память: " + gb(v)));
-        ram.setBounds(18, 94, dw - 36, 32);
+        ram.setBounds(lx - 10, 86, cw + 20, 32);
         root.add(ram);
-        JLabel ramHint = text("Рекомендуется 4–6 ГБ для сборки с модами", Font.PLAIN, 12f, t.muted);
-        ramHint.setBounds(28, 126, 360, 18);
-        root.add(ramHint);
 
-        UI.Toggle connect = new UI.Toggle(t, "Сразу подключаться к серверу", autoConnect);
-        connect.setBounds(28, 160, 360, 30);
-        connect.setVisible(!cfg.serverHost.isEmpty());
+        UI.Toggle connect = new UI.Toggle(t, "Автоподключение к серверу", autoConnect);
+        connect.setBounds(lx, 126, cw, 30);
+        connect.setVisible(!cfg.effectiveServerHost().isEmpty());
         root.add(connect);
 
-        UI.Btn folder = new UI.Btn(t, "Открыть папку игры", UI.Kind.GHOST);
-        folder.setBounds(28, 206, dw - 56, 40);
-        folder.addActionListener(e -> {
+        JLabel downloadsLabel = text("Потоки загрузки: " + cfg.maxDownloads(), Font.PLAIN, 14f, t.text);
+        downloadsLabel.setBounds(lx, 164, cw, 20);
+        root.add(downloadsLabel);
+        UI.Slider downloads = new UI.Slider(t, 1, 64, 1, cfg.maxDownloads(),
+                v -> downloadsLabel.setText("Потоки загрузки: " + v));
+        downloads.setBounds(lx - 10, 188, cw + 20, 32);
+        root.add(downloads);
+
+        UI.Toggle autoUpdate = new UI.Toggle(t, "Автообновление лаунчера", cfg.autoUpdate());
+        autoUpdate.setBounds(lx, 228, cw, 30);
+        root.add(autoUpdate);
+
+        UI.Toggle keepLogs = new UI.Toggle(t, "Сохранять game-output.log", cfg.keepLogs());
+        keepLogs.setBounds(lx, 262, cw, 30);
+        root.add(keepLogs);
+
+        JLabel styleLabel = text("Стиль UI", Font.PLAIN, 14f, t.text);
+        styleLabel.setBounds(rx, 58, 110, 24);
+        root.add(styleLabel);
+        JComboBox<String> styleBox = new JComboBox<>(new String[]{"clean", "military", "sketch"});
+        styleBox.setSelectedItem(cfg.uiStyle());
+        styleBox.setFont(t.font(Font.PLAIN, 14f));
+        styleBox.setBounds(rx + 120, 56, 200, 28);
+        root.add(styleBox);
+
+        int ry = 104;
+        JLabel modpackLabel = text("Modpack URL (пусто = из launcher.properties)", Font.PLAIN, 12f, t.muted);
+        modpackLabel.setBounds(rx, ry, cw, 16);
+        root.add(modpackLabel);
+        ry += 18;
+        UI.Field modpackField = new UI.Field(t, cfg.modpackUrlOverride(), "http://.../manifest.json");
+        modpackField.setBounds(rx, ry, cw, 40);
+        root.add(modpackField);
+        ry += 48;
+
+        JLabel jvmLabel = text("Дополнительные JVM-аргументы", Font.PLAIN, 12f, t.muted);
+        jvmLabel.setBounds(rx, ry, cw, 16);
+        root.add(jvmLabel);
+        ry += 18;
+        UI.Field jvmField = new UI.Field(t, cfg.extraJvmArgs(), "-Dfoo=bar");
+        jvmField.setBounds(rx, ry, cw, 40);
+        root.add(jvmField);
+        ry += 48;
+
+        JLabel customDirLabel = text("Папка custom-модов", Font.PLAIN, 12f, t.muted);
+        customDirLabel.setBounds(rx, ry, cw, 16);
+        root.add(customDirLabel);
+        ry += 18;
+        UI.Field customDirField = new UI.Field(t, cfg.customModsDir().toString(), cfg.gameDir.resolve("custom-mods").toString());
+        customDirField.setBounds(rx, ry, 220, 40);
+        root.add(customDirField);
+        UI.Btn customDirBtn = new UI.Btn(t, "Открыть", UI.Kind.GHOST);
+        customDirBtn.setBounds(rx + 230, ry, 90, 40);
+        customDirBtn.addActionListener(e -> {
+            try {
+                String v = customDirField.getText().trim();
+                Path dir = v.isEmpty() ? cfg.customModsDir() : Path.of(v);
+                Desktop.getDesktop().open(dir.toFile());
+            } catch (Exception ex) { error(ex); }
+        });
+        root.add(customDirBtn);
+        ry += 48;
+
+        JLabel serverLabel = text("Сервер (host и port, пусто = из launcher.properties)", Font.PLAIN, 12f, t.muted);
+        serverLabel.setBounds(rx, ry, cw, 16);
+        root.add(serverLabel);
+        ry += 18;
+        UI.Field serverHostField = new UI.Field(t, cfg.serverHostOverride(), cfg.serverHost);
+        serverHostField.setBounds(rx, ry, 200, 40);
+        root.add(serverHostField);
+        UI.Field serverPortField = new UI.Field(t, cfg.serverHostOverride().isBlank() ? "" : Integer.toString(cfg.effectiveServerPort()),
+                Integer.toString(cfg.serverPort));
+        serverPortField.setBounds(rx + 210, ry, 110, 40);
+        root.add(serverPortField);
+        ry += 54;
+
+        UI.Btn admin = new UI.Btn(t, "Админ-панель custom-модов", UI.Kind.GHOST);
+        admin.setBounds(rx, ry, cw, 40);
+        admin.addActionListener(e -> AdminPanel.show(frame, cfg, t));
+        root.add(admin);
+        ry += 48;
+
+        UI.Btn openGame = new UI.Btn(t, "Открыть папку игры", UI.Kind.GHOST);
+        openGame.setBounds(rx, ry, cw, 40);
+        openGame.addActionListener(e -> {
             try { Desktop.getDesktop().open(cfg.gameDir.toFile()); } catch (Exception ex) { error(ex); }
         });
-        root.add(folder);
+        root.add(openGame);
 
         UI.Btn cancel = new UI.Btn(t, "Отмена", UI.Kind.GHOST);
-        cancel.setBounds(28, dh - 66, 120, 42);
+        cancel.setBounds(28, dh - 58, 120, 42);
         cancel.addActionListener(e -> d.dispose());
         root.add(cancel);
+
         UI.Btn save = new UI.Btn(t, "Сохранить", UI.Kind.PRIMARY);
         save.setFont(t.font(Font.BOLD, 15f));
-        save.setBounds(dw - 28 - 160, dh - 66, 160, 42);
+        save.setBounds(dw - 28 - 160, dh - 58, 160, 42);
         save.addActionListener(e -> {
             ramMb = ram.value;
             autoConnect = connect.on;
-            try { cfg.saveUser(nickField.getText().trim(), ramMb, autoConnect); } catch (Exception ex) { error(ex); }
-            status.setText(summary());
-            d.dispose();
+            int threads = downloads.value;
+            boolean update = autoUpdate.on;
+            boolean logs = keepLogs.on;
+            String style = String.valueOf(styleBox.getSelectedItem());
+            String modpackUrl = modpackField.getText().trim();
+            String jvm = jvmField.getText().trim();
+            String customDir = customDirField.getText().trim();
+            String host = serverHostField.getText().trim();
+            int port = cfg.serverPort;
+            try {
+                String portText = serverPortField.getText().trim();
+                if (!portText.isBlank()) port = Integer.parseInt(portText);
+            } catch (NumberFormatException ignored) {}
+            try {
+                cfg.saveUserSettings(nickField.getText().trim(), ramMb, autoConnect, threads, update, modpackUrl, jvm,
+                        style, logs, customDir, host, port);
+                Net.setMaxParallelDownloads(threads);
+                status.setText(summary());
+                d.dispose();
+            } catch (Exception ex) {
+                error(ex);
+            }
         });
         root.add(save);
         d.getRootPane().setDefaultButton(save);
@@ -305,7 +409,7 @@ public final class LauncherApp {
     }
 
     private String summary() {
-        return "Память " + gb(ramMb) + (autoConnect && !cfg.serverHost.isEmpty() ? " · автовход на сервер" : "");
+        return "Память " + gb(ramMb) + (autoConnect && !cfg.effectiveServerHost().isEmpty() ? " · автовход на сервер" : "");
     }
 
     private static String gb(int mb) {
@@ -319,7 +423,7 @@ public final class LauncherApp {
         return l;
     }
 
-    private static void dragMove(JComponent handle, java.awt.Window window) {
+    static void dragMove(JComponent handle, java.awt.Window window) {
         MouseAdapter m = new MouseAdapter() {
             private Point start;
             @Override public void mousePressed(MouseEvent e) { start = e.getPoint(); }
@@ -341,7 +445,7 @@ public final class LauncherApp {
             String text;
             Color col;
             try {
-                ServerPing.Status st = ServerPing.ping(cfg.serverHost, cfg.serverPort);
+                ServerPing.Status st = ServerPing.ping(cfg.effectiveServerHost(), cfg.effectiveServerPort());
                 text = "Фронт открыт · " + st.online() + "/" + st.max() + " бойцов";
                 col = t.online;
             } catch (Exception e) {
@@ -380,6 +484,7 @@ public final class LauncherApp {
                 Path javaw = JavaRuntime.ensure(cfg.gameDir, p);
                 GameInstaller.Profile prof = new GameInstaller(cfg).install(javaw, p);
                 ModpackSync.sync(cfg, p);
+                CustomMods.sync(cfg, p);
                 p.stage("launch");
                 p.bytes(-1, -1);
                 progress("Запуск игры...", 0, 0);

@@ -45,6 +45,34 @@ final class UI {
         g.drawString(s, (w - fm.stringWidth(s)) / 2, (h - fm.getHeight()) / 2 + fm.getAscent());
     }
 
+    static void sketchRect(Graphics2D g, float x, float y, float w, float h, Color ink, long seed) {
+        Random r = new Random(seed);
+        java.awt.Stroke old = g.getStroke();
+        for (int pass = 0; pass < 2; pass++) {
+            g.setColor(alpha(ink, pass == 0 ? ink.getAlpha() : ink.getAlpha() / 2));
+            g.setStroke(new BasicStroke(pass == 0 ? 1.6f : 1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            float j = 1.6f;
+            float[][] c = {{x, y}, {x + w, y}, {x + w, y + h}, {x, y + h}};
+            for (int i = 0; i < 4; i++) {
+                float[] a = c[i], b = c[(i + 1) % 4];
+                float over = 3 + r.nextFloat() * 4;
+                float dx = b[0] - a[0], dy = b[1] - a[1];
+                float len = (float) Math.hypot(dx, dy);
+                float ux = dx / len, uy = dy / len;
+                java.awt.geom.Path2D.Float p = new java.awt.geom.Path2D.Float();
+                p.moveTo(a[0] - ux * over + (r.nextFloat() - .5f) * j, a[1] - uy * over + (r.nextFloat() - .5f) * j);
+                int seg = Math.max(2, (int) (len / 40));
+                for (int s = 1; s <= seg; s++) {
+                    float tt = s / (float) seg;
+                    p.lineTo(a[0] + dx * tt + ux * (s == seg ? over : 0) + (r.nextFloat() - .5f) * j,
+                            a[1] + dy * tt + uy * (s == seg ? over : 0) + (r.nextFloat() - .5f) * j);
+                }
+                g.draw(p);
+            }
+        }
+        g.setStroke(old);
+    }
+
     /** Full-window backdrop: picture (cover-scaled + dimmed) or gradient with a faint pixel pattern. */
     static final class Backdrop extends JPanel {
         private final Theme t;
@@ -99,11 +127,23 @@ final class UI {
     static final class Card extends JPanel {
         private final Color fill;
         private final int radius;
+        private final Theme.Style style;
+        private final Color ink;
 
         Card(Color fill, int radius) {
+            this(fill, radius, Theme.Style.CLEAN, Color.WHITE);
+        }
+
+        Card(Theme t, Color fill) {
+            this(fill, t.radius, t.style, t.text);
+        }
+
+        private Card(Color fill, int radius, Theme.Style style, Color ink) {
             super(null);
             this.fill = fill;
             this.radius = radius;
+            this.style = style;
+            this.ink = ink;
             setOpaque(false);
         }
 
@@ -111,6 +151,18 @@ final class UI {
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = smooth(g);
             int w = getWidth(), h = getHeight();
+            if (style == Theme.Style.SKETCH) {
+                g2.setColor(fill);
+                g2.fillRect(4, 4, w - 8, h - 8);
+                Random r = new Random(w * 31L + h);
+                for (int i = 0; i < w * h / 40; i++) {
+                    g2.setColor(new Color(255, 255, 255, r.nextInt(10)));
+                    g2.fillRect(r.nextInt(w), r.nextInt(h), 1, 1 + r.nextInt(3));
+                }
+                sketchRect(g2, 6, 6, w - 12, h - 12, alpha(ink, 210), w * 7L + h);
+                g2.dispose();
+                return;
+            }
             g2.setColor(fill);
             g2.fill(new RoundRectangle2D.Float(0, 0, w, h, radius * 2f, radius * 2f));
             Random r = new Random(w * 31L + h);
@@ -123,7 +175,7 @@ final class UI {
             g2.drawRect(0, 0, w - 1, h - 1);
             g2.setColor(new Color(214, 204, 160, 34));
             g2.drawRect(3, 3, w - 7, h - 7);
-            if (radius <= 4) {
+            if (style == Theme.Style.MILITARY) {
                 for (int[] p : new int[][]{{12, 12}, {w - 12, 12}, {12, h - 12}, {w - 12, h - 12}}) {
                     g2.setColor(new Color(0, 0, 0, 150));
                     g2.fillOval(p[0] - 5, p[1] - 4, 10, 10);
@@ -170,9 +222,19 @@ final class UI {
             switch (kind) {
                 case PRIMARY -> {
                     Color c = hover && on ? t.accentHover : t.accent;
+                    if (t.style == Theme.Style.SKETCH) {
+                        g2.setColor(c);
+                        g2.fillRect(3, 3, w - 6, h - 6);
+                        sketchRect(g2, 4, 4, w - 8, h - 8, alpha(t.onAccent, hover && on ? 255 : 200), 77);
+                        g2.setColor(t.onAccent);
+                        g2.setFont(getFont());
+                        centerText(g2, getText(), w, h);
+                        g2.dispose();
+                        return;
+                    }
                     g2.setPaint(new GradientPaint(0, 0, c.brighter(), 0, h, c.darker()));
                     g2.fill(new RoundRectangle2D.Float(0, 0, w, h, r, r));
-                    if (t.radius <= 4) {
+                    if (t.style == Theme.Style.MILITARY) {
                         g2.setColor(new Color(255, 245, 200, 60));
                         g2.drawLine(1, 1, w - 2, 1);
                         g2.drawLine(1, 1, 1, h - 2);
@@ -188,7 +250,12 @@ final class UI {
                 }
                 case GHOST -> {
                     g2.setColor(hover && on ? new Color(255, 255, 255, 34) : new Color(255, 255, 255, 16));
-                    g2.fill(new RoundRectangle2D.Float(0, 0, w, h, r, r));
+                    if (t.style == Theme.Style.SKETCH) {
+                        g2.fillRect(3, 3, w - 6, h - 6);
+                        sketchRect(g2, 4, 4, w - 8, h - 8, alpha(t.text, hover && on ? 220 : 140), 31);
+                    } else {
+                        g2.fill(new RoundRectangle2D.Float(0, 0, w, h, r, r));
+                    }
                     g2.setColor(t.text);
                 }
                 case WINDOW, CLOSE -> {
@@ -240,10 +307,15 @@ final class UI {
             Graphics2D g2 = smooth(g);
             float r = Math.min(12, t.radius * 2);
             g2.setColor(t.field);
-            g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), r, r));
-            g2.setColor(hasFocus() ? t.accent : new Color(255, 255, 255, 30));
-            g2.setStroke(new BasicStroke(hasFocus() ? 1.6f : 1f));
-            g2.draw(new RoundRectangle2D.Float(0.8f, 0.8f, getWidth() - 1.6f, getHeight() - 1.6f, r, r));
+            if (t.style == Theme.Style.SKETCH) {
+                g2.fillRect(3, 3, getWidth() - 6, getHeight() - 6);
+                sketchRect(g2, 4, 4, getWidth() - 8, getHeight() - 8, alpha(t.text, hasFocus() ? 230 : 120), 13);
+            } else {
+                g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), r, r));
+                g2.setColor(hasFocus() ? t.accent : new Color(255, 255, 255, 30));
+                g2.setStroke(new BasicStroke(hasFocus() ? 1.6f : 1f));
+                g2.draw(new RoundRectangle2D.Float(0.8f, 0.8f, getWidth() - 1.6f, getHeight() - 1.6f, r, r));
+            }
             if (getText().isEmpty() && !hasFocus()) {
                 g2.setColor(t.muted);
                 g2.setFont(getFont());
@@ -279,10 +351,11 @@ final class UI {
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = smooth(g);
             int w = getWidth(), h = getHeight();
-            float rr = t.radius <= 4 ? 0 : h;
+            boolean square = t.style != Theme.Style.CLEAN;
+            float rr = square ? 0 : h;
             g2.setColor(new Color(0, 0, 0, 90));
             g2.fill(new RoundRectangle2D.Float(0, 0, w, h, rr, rr));
-            g2.setColor(t.radius <= 4 ? t.online : t.accent);
+            g2.setColor(t.style == Theme.Style.MILITARY ? t.online : t.style == Theme.Style.SKETCH ? t.text : t.accent);
             if (value < 0) {
                 float seg = w * 0.3f;
                 float x = -seg + (w + seg) * phase;
@@ -291,11 +364,15 @@ final class UI {
             } else {
                 g2.fill(new RoundRectangle2D.Float(0, 0, (float) (w * Math.min(1, value)), h, rr, rr));
             }
-            if (t.radius <= 4) {
+            if (t.style == Theme.Style.MILITARY) {
                 g2.setClip(null);
                 g2.setColor(new Color(0, 0, 0, 120));
                 for (int x = 7; x < w; x += 8) g2.drawLine(x, 0, x, h);
                 g2.drawRect(0, 0, w - 1, h - 1);
+            } else if (t.style == Theme.Style.SKETCH) {
+                g2.setClip(null);
+                g2.setColor(new Color(0, 0, 0, 70));
+                for (int x = -h; x < w; x += 5) g2.drawLine(x, h, x + h, 0);
             }
             g2.dispose();
         }
@@ -430,9 +507,13 @@ final class UI {
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = smooth(g);
             int w = getWidth(), h = getHeight();
-            Color ink = t.radius <= 4 ? new Color(0xC0442E) : new Color(0xF2B33D);
-            float rr = t.radius <= 4 ? 0 : h;
-            if (t.radius <= 4) g2.rotate(Math.toRadians(-4), w / 2.0, h / 2.0);
+            Color ink = switch (t.style) {
+                case MILITARY -> new Color(0xC0442E);
+                case SKETCH -> t.text;
+                case CLEAN -> new Color(0xF2B33D);
+            };
+            float rr = t.style == Theme.Style.CLEAN ? h : 0;
+            if (t.style != Theme.Style.CLEAN) g2.rotate(Math.toRadians(-4), w / 2.0, h / 2.0);
             g2.setColor(alpha(ink, 40));
             g2.fill(new RoundRectangle2D.Float(1, 1, w - 2, h - 2, rr, rr));
             g2.setColor(ink);

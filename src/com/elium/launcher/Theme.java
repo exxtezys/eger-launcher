@@ -26,7 +26,10 @@ public final class Theme {
     private final Path externalDir;
 
     public final Color bg, bg2, panel, dialog, field, accent, accentHover, onAccent, text, muted, online, offline;
+    public enum Style { CLEAN, MILITARY, SKETCH }
+
     public final int radius, width, height, logoHeight;
+    public final Style style;
     public final double backgroundDim;
     public final String title, subtitle;
     public final BufferedImage background, logo, icon;
@@ -34,7 +37,7 @@ public final class Theme {
     private final Font baseFont;
     private final Font bodyFont;
 
-    private Theme(String defaultTitle, String mcVersion) {
+    private Theme(String defaultTitle, String mcVersion, String styleOverride) {
         externalDir = externalDir();
         try (InputStream in = Theme.class.getResourceAsStream("/theme.properties")) {
             if (in != null) p.load(new InputStreamReader(in, StandardCharsets.UTF_8));
@@ -63,6 +66,15 @@ public final class Theme {
         offline = color("color.offline", "#E0605A");
 
         radius = num("radius", 18);
+        String styleValue = (styleOverride == null || styleOverride.isBlank()) ? str("ui.style", "clean") : styleOverride.trim();
+        Style st;
+        try {
+            st = Style.valueOf(styleValue.toUpperCase(java.util.Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            System.err.println("theme: ??????? ui.style, ???? clean");
+            st = Style.CLEAN;
+        }
+        style = st;
         width = num("window.width", 920);
         height = num("window.height", 560);
         logoHeight = num("logo.height", 110);
@@ -86,7 +98,11 @@ public final class Theme {
     }
 
     public static Theme load(String defaultTitle, String mcVersion) {
-        return new Theme(defaultTitle, mcVersion);
+        return new Theme(defaultTitle, mcVersion, "");
+    }
+
+    public static Theme load(String defaultTitle, String mcVersion, String styleOverride) {
+        return new Theme(defaultTitle, mcVersion, styleOverride);
     }
 
     public Font font(int style, float size) {
