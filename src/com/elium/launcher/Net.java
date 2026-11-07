@@ -88,9 +88,15 @@ public final class Net {
         return mirrorsEnabled;
     }
 
+    /** Добавить зеркало для конкретного адреса (если его нельзя вывести правилом, как у Java). */
+    public static void addMirror(String url, String mirror) {
+        List<String> l = overrides.computeIfAbsent(url, k -> new java.util.concurrent.CopyOnWriteArrayList<>());
+        if (!l.contains(mirror)) l.add(mirror);
+    }
+
     /** Для тестов: задать зеркало для конкретного адреса. */
     public static void addMirrorForTesting(String url, String mirror) {
-        overrides.computeIfAbsent(url, k -> new java.util.concurrent.CopyOnWriteArrayList<>()).add(mirror);
+        addMirror(url, mirror);
     }
 
     /** Для тестов: сбросить подмены и счётчики битых зеркал. */
