@@ -45,6 +45,64 @@ final class UI {
         g.drawString(s, (w - fm.stringWidth(s)) / 2, (h - fm.getHeight()) / 2 + fm.getAscent());
     }
 
+    /** Modal paper sheet for reports and errors; only getMessage() is shown, wrapped and scrollable. */
+    static void message(java.awt.Window owner, Theme t, String title, String text, boolean error) {
+        javax.swing.JDialog d = new javax.swing.JDialog(owner, title, java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        d.setUndecorated(true);
+        int w = 520, pad = 28;
+        javax.swing.JTextArea area = new javax.swing.JTextArea(text == null ? "" : text);
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setEditable(false);
+        area.setOpaque(false);
+        area.setFont(t.font(java.awt.Font.PLAIN, 14f));
+        area.setForeground(t.text);
+        area.setBorder(null);
+        area.setSize(w - pad * 2, Short.MAX_VALUE);
+        int textH = area.getPreferredSize().height;
+        int h = Math.max(260, Math.min(640, textH + 170));
+        d.setSize(w, h);
+        d.setShape(new RoundRectangle2D.Double(0, 0, w, h, t.radius * 2, t.radius * 2));
+        Card root = new Card(t, t.panel);
+        d.setContentPane(root);
+        LauncherApp.dragMove(root, d);
+
+        javax.swing.JLabel stamp = new javax.swing.JLabel(error ? "ОШИБКА" : title);
+        stamp.setOpaque(true);
+        stamp.setBackground(t.text);
+        stamp.setForeground(t.panel);
+        stamp.setFont(t.font(java.awt.Font.BOLD, 13f));
+        stamp.setBorder(new EmptyBorder(4, 10, 4, 10));
+        int sw = stamp.getPreferredSize().width;
+        stamp.setBounds(pad, 22, sw, 26);
+        root.add(stamp);
+        if (error) {
+            javax.swing.JLabel sub = new javax.swing.JLabel(title + " · ОПЫТНАЯ ПАРТИЯ");
+            sub.setFont(t.font(java.awt.Font.PLAIN, 11f));
+            sub.setForeground(t.muted);
+            sub.setBounds(pad + sw + 14, 26, w - pad * 2 - sw - 14, 18);
+            root.add(sub);
+        }
+
+        javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(area);
+        scroll.setBorder(null);
+        scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
+        scroll.setBounds(pad, 58, w - pad * 2, h - 58 - 64);
+        root.add(scroll);
+
+        Btn ok = new Btn(t, "ПОНЯТНО", error ? Kind.PRIMARY : Kind.GHOST);
+        ok.setBounds(w - pad - 140, h - 56, 140, 40);
+        ok.addActionListener(e -> d.dispose());
+        root.add(ok);
+        d.getRootPane().setDefaultButton(ok);
+        d.getRootPane().registerKeyboardAction(e -> d.dispose(),
+                javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
+        d.setLocationRelativeTo(owner);
+        d.setVisible(true);
+    }
+
     static void sketchRect(Graphics2D g, float x, float y, float w, float h, Color ink, long seed) {
         Random r = new Random(seed);
         java.awt.Stroke old = g.getStroke();

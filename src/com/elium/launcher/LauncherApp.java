@@ -266,40 +266,43 @@ public final class LauncherApp {
     }
 
     private UI.Card buildLoadCard() {
+        boolean hand = t.style == Theme.Style.HAND;
         int pad = 28, iw = cardW - pad * 2;
         int stepsH = STEPS.length * UI.Steps.rowHeight();
-        int ch = 70 + stepsH + 150;
+        int ch = hand ? 316 : 70 + stepsH + 150;
         UI.Card card = new UI.Card(t, t.panel);
         card.setSize(cardW, ch);
 
-        JLabel head = text("СБОРЫ", Font.BOLD, 24f, t.text);
-        head.setBounds(pad, 24, iw, 30);
+        JLabel head = text(hand ? "ПРИЁМКА" : "СБОРЫ", Font.BOLD, hand ? 26f : 24f, t.text);
+        head.setBounds(pad, hand ? 14 : 24, iw, 34);
         card.add(head);
 
         String[] labels = new String[STEPS.length];
         for (int i = 0; i < STEPS.length; i++) labels[i] = STEPS[i][1];
         steps = new UI.Steps(t, labels);
-        steps.setBounds(pad, 66, iw, stepsH);
+        steps.setBounds(pad, hand ? 54 : 66, iw, stepsH);
         card.add(steps);
 
-        int y = 66 + stepsH + 14;
+        int y = hand ? 220 : 66 + stepsH + 14;
         loadAction = text(" ", Font.BOLD, 13.5f, t.text);
         loadAction.setBounds(pad, y, iw, 20);
         card.add(loadAction);
         loadFile = text(" ", Font.PLAIN, 12f, t.muted);
-        loadFile.setBounds(pad, y + 22, iw, 18);
+        loadFile.setBounds(pad, hand ? 242 : y + 22, iw, 18);
         card.add(loadFile);
         loadBar = new UI.Progress(t);
-        loadBar.setBounds(pad, y + 50, iw, 8);
+        loadBar.setBounds(pad, hand ? 270 : y + 50, iw, hand ? 12 : 8);
         card.add(loadBar);
         loadBytes = text(" ", Font.PLAIN, 12f, t.muted);
-        loadBytes.setBounds(pad, y + 66, iw, 18);
+        loadBytes.setBounds(pad, hand ? 286 : y + 66, iw, 18);
         card.add(loadBytes);
 
-        JLabel hint = text("Первый запуск долгий, дальше — только обновления", Font.PLAIN, 11.5f,
-                UI.alpha(t.muted, 160));
-        hint.setBounds(pad, ch - 40, iw, 18);
-        card.add(hint);
+        if (!hand) {
+            JLabel hint = text("Первый запуск долгий, дальше — только обновления", Font.PLAIN, 11.5f,
+                    UI.alpha(t.muted, 160));
+            hint.setBounds(pad, ch - 40, iw, 18);
+            card.add(hint);
+        }
         return card;
     }
 
@@ -523,7 +526,7 @@ public final class LauncherApp {
                 }
                 SwingUtilities.invokeLater(() -> {
                     steps.finish();
-                    loadAction.setText("Игра запущена — окно Minecraft откроется сейчас");
+                    loadAction.setText("Партия принята — Minecraft открывается");
                 });
                 Thread.sleep(1500);
                 System.exit(0);
@@ -531,7 +534,7 @@ public final class LauncherApp {
                 SwingUtilities.invokeLater(() -> {
                     setBusy(false);
                     status.setForeground(t.offline);
-                    status.setText("Ошибка — подробности в окне");
+                    status.setText("Ошибка — подробности в донесении");
                     error(e);
                 });
             }
@@ -631,8 +634,7 @@ public final class LauncherApp {
     }
 
     private void error(Exception e) {
-        JOptionPane.showMessageDialog(frame, e.getMessage() == null ? e.toString() : e.getMessage(),
-                "Ошибка", JOptionPane.ERROR_MESSAGE);
+        UI.message(frame, t, "ДОНЕСЕНИЕ", e.getMessage() == null ? e.toString() : e.getMessage(), true);
     }
 
     private Image icon(int size) {
