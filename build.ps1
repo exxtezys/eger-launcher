@@ -25,6 +25,10 @@ if (Test-Path "$root\src\main\resources\assets\fancymenu") {
     New-Item -ItemType Directory -Force "$out\classes\assets\fancymenu" | Out-Null
     Copy-Item "$root\src\main\resources\assets\fancymenu\*" "$out\classes\assets\fancymenu\" -Recurse
 }
+if (Test-Path "$root\src\main\resources\mods") {
+    New-Item -ItemType Directory -Force "$out\classes\mods" | Out-Null
+    Copy-Item "$root\src\main\resources\mods\*" "$out\classes\mods\" -Recurse
+}
 & "$jdk\jar.exe" --create --file "$out\EliumLauncher.jar" --main-class com.elium.launcher.LauncherApp -C "$out\classes" .
 if ($LASTEXITCODE -ne 0) { throw 'jar failed' }
 Write-Host "OK: $out\EliumLauncher.jar (version $version)"
@@ -50,6 +54,10 @@ if ($Exe) {
     if (Test-Path "$root\src\main\resources\assets\fancymenu") {
         New-Item -ItemType Directory -Force "$dist\EgerLauncher\assets\fancymenu" | Out-Null
         Copy-Item "$root\src\main\resources\assets\fancymenu\*" "$dist\EgerLauncher\assets\fancymenu\" -Recurse
+    }
+    if (Test-Path "$root\src\main\resources\mods") {
+        New-Item -ItemType Directory -Force "$dist\EgerLauncher\mods" | Out-Null
+        Copy-Item "$root\src\main\resources\mods\*" "$dist\EgerLauncher\mods\" -Recurse
     }
     Write-Host "OK: $dist\EgerLauncher\EgerLauncher.exe"
 }
