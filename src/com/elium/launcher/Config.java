@@ -21,6 +21,7 @@ public final class Config {
     public final String serverHost;
     public final int serverPort;
     public final String modpackUrl;
+    public final String fancymenuModUrl;
     public final String updateGithub;
     public final Path gameDir;
 
@@ -43,10 +44,10 @@ public final class Config {
         updateGithub = System.getProperty("elium.update.github", p.getProperty("update.github", "")).trim();
         modpackUrlValue = System.getProperty("elium.modpack.url", modpackUrlValue).trim();
         modpackUrl = modpackUrlValue;
+        fancymenuModUrl = p.getProperty("mod.fancymenu.download.url", "").trim();
 
-        String appData = System.getenv("APPDATA");
-        Path base = appData != null ? Path.of(appData) : Path.of(System.getProperty("user.home"));
         String dirOverride = System.getProperty("elium.dir");
+        Path base = defaultGameDir();
         gameDir = dirOverride != null ? Path.of(dirOverride) : base.resolve(gameDirName);
         Files.createDirectories(gameDir);
         userFile = gameDir.resolve("launcher-user.properties");
@@ -82,6 +83,8 @@ public final class Config {
     }
 
     public String extraJvmArgs() { return strProp("extraJvmArgs", ""); }
+
+    public String fancymenuModUrl() { return fancymenuModUrl; }
 
     public String uiStyle() { return strProp("uiStyle", "hand"); }
 
@@ -144,6 +147,18 @@ public final class Config {
             return Math.max(min, Math.min(max, n));
         } catch (NumberFormatException e) {
             return def;
+        }
+    }
+
+    private static Path defaultGameDir() {
+        String os = System.getProperty("os.name", "").toLowerCase();
+        if (os.contains("win")) {
+            String appData = System.getenv("APPDATA");
+            return Path.of(appData != null ? appData : System.getProperty("user.home"));
+        } else if (os.contains("mac")) {
+            return Path.of(System.getProperty("user.home"), "Library", "Application Support");
+        } else {
+            return Path.of(System.getProperty("user.home"), ".config");
         }
     }
 }

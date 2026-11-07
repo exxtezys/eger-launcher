@@ -47,7 +47,10 @@ if ($Exe) {
     # Тема и картинки рядом с exe — правятся без пересборки
     Copy-Item "$root\src\theme.properties" "$dist\EgerLauncher\"
     if (Test-Path "$root\theme") { Copy-Item "$root\theme\*" "$dist\EgerLauncher\" -Recurse }
-    if (Test-Path "$root\src\main\resources\assets\fancymenu") { Copy-Item "$root\src\main\resources\assets\fancymenu\*" "$dist\EgerLauncher\assets\fancymenu\" -Recurse }
+    if (Test-Path "$root\src\main\resources\assets\fancymenu") {
+        New-Item -ItemType Directory -Force "$dist\EgerLauncher\assets\fancymenu" | Out-Null
+        Copy-Item "$root\src\main\resources\assets\fancymenu\*" "$dist\EgerLauncher\assets\fancymenu\" -Recurse
+    }
     Write-Host "OK: $dist\EgerLauncher\EgerLauncher.exe"
 }
 

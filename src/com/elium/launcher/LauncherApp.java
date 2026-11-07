@@ -573,6 +573,20 @@ public final class LauncherApp {
                 };
                 Path javaw = JavaRuntime.ensure(cfg.gameDir, p);
                 GameInstaller.Profile prof = new GameInstaller(cfg).install(javaw, p);
+
+                // Скачиваем мод FancyMenu в папку mods (требует NeoForge, уже установленный GameInstaller)
+                if (!cfg.fancymenuModUrl().isBlank()) {
+                    p.stage("mods");
+                    Path modsDir = cfg.gameDir.resolve("mods");
+                    Files.createDirectories(modsDir);
+                    Path modJar = modsDir.resolve("FancyMenu-3.9.14-hand.jar");
+                    if (!Files.exists(modJar)) {
+                        p.update("Скачивание мода FancyMenu...", 0, 1);
+                        Net.download(new Net.Task(cfg.fancymenuModUrl(), modJar, null, -1));
+                        p.update("Мод FancyMenu готов", 1, 1);
+                    }
+                }
+
                 ModpackSync.sync(cfg, p);
                 p.stage("launch");
                 p.bytes(-1, -1);
