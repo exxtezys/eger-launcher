@@ -84,6 +84,10 @@ public final class Net {
         mirrorsEnabled = on;
     }
 
+    public static boolean mirrorsEnabled() {
+        return mirrorsEnabled;
+    }
+
     /** Для тестов: задать зеркало для конкретного адреса. */
     public static void addMirrorForTesting(String url, String mirror) {
         overrides.computeIfAbsent(url, k -> new java.util.concurrent.CopyOnWriteArrayList<>()).add(mirror);
@@ -94,6 +98,7 @@ public final class Net {
         overrides.clear();
         mismatches.clear();
         mirrorsEnabled = true;
+        probed = true; // в тестах разведку по реальным хостам не запускаем
     }
 
     /** Все источники для адреса по порядку: оригинал и зеркала (или зеркало первым, если так решила разведка). */
@@ -106,7 +111,20 @@ public final class Net {
             return out;
         }
         if (!mirrorsEnabled) return List.of(url);
+        if (!Mirrors.alternatives(url).isEmpty()) probeOnce();
         return Mirrors.ordered(url);
+    }
+
+    private static volatile boolean probed = false;
+
+    /** Разведка один раз за сессию и только когда действительно нужно что-то скачать. */
+    private static void probeOnce() {
+        if (probed) return;
+        synchronized (Net.class) {
+            if (probed) return;
+            Probe.chooseAll();
+            probed = true;
+        }
     }
 
     /** Для тестов: порядок источников для адреса. */
