@@ -1,0 +1,16 @@
+# FancyMenu конфигурация — лаунчер «Егерь» 0.3.0
+# Стиль: HAND (рукная работа, 1939, бумага + латунь)
+
+[menu]
+active-layout = "ege-r-hand"
+
+[layout.ege-r-hand]
+name = "Егерь HAND"
+version = "0.3.0"
+description = "Стиль ручной работы 1939 для лаунчера Егерь"
+
+[background]
+type = "image"
+source = "fancymenu:textures/background.png"
+scale = "cover"
+brightness = 0.85

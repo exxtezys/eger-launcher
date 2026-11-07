@@ -110,8 +110,8 @@ public final class LauncherApp {
             Path layoutsDir = configDir.resolve("layouts");
             Files.createDirectories(layoutsDir);
 
-            copyResourceToPath("assets/fancymenu/fancymenu.cfg", configDir);
-            copyResourceToPath("assets/fancymenu/layouts/ege-r-hand.json", layoutsDir);
+            copyResourceToPath("config/fancymenu/fancymenu.toml", configDir);
+            copyResourceToPath("config/fancymenu/layouts/ege-r-hand.json", layoutsDir);
 
         } catch (Exception e) {
             System.err.println("Не удалось установить ассеты FancyMenu: " + e.getMessage());

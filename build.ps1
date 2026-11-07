@@ -25,6 +25,10 @@ if (Test-Path "$root\src\main\resources\assets\fancymenu") {
     New-Item -ItemType Directory -Force "$out\classes\assets\fancymenu" | Out-Null
     Copy-Item "$root\src\main\resources\assets\fancymenu\*" "$out\classes\assets\fancymenu\" -Recurse
 }
+if (Test-Path "$root\src\main\resources\config") {
+    New-Item -ItemType Directory -Force "$out\classes\config" | Out-Null
+    Copy-Item "$root\src\main\resources\config\*" "$out\classes\config\" -Recurse
+}
 if (Test-Path "$root\src\main\resources\mods") {
     New-Item -ItemType Directory -Force "$out\classes\mods" | Out-Null
     Copy-Item "$root\src\main\resources\mods\*" "$out\classes\mods\" -Recurse
@@ -58,6 +62,10 @@ if ($Exe) {
     if (Test-Path "$root\src\main\resources\mods") {
         New-Item -ItemType Directory -Force "$dist\EgerLauncher\mods" | Out-Null
         Copy-Item "$root\src\main\resources\mods\*" "$dist\EgerLauncher\mods\" -Recurse
+    }
+    if (Test-Path "$root\src\main\resources\config") {
+        New-Item -ItemType Directory -Force "$dist\EgerLauncher\config" | Out-Null
+        Copy-Item "$root\src\main\resources\config\*" "$dist\EgerLauncher\config\" -Recurse
     }
     Write-Host "OK: $dist\EgerLauncher\EgerLauncher.exe"
 }
