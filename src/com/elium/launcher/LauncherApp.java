@@ -574,13 +574,14 @@ public final class LauncherApp {
                 Path javaw = JavaRuntime.ensure(cfg.gameDir, p);
                 GameInstaller.Profile prof = new GameInstaller(cfg).install(javaw, p);
 
-                // Устанавливаем моды FancyMenu и Konkrete из внутренних ресурсов (требуют NeoForge, уже установленный GameInstaller)
+                // Устанавливаем моды FancyMenu, Konkrete и Melody из внутренних ресурсов (требуют NeoForge, уже установленный GameInstaller)
                 p.stage("mods");
                 Path modsDir = cfg.gameDir.resolve("mods");
                 Files.createDirectories(modsDir);
                 String[] modResources = {
                         "mods/FancyMenu-3.9.14-hand.jar",
-                        "mods/konkrete_neoforge_1.9.9_MC_1.21.jar"
+                        "mods/konkrete_neoforge_1.9.9_MC_1.21.jar",
+                        "mods/melody_neoforge_1.0.10_MC_1.21.jar"
                 };
                 for (String res : modResources) {
                     String fileName = res.substring(res.lastIndexOf('/') + 1);
