@@ -3,7 +3,6 @@ package com.elium.launcher;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -309,58 +308,65 @@ public final class LauncherApp {
     private void openSettings() {
         JDialog d = new JDialog(frame, "Настройки лаунчера", true);
         d.setUndecorated(true);
-        int dw = 720, dh = 600;
+        int dw = 760, dh = 620;
         d.setSize(dw, dh);
         d.setShape(new RoundRectangle2D.Double(0, 0, dw, dh, t.radius * 2, t.radius * 2));
         UI.Card root = new UI.Card(t, t.dialog);
         d.setContentPane(root);
         dragMove(root, d);
 
-        JLabel head = text("Настройки", Font.BOLD, 22f, t.text);
-        head.setBounds(28, 20, 300, 30);
+        JLabel head = text("НАСТРОЙКИ", Font.BOLD, 28f, t.text);
+        head.setBounds(44, 26, 400, 36);
         root.add(head);
+        JLabel sub = text("СЛУЖЕБНАЯ ЧАСТЬ · ОПЫТНАЯ ПАРТИЯ", Font.PLAIN, 11.5f, t.muted);
+        sub.setBounds(44, 62, 500, 18);
+        root.add(sub);
 
-        int lx = 28, rx = 372, cw = 320;
+        int lx = 44, rx = 388, cw = 328;
 
-        JLabel ramLabel = text("", Font.PLAIN, 14f, t.text);
-        ramLabel.setBounds(lx, 62, cw, 20);
+        JLabel ramLabel = text("Оперативная память: " + gb(ramMb), Font.PLAIN, 14f, t.text);
+        ramLabel.setBounds(lx, 98, cw, 20);
         root.add(ramLabel);
         UI.Slider ram = new UI.Slider(t, 1024, maxRam, 512, ramMb,
                 v -> ramLabel.setText("Оперативная память: " + gb(v)));
-        ram.setBounds(lx - 10, 86, cw + 20, 32);
+        ram.setBounds(lx - 10, 122, cw + 20, 32);
         root.add(ram);
 
         UI.Toggle connect = new UI.Toggle(t, "Автоподключение к серверу", autoConnect);
-        connect.setBounds(lx, 126, cw, 30);
+        connect.setBounds(lx, 168, cw, 30);
         connect.setVisible(!cfg.effectiveServerHost().isEmpty());
         root.add(connect);
 
         JLabel downloadsLabel = text("Потоки загрузки: " + cfg.maxDownloads(), Font.PLAIN, 14f, t.text);
-        downloadsLabel.setBounds(lx, 164, cw, 20);
+        downloadsLabel.setBounds(lx, 206, cw, 20);
         root.add(downloadsLabel);
         UI.Slider downloads = new UI.Slider(t, 1, 64, 1, cfg.maxDownloads(),
                 v -> downloadsLabel.setText("Потоки загрузки: " + v));
-        downloads.setBounds(lx - 10, 188, cw + 20, 32);
+        downloads.setBounds(lx - 10, 230, cw + 20, 32);
         root.add(downloads);
 
         UI.Toggle autoUpdate = new UI.Toggle(t, "Автообновление лаунчера", cfg.autoUpdate());
-        autoUpdate.setBounds(lx, 228, cw, 30);
+        autoUpdate.setBounds(lx, 276, cw, 30);
         root.add(autoUpdate);
 
         UI.Toggle keepLogs = new UI.Toggle(t, "Сохранять game-output.log", cfg.keepLogs());
-        keepLogs.setBounds(lx, 262, cw, 30);
+        keepLogs.setBounds(lx, 312, cw, 30);
         root.add(keepLogs);
 
-        JLabel styleLabel = text("Стиль UI", Font.PLAIN, 14f, t.text);
-        styleLabel.setBounds(rx, 58, 110, 24);
+        JLabel styleLabel = text("Оформление", Font.PLAIN, 14f, t.text);
+        styleLabel.setBounds(rx, 98, cw, 20);
         root.add(styleLabel);
-        JComboBox<String> styleBox = new JComboBox<>(new String[]{"clean", "military", "sketch"});
-        styleBox.setSelectedItem(cfg.uiStyle());
-        styleBox.setFont(t.font(Font.PLAIN, 14f));
-        styleBox.setBounds(rx + 120, 56, 200, 28);
+        UI.Select styleBox = new UI.Select(t,
+                new String[]{"Ручная работа", "Чистый", "Военный", "Набросок"},
+                new String[]{"hand", "clean", "military", "sketch"},
+                cfg.uiStyle(), v -> { });
+        styleBox.setBounds(rx, 122, cw, 34);
         root.add(styleBox);
+        JLabel styleHint = text("Применится после перезапуска", Font.PLAIN, 11.5f, UI.alpha(t.muted, 190));
+        styleHint.setBounds(rx, 162, cw, 18);
+        root.add(styleHint);
 
-        int ry = 104;
+        int ry = 196;
         JLabel modpackLabel = text("Modpack URL (пусто = из launcher.properties)", Font.PLAIN, 12f, t.muted);
         modpackLabel.setBounds(rx, ry, cw, 16);
         root.add(modpackLabel);
@@ -368,7 +374,7 @@ public final class LauncherApp {
         UI.Field modpackField = new UI.Field(t, cfg.modpackUrlOverride(), "http://.../manifest.json");
         modpackField.setBounds(rx, ry, cw, 40);
         root.add(modpackField);
-        ry += 48;
+        ry += 52;
 
         JLabel jvmLabel = text("Дополнительные JVM-аргументы", Font.PLAIN, 12f, t.muted);
         jvmLabel.setBounds(rx, ry, cw, 16);
@@ -377,18 +383,18 @@ public final class LauncherApp {
         UI.Field jvmField = new UI.Field(t, cfg.extraJvmArgs(), "-Dfoo=bar");
         jvmField.setBounds(rx, ry, cw, 40);
         root.add(jvmField);
-        ry += 48;
+        ry += 52;
 
         JLabel serverLabel = text("Сервер (host и port, пусто = из launcher.properties)", Font.PLAIN, 12f, t.muted);
         serverLabel.setBounds(rx, ry, cw, 16);
         root.add(serverLabel);
         ry += 18;
         UI.Field serverHostField = new UI.Field(t, cfg.serverHostOverride(), cfg.serverHost);
-        serverHostField.setBounds(rx, ry, 200, 40);
+        serverHostField.setBounds(rx, ry, 208, 40);
         root.add(serverHostField);
         UI.Field serverPortField = new UI.Field(t, cfg.serverHostOverride().isBlank() ? "" : Integer.toString(cfg.effectiveServerPort()),
                 Integer.toString(cfg.serverPort));
-        serverPortField.setBounds(rx + 210, ry, 110, 40);
+        serverPortField.setBounds(rx + 218, ry, 110, 40);
         root.add(serverPortField);
         ry += 54;
 
@@ -400,20 +406,20 @@ public final class LauncherApp {
         root.add(openGame);
 
         UI.Btn cancel = new UI.Btn(t, "Отмена", UI.Kind.GHOST);
-        cancel.setBounds(28, dh - 58, 120, 42);
+        cancel.setBounds(44, dh - 64, 140, 42);
         cancel.addActionListener(e -> d.dispose());
         root.add(cancel);
 
         UI.Btn save = new UI.Btn(t, "Сохранить", UI.Kind.PRIMARY);
         save.setFont(t.font(Font.BOLD, 15f));
-        save.setBounds(dw - 28 - 160, dh - 58, 160, 42);
+        save.setBounds(dw - 44 - 180, dh - 64, 180, 42);
         save.addActionListener(e -> {
             ramMb = ram.value;
             autoConnect = connect.on;
             int threads = downloads.value;
             boolean update = autoUpdate.on;
             boolean logs = keepLogs.on;
-            String style = String.valueOf(styleBox.getSelectedItem());
+            String style = styleBox.value();
             String modpackUrl = modpackField.getText().trim();
             String jvm = jvmField.getText().trim();
             String host = serverHostField.getText().trim();
