@@ -68,28 +68,13 @@ public final class Probe {
         }
     }
 
-    /** Разведка по всем группам из Mirrors, параллельно. Результат — в Mirrors.prefer. */
-    public static void chooseAll() {
-        if (!Net.mirrorsEnabled()) return;
-        List<Thread> ts = new ArrayList<>();
-        for (Mirrors.Group g : Mirrors.groups()) {
-            Thread t = new Thread(() -> {
-                int i = pick(g.originalProbe, g.mirrorProbes, TIMEOUT);
-                Mirrors.prefer(g.name, Math.max(i, 0));
-                if (i > 0) System.out.println("загрузка " + g.name + ": зеркало " + g.mirrorProbes.get(i - 1));
-                else if (i < 0) System.out.println("загрузка " + g.name + ": ни один источник не ответил при разведке");
-            }, "probe-" + g.name);
-            t.setDaemon(true);
-            t.start();
-            ts.add(t);
-        }
-        for (Thread t : ts) {
-            try {
-                t.join(TIMEOUT.toMillis() + 2000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return;
-            }
-        }
+    /** Разведка одной группы хостов из Mirrors. Результат — в Mirrors.prefer. */
+    public static void choose(String groupName) {
+        Mirrors.Group g = Mirrors.group(groupName);
+        if (g == null) return;
+        int i = pick(g.originalProbe, g.mirrorProbes, TIMEOUT);
+        Mirrors.prefer(g.name, Math.max(i, 0));
+        if (i > 0) System.out.println("загрузка " + g.name + ": зеркало " + g.mirrorProbes.get(i - 1));
+        else if (i < 0) System.out.println("загрузка " + g.name + ": ни один источник не ответил при разведке");
     }
 }

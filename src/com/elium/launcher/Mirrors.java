@@ -99,6 +99,17 @@ public final class Mirrors {
         return null;
     }
 
+    /** Имя группы хостов для адреса (null — адрес без зеркал). */
+    static String groupName(String url) {
+        Group g = groupOf(url);
+        return g == null ? null : g.name;
+    }
+
+    static Group group(String name) {
+        for (Group g : GROUPS) if (g.name.equals(name)) return g;
+        return null;
+    }
+
     /** РљР°РЅРґРёРґР°С‚С‹-Р·РµСЂРєР°Р»Р° РґР»СЏ РѕС„РёС†РёР°Р»СЊРЅРѕРіРѕ Р°РґСЂРµСЃР°, РїРѕ РїРѕСЂСЏРґРєСѓ, Р±РµР· СЃР°РјРѕРіРѕ РѕСЂРёРіРёРЅР°Р»Р°. */
     public static List<String> alternatives(String url) {
         Group g = groupOf(url);

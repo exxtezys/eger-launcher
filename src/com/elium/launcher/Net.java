@@ -104,7 +104,7 @@ public final class Net {
         overrides.clear();
         mismatches.clear();
         mirrorsEnabled = true;
-        probed = true; // в тестах разведку по реальным хостам не запускаем
+        probesDisabled = true; // в тестах разведку по реальным хостам не запускаем
     }
 
     /** Все источники для адреса по порядку: оригинал и зеркала (или зеркало первым, если так решила разведка). */
@@ -117,19 +117,21 @@ public final class Net {
             return out;
         }
         if (!mirrorsEnabled) return List.of(url);
-        if (!Mirrors.alternatives(url).isEmpty()) probeOnce();
+        String group = Mirrors.groupName(url);
+        if (group != null) probeOnce(group);
         return Mirrors.ordered(url);
     }
 
-    private static volatile boolean probed = false;
+    private static volatile boolean probesDisabled = false;
+    private static final java.util.Set<String> probed = java.util.concurrent.ConcurrentHashMap.newKeySet();
 
-    /** Разведка один раз за сессию и только когда действительно нужно что-то скачать. */
-    private static void probeOnce() {
-        if (probed) return;
-        synchronized (Net.class) {
-            if (probed) return;
-            Probe.chooseAll();
-            probed = true;
+    /** Разведка группы один раз за запуск и только когда из неё действительно что-то качают. */
+    private static void probeOnce(String group) {
+        if (probesDisabled || probed.contains(group)) return;
+        synchronized (probed) {
+            if (probed.contains(group)) return;
+            Probe.choose(group);
+            probed.add(group);
         }
     }
 

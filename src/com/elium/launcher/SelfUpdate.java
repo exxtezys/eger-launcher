@@ -113,10 +113,12 @@ public final class SelfUpdate {
 
     private static Path javaExe() {
         Path bin = Path.of(System.getProperty("java.home"), "bin");
-        for (String n : new String[]{"javaw.exe", "java.exe"}) {
+        String[] names = System.getProperty("os.name", "").toLowerCase().contains("win")
+                ? new String[]{"javaw.exe", "java.exe"} : new String[]{"java"};
+        for (String n : names) {
             if (Files.isRegularFile(bin.resolve(n))) return bin.resolve(n);
         }
-        throw new IllegalStateException("в комплекте лаунчера нет javaw.exe");
+        throw new IllegalStateException("в комплекте лаунчера нет java");
     }
 
     private static void sleep(long ms) {
