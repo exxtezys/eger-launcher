@@ -574,19 +574,26 @@ public final class LauncherApp {
                 Path javaw = JavaRuntime.ensure(cfg.gameDir, p);
                 GameInstaller.Profile prof = new GameInstaller(cfg).install(javaw, p);
 
-                // Устанавливаем мод FancyMenu из внутренних ресурсов (требует NeoForge, уже установленный GameInstaller)
+                // Устанавливаем моды FancyMenu и Konkrete из внутренних ресурсов (требуют NeoForge, уже установленный GameInstaller)
                 p.stage("mods");
                 Path modsDir = cfg.gameDir.resolve("mods");
                 Files.createDirectories(modsDir);
-                Path modJar = modsDir.resolve("FancyMenu-3.9.14-hand.jar");
-                if (!Files.exists(modJar)) {
-                    p.update("Установка мода FancyMenu...", 0, 1);
-                    try (InputStream in = LauncherApp.class.getResourceAsStream("/mods/FancyMenu-3.9.14-hand.jar")) {
-                        if (in != null) {
-                            Files.copy(in, modJar, StandardCopyOption.REPLACE_EXISTING);
-                            p.update("Мод FancyMenu установлен", 1, 1);
-                        } else {
-                            p.update("Мод FancyMenu не найден в ресурсах", 0, 1);
+                String[] modResources = {
+                        "mods/FancyMenu-3.9.14-hand.jar",
+                        "mods/konkrete_neoforge_1.9.9_MC_1.21.jar"
+                };
+                for (String res : modResources) {
+                    String fileName = res.substring(res.lastIndexOf('/') + 1);
+                    Path modJar = modsDir.resolve(fileName);
+                    if (!Files.exists(modJar)) {
+                        p.update("Установка мода " + fileName + "...", 0, 1);
+                        try (InputStream in = LauncherApp.class.getResourceAsStream("/" + res)) {
+                            if (in != null) {
+                                Files.copy(in, modJar, StandardCopyOption.REPLACE_EXISTING);
+                                p.update("Мод " + fileName + " установлен", 1, 1);
+                            } else {
+                                p.update("Мод " + fileName + " не найден в ресурсах", 0, 1);
+                            }
                         }
                     }
                 }
