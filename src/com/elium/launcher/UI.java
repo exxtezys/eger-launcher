@@ -129,21 +129,24 @@ final class UI {
         private final int radius;
         private final Theme.Style style;
         private final Color ink;
+        private final Color shadow;
+        private BufferedImage handCache;
 
         Card(Color fill, int radius) {
-            this(fill, radius, Theme.Style.CLEAN, Color.WHITE);
+            this(fill, radius, Theme.Style.CLEAN, Color.WHITE, new Color(0, 0, 0, 90));
         }
 
         Card(Theme t, Color fill) {
-            this(fill, t.radius, t.style, t.text);
+            this(fill, t.radius, t.style, t.text, t.paperShadow);
         }
 
-        private Card(Color fill, int radius, Theme.Style style, Color ink) {
+        private Card(Color fill, int radius, Theme.Style style, Color ink, Color shadow) {
             super(null);
             this.fill = fill;
             this.radius = radius;
             this.style = style;
             this.ink = ink;
+            this.shadow = shadow;
             setOpaque(false);
         }
 
@@ -151,6 +154,18 @@ final class UI {
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = smooth(g);
             int w = getWidth(), h = getHeight();
+            if (w <= 0 || h <= 0) {
+                g2.dispose();
+                return;
+            }
+            if (style == Theme.Style.HAND) {
+                if (handCache == null || handCache.getWidth() != w || handCache.getHeight() != h) {
+                    handCache = renderHand(w, h);
+                }
+                g2.drawImage(handCache, 0, 0, null);
+                g2.dispose();
+                return;
+            }
             if (style == Theme.Style.SKETCH) {
                 g2.setColor(fill);
                 g2.fillRect(4, 4, w - 8, h - 8);
@@ -187,6 +202,29 @@ final class UI {
             }
             g2.dispose();
         }
+
+        private BufferedImage renderHand(int w, int h) {
+            BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = smooth(img.getGraphics());
+            java.awt.geom.Path2D.Float paper = Ink.tornPath(1.5f, 1.5f, w - 3f, h - 5f, w * 31L + h);
+            g.setColor(alpha(shadow, 170));
+            java.awt.geom.AffineTransform old = g.getTransform();
+            g.translate(2, 2);
+            g.fill(paper);
+            g.setTransform(old);
+            g.setColor(fill);
+            g.fill(paper);
+            Random r = new Random(w * 17L + h * 7L);
+            for (int i = 0; i < w * h / 90; i++) {
+                g.setColor(new Color(28, 27, 24, 8 + r.nextInt(12)));
+                g.fillRect(r.nextInt(w), r.nextInt(h), 1, 1);
+            }
+            g.setColor(alpha(Color.WHITE, 60));
+            g.drawLine(6, 2, w - 8, 2);
+            Ink.tornBorder(g, 1.5f, 1.5f, w - 3f, h - 5f, alpha(ink, 235), w * 31L + h);
+            g.dispose();
+            return img;
+        }
     }
 
     enum Kind { PRIMARY, GHOST, WINDOW, CLOSE }
@@ -218,6 +256,11 @@ final class UI {
             int w = getWidth(), h = getHeight();
             boolean on = isEnabled();
             if (!on) g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+            if (t.style == Theme.Style.HAND) {
+                paintHand(g2, w, h, on);
+                g2.dispose();
+                return;
+            }
             float r = kind == Kind.PRIMARY ? t.radius : Math.min(10, t.radius * 2);
             switch (kind) {
                 case PRIMARY -> {
@@ -280,6 +323,56 @@ final class UI {
             centerText(g2, getText(), w, h);
             g2.dispose();
         }
+
+        private void paintHand(Graphics2D g2, int w, int h, boolean on) {
+            switch (kind) {
+                case PRIMARY -> {
+                    int dy = getModel().isPressed() ? 2 : 0;
+                    int dx = hover && on && dy == 0 ? 1 : 0;
+                    g2.translate(dx, dy);
+                    g2.setColor(hover && on ? t.accentHover : t.accent);
+                    g2.fillRect(0, 0, w - 2, h - 3);
+                    Ink.tornBorder(g2, 1, 1, w - 4, h - 4, alpha(t.text, 220), 1939);
+                    g2.setColor(t.onAccent);
+                    g2.setFont(getFont());
+                    FontMetrics fm = g2.getFontMetrics();
+                    float tw = 0;
+                    for (char ch : getText().toCharArray()) tw += fm.charWidth(ch) + 0.8f;
+                    tw -= 0.8f;
+                    Ink.spaced(g2, getText(), (w - tw) / 2f, (h - fm.getHeight()) / 2f + fm.getAscent() - 1, 0.8f);
+                }
+                case GHOST -> {
+                    if (hover && on) {
+                        Ink.hatch(g2, new java.awt.Rectangle(2, 2, w - 4, h - 4), (float) Math.toRadians(45), 7f,
+                                alpha(t.inkSoft, 55));
+                    }
+                    Ink.tornBorder(g2, 1.5f, 1.5f, w - 4, h - 4, alpha(t.text, hover && on ? 220 : 150), 77);
+                    g2.setColor(t.text);
+                    g2.setFont(getFont());
+                    FontMetrics fm = g2.getFontMetrics();
+                    g2.drawString(getText(), (w - fm.stringWidth(getText())) / 2f,
+                            (h - fm.getHeight()) / 2f + fm.getAscent() - 1);
+                }
+                case WINDOW, CLOSE -> {
+                    int cx = w / 2, cy = h / 2;
+                    if (hover) {
+                        g2.setColor(kind == Kind.CLOSE ? alpha(t.text, 230) : alpha(t.panel, 220));
+                        g2.fillRect(3, 3, w - 6, h - 6);
+                    } else if (t.background != null || t.handPaper != null) {
+                        g2.setColor(alpha(t.panel, 175));
+                        g2.fillOval(cx - 11, cy - 11, 22, 22);
+                    }
+                    g2.setColor(hover && kind == Kind.CLOSE ? t.panel : t.text);
+                    g2.setStroke(new BasicStroke(1.8f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                    if (kind == Kind.CLOSE) {
+                        g2.drawLine(cx - 5, cy - 5, cx + 5, cy + 5);
+                        g2.drawLine(cx + 5, cy - 5, cx - 5, cy + 5);
+                    } else {
+                        g2.drawLine(cx - 6, cy + 1, cx + 6, cy + 1);
+                    }
+                }
+            }
+        }
     }
 
     static final class Field extends JTextField {
@@ -295,7 +388,8 @@ final class UI {
             setCaretColor(t.accent);
             setSelectionColor(alpha(t.accent, 120));
             setFont(t.font(java.awt.Font.PLAIN, 16f));
-            setBorder(new EmptyBorder(0, 16, 0, 16));
+            setBorder(new EmptyBorder(0, t.style == Theme.Style.HAND ? 8 : 16, 0,
+                    t.style == Theme.Style.HAND ? 8 : 16));
             addFocusListener(new java.awt.event.FocusAdapter() {
                 @Override public void focusGained(java.awt.event.FocusEvent e) { repaint(); }
                 @Override public void focusLost(java.awt.event.FocusEvent e) { repaint(); }
@@ -306,6 +400,30 @@ final class UI {
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = smooth(g);
             float r = Math.min(12, t.radius * 2);
+            if (t.style == Theme.Style.HAND) {
+                int w = getWidth(), h = getHeight();
+                if (hasFocus()) {
+                    g2.setColor(t.accent);
+                    g2.setStroke(new BasicStroke(2f));
+                } else {
+                    g2.setColor(alpha(t.text, 170));
+                    g2.setStroke(new BasicStroke(1.1f));
+                }
+                g2.drawLine(1, h - 2, w - 2, h - 2);
+                if (hasFocus()) {
+                    g2.setColor(alpha(t.accent, 70));
+                    g2.drawLine(1, h - 2, w - 2, h - 2);
+                }
+                if (getText().isEmpty() && !hasFocus()) {
+                    g2.setColor(t.muted);
+                    g2.setFont(t.font(java.awt.Font.PLAIN, 12f));
+                    FontMetrics fm = g2.getFontMetrics();
+                    g2.drawString(placeholder, 8, (h - fm.getHeight()) / 2 + fm.getAscent());
+                }
+                g2.dispose();
+                super.paintComponent(g);
+                return;
+            }
             g2.setColor(t.field);
             if (t.style == Theme.Style.SKETCH) {
                 g2.fillRect(3, 3, getWidth() - 6, getHeight() - 6);
