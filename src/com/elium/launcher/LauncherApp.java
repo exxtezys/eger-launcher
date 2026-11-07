@@ -874,7 +874,20 @@ public final class LauncherApp {
     }
 
     private void error(Exception e) {
-        UI.message(frame, t, "ДОНЕСЕНИЕ", e.getMessage() == null ? e.toString() : e.getMessage(), true);
+        UI.message(frame, t, "ДОНЕСЕНИЕ", errorText(e), true);
+    }
+
+    /** Что показать игроку. Для недоступности всех источников — понятный текст и что делать дальше. */
+    public static String errorText(Exception e) {
+        Throwable c = e;
+        while (c != null && !(c instanceof Net.HostsUnavailableException)) c = c.getCause();
+        if (c != null) {
+            return c.getMessage()
+                    + "\nВозможно, сайты заблокированы у вашего провайдера."
+                    + "\nВключите прокси в настройках и нажмите «Играть», чтобы Повторить."
+                    + "\nПодробности — в логе лаунчера.";
+        }
+        return e.getMessage() == null ? e.toString() : e.getMessage();
     }
 
     private Image icon(int size) {
