@@ -124,10 +124,11 @@ custom-модов, поле «Папка custom-модов» и автокопи
 
 ### 6.3. Типографика
 
-- **Дисплейный шрифт:** трафаретный, с кириллицей. Кандидат — PT Stencil Bold
-  (свободная лицензия ParaType). Файл кладётся в `theme/fonts/`, лицензия
-  рядом. Запасной вариант — Impact, затем Arial Black.
-- **Текстовый шрифт:** машинописный, с кириллицей. Кандидат — PT Mono.
+- **Дисплейный шрифт:** с кириллицей и тяжёлым индустриальным рисунком. Берётся
+  **Russo One** (OFL); трафаретный эффект создаётся кодом — вырезы и эрозия в
+  `Ink.inkText`, а не отдельным трафаретным шрифтом. Запасной вариант —
+  Impact, затем Arial Black.
+- **Текстовый шрифт:** машинописный, с кириллицей. **PT Mono** (OFL).
   Запасной — Consolas, затем Courier New.
 - Заголовки — только заглавные, трафарет, трекинг 0.5–1 px, размер 20–108 px.
 - Тело — 12–14 px, обычный регистр, межстрочный 1.35.
@@ -405,9 +406,9 @@ custom-модов освобождает место, поэтому правая
 |---|---|---|---|
 | `theme/hand-hero.png` | 1400×1800, альфа | генерация, без текста | рука с банкой, орбиты, дирижабль, звёзды |
 | `theme/paper.png` | 512×512, тайл | `tools/make_theme.py` | бумажная фактура |
-| `theme/fonts/PTStencil-Bold.ttf` | — | свободная лицензия | заголовки |
-| `theme/fonts/PTMono-Regular.ttf` | — | свободная лицензия | тело |
-| `theme/fonts/LICENSE-*.txt` | — | — | лицензии шрифтов |
+| `theme/fonts/RussoOne-Regular.ttf` | — | OFL, Google Fonts | заголовки |
+| `theme/fonts/PTMono-Regular.ttf` | — | OFL, Google Fonts | тело |
+| `theme/fonts/OFL-RussoOne.txt`, `OFL-PTMono.txt` | — | — | лицензии шрифтов |
 | `theme/hand-icon.png` | 256×256 | `tools/make_theme.py` | иконка окна для стиля `hand` |
 | `icon.ico` | 16–256, multi-size | `tools/make_theme.py` | иконка exe, jpackage и установщика |
 | `theme/logo.png` | без изменений | старый | только для старых стилей |
@@ -434,7 +435,7 @@ no letters, no watermark». Результат проверяется глаза
 - `theme.properties`: новые ключи `color.hand.*` под светлую палитру,
   `ui.style=hand`, `theme.revision=2`, `hand.hero=hand-hero.png`,
   `hand.paper=paper.png`, `hand.icon=hand-icon.png`,
-  `font.display.file=fonts/PTStencil-Bold.ttf`,
+  `font.display.file=fonts/RussoOne-Regular.ttf`,
   `font.body.file=fonts/PTMono-Regular.ttf`. Старые ключи `color.*` остаются
   палитрой `clean`/`military`/`sketch` и не меняются.
 - `Config.uiStyle()` по умолчанию возвращает `hand`.
@@ -592,7 +593,7 @@ no letters, no watermark». Результат проверяется глаза
   фантастических деталей, плотность штриха).
 - Параметры зерна, рваных краёв, штриховки и теней.
 - Конкретные тайминги анимаций и кривые наведения.
-- Выбор финальных файлов шрифтов после проверки лицензии и кириллицы.
+- Точные пропорции иконки и толщина перемычек «Е» на малых размерах.
 - Точная разбивка `UI.java` на методы и вспомогательный `Ink.java`.
 - Незначительные формулировки второй строки подзаголовка, если по вёрстке
   понадобится короче.
