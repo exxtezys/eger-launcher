@@ -112,11 +112,14 @@ public final class GameInstaller {
         Path inst = dir.resolve("neoforge-installer.jar");
         Net.downloadOne("Скачивание установщика NeoForge " + neo,
                 new Net.Task(NEO_MAVEN + neo + "/neoforge-" + neo + "-installer.jar", inst, null, -1), p);
+        // Установщик качает свои библиотеки сам, мимо зеркал, и флаг --mirror на них не действует.
+        // Поэтому кладём их заранее через Net (с перебором зеркал), и установщик их просто находит.
+        Net.downloadAll("Библиотеки NeoForge", installerLibraryTasks(inst, libs), p, dir);
         p.update("Установка NeoForge " + neo + "...", 0, 0);
         p.bytes(-1, -1);
         Path profiles = dir.resolve("launcher_profiles.json");
         if (!Files.exists(profiles)) Files.writeString(profiles, "{\"profiles\":{}}");
-        Path java = javaw.resolveSibling("java.exe");
+        Path java = javaw.resolveSibling(javaExeName());
         Process proc = new ProcessBuilder(java.toString(), "-jar", inst.toString(), "--install-client", dir.toString())
                 .directory(dir.toFile())
                 .redirectErrorStream(true)
@@ -138,6 +141,39 @@ public final class GameInstaller {
         Files.deleteIfExists(dir.resolve("neoforge-installer.jar.log"));
         if (code != 0) throw new IOException("Установщик NeoForge завершился с кодом " + code
                 + " (см. " + dir.resolve("neoforge-install.log") + ")");
+    }
+
+    private static String javaExeName() {
+        return System.getProperty("os.name", "").toLowerCase().contains("win") ? "java.exe" : "java";
+    }
+
+    /** Библиотеки, которые нужны установщику NeoForge (из install_profile.json внутри его jar). */
+    public static List<Net.Task> installerLibraryTasks(Path installerJar, Path libsDir) throws IOException {
+        String json;
+        try (java.util.zip.ZipFile z = new java.util.zip.ZipFile(installerJar.toFile())) {
+            java.util.zip.ZipEntry e = z.getEntry("install_profile.json");
+            if (e == null) throw new IOException("в установщике NeoForge нет install_profile.json");
+            try (java.io.InputStream in = z.getInputStream(e)) {
+                json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            }
+        }
+        Path root = libsDir.toAbsolutePath().normalize();
+        List<Net.Task> out = new ArrayList<>();
+        java.util.Set<Path> seen = new java.util.HashSet<>();
+        for (Object o : Json.arr(Json.obj(Json.parse(json)).get("libraries"))) {
+            Map<String, Object> dl = Json.obj(Json.obj(o).get("downloads"));
+            Map<String, Object> art = dl == null ? null : Json.obj(dl.get("artifact"));
+            if (art == null) continue;
+            String path = Json.str(art, "path");
+            String url = Json.str(art, "url");
+            if (path == null || url == null || url.isEmpty()) continue; // такие установщик собирает сам
+            Path target = root.resolve(path).normalize();
+            if (!target.startsWith(root)) throw new IOException("подозрительный путь библиотеки: " + path);
+            if (!seen.add(target)) continue;
+            long size = art.get("size") instanceof Number n ? n.longValue() : -1;
+            out.add(new Net.Task(url, target, Json.str(art, "sha1"), size));
+        }
+        return out;
     }
 
     private void collectLibs(Map<String, Object> version, Map<String, Path> cp, List<Net.Task> tasks) {
