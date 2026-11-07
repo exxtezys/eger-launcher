@@ -21,6 +21,7 @@ if ($LASTEXITCODE -ne 0) { throw 'javac failed' }
 Copy-Item "$root\src\launcher.properties","$root\src\theme.properties" "$out\classes\"
 if (Test-Path "$root\theme\icon.png") { Copy-Item "$root\theme\icon.png" "$out\classes\" }
 if (Test-Path "$root\theme") { Copy-Item "$root\theme\*" "$out\classes\" -Recurse }
+if (Test-Path "$root\src\main\resources\assets\fancymenu") { Copy-Item "$root\src\main\resources\assets\fancymenu\*" "$out\classes\assets\fancymenu\" -Recurse }
 & "$jdk\jar.exe" --create --file "$out\EliumLauncher.jar" --main-class com.elium.launcher.LauncherApp -C "$out\classes" .
 if ($LASTEXITCODE -ne 0) { throw 'jar failed' }
 Write-Host "OK: $out\EliumLauncher.jar (version $version)"
@@ -43,6 +44,7 @@ if ($Exe) {
     # Тема и картинки рядом с exe — правятся без пересборки
     Copy-Item "$root\src\theme.properties" "$dist\EgerLauncher\"
     if (Test-Path "$root\theme") { Copy-Item "$root\theme\*" "$dist\EgerLauncher\" -Recurse }
+    if (Test-Path "$root\src\main\resources\assets\fancymenu") { Copy-Item "$root\src\main\resources\assets\fancymenu\*" "$dist\EgerLauncher\assets\fancymenu\" -Recurse }
     Write-Host "OK: $dist\EgerLauncher\EgerLauncher.exe"
 }
 
