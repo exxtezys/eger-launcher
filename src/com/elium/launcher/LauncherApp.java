@@ -4,7 +4,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -322,25 +321,6 @@ public final class LauncherApp {
         root.add(jvmField);
         ry += 48;
 
-        JLabel customDirLabel = text("Папка custom-модов", Font.PLAIN, 12f, t.muted);
-        customDirLabel.setBounds(rx, ry, cw, 16);
-        root.add(customDirLabel);
-        ry += 18;
-        UI.Field customDirField = new UI.Field(t, cfg.customModsDir().toString(), cfg.gameDir.resolve("custom-mods").toString());
-        customDirField.setBounds(rx, ry, 220, 40);
-        root.add(customDirField);
-        UI.Btn customDirBtn = new UI.Btn(t, "Открыть", UI.Kind.GHOST);
-        customDirBtn.setBounds(rx + 230, ry, 90, 40);
-        customDirBtn.addActionListener(e -> {
-            try {
-                String v = customDirField.getText().trim();
-                Path dir = v.isEmpty() ? cfg.customModsDir() : Path.of(v);
-                Desktop.getDesktop().open(dir.toFile());
-            } catch (Exception ex) { error(ex); }
-        });
-        root.add(customDirBtn);
-        ry += 48;
-
         JLabel serverLabel = text("Сервер (host и port, пусто = из launcher.properties)", Font.PLAIN, 12f, t.muted);
         serverLabel.setBounds(rx, ry, cw, 16);
         root.add(serverLabel);
@@ -353,12 +333,6 @@ public final class LauncherApp {
         serverPortField.setBounds(rx + 210, ry, 110, 40);
         root.add(serverPortField);
         ry += 54;
-
-        UI.Btn admin = new UI.Btn(t, "Админ-панель custom-модов", UI.Kind.GHOST);
-        admin.setBounds(rx, ry, cw, 40);
-        admin.addActionListener(e -> AdminPanel.show(frame, cfg, t));
-        root.add(admin);
-        ry += 48;
 
         UI.Btn openGame = new UI.Btn(t, "Открыть папку игры", UI.Kind.GHOST);
         openGame.setBounds(rx, ry, cw, 40);
@@ -384,7 +358,6 @@ public final class LauncherApp {
             String style = String.valueOf(styleBox.getSelectedItem());
             String modpackUrl = modpackField.getText().trim();
             String jvm = jvmField.getText().trim();
-            String customDir = customDirField.getText().trim();
             String host = serverHostField.getText().trim();
             int port = cfg.serverPort;
             try {
@@ -393,7 +366,7 @@ public final class LauncherApp {
             } catch (NumberFormatException ignored) {}
             try {
                 cfg.saveUserSettings(nickField.getText().trim(), ramMb, autoConnect, threads, update, modpackUrl, jvm,
-                        style, logs, customDir, host, port);
+                        style, logs, host, port);
                 Net.setMaxParallelDownloads(threads);
                 status.setText(summary());
                 d.dispose();
@@ -484,7 +457,6 @@ public final class LauncherApp {
                 Path javaw = JavaRuntime.ensure(cfg.gameDir, p);
                 GameInstaller.Profile prof = new GameInstaller(cfg).install(javaw, p);
                 ModpackSync.sync(cfg, p);
-                CustomMods.sync(cfg, p);
                 p.stage("launch");
                 p.bytes(-1, -1);
                 progress("Запуск игры...", 0, 0);

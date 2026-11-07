@@ -11,7 +11,7 @@ import java.util.Properties;
 
 /**
  * Project settings come from /launcher.properties inside the jar (edit before building).
- * Player settings (nick, RAM, UI, downloads, custom mods) are stored in <gameDir>/launcher-user.properties.
+ * Player settings (nick, RAM, UI, downloads) are stored in <gameDir>/launcher-user.properties.
  */
 public final class Config {
     public final String projectName;
@@ -53,6 +53,15 @@ public final class Config {
         if (Files.exists(userFile)) {
             try (Reader r = Files.newBufferedReader(userFile, StandardCharsets.UTF_8)) { user.load(r); }
         }
+        if (user.getProperty("uiStyleRevision") == null) {
+            user.setProperty("uiStyle", "hand");
+            user.setProperty("uiStyleRevision", "1");
+            try (Writer w = Files.newBufferedWriter(userFile, StandardCharsets.UTF_8)) {
+                user.store(w, projectName + " launcher");
+            } catch (IOException e) {
+                System.err.println("config: миграция стиля не сохранена: " + e.getMessage());
+            }
+        }
     }
 
     public String nick() { return user.getProperty("nick", ""); }
@@ -74,7 +83,7 @@ public final class Config {
 
     public String extraJvmArgs() { return strProp("extraJvmArgs", ""); }
 
-    public String uiStyle() { return strProp("uiStyle", "clean"); }
+    public String uiStyle() { return strProp("uiStyle", "hand"); }
 
     public boolean keepLogs() { return boolProp("keepLogs", true); }
 
@@ -92,22 +101,14 @@ public final class Config {
         return v.isBlank() ? serverPort : serverPortOverride();
     }
 
-    public Path customModsDir() {
-        String v = strProp("customModsDir", "");
-        if (v.isBlank()) return gameDir.resolve("custom-mods");
-        Path p = Path.of(v);
-        return p.isAbsolute() ? p : gameDir.resolve(p);
-    }
-
     public void saveUser(String nick, int ram, boolean autoConnect) throws IOException {
         saveUserSettings(nick, ram, autoConnect, maxDownloads(), autoUpdate(), modpackUrlOverride(),
-                extraJvmArgs(), uiStyle(), keepLogs(), customModsDir().toString(),
-                serverHostOverride(), serverPortOverride());
+                extraJvmArgs(), uiStyle(), keepLogs(), serverHostOverride(), serverPortOverride());
     }
 
     public void saveUserSettings(String nick, int ram, boolean autoConnect, int maxDownloads, boolean autoUpdate,
                                  String modpackUrlOverride, String extraJvmArgs, String uiStyle, boolean keepLogs,
-                                 String customModsDir, String serverHostOverride, int serverPortOverride) throws IOException {
+                                 String serverHostOverride, int serverPortOverride) throws IOException {
         user.setProperty("nick", nick == null ? "" : nick);
         user.setProperty("ram", Integer.toString(ram));
         user.setProperty("autoConnect", Boolean.toString(autoConnect));
@@ -115,9 +116,8 @@ public final class Config {
         user.setProperty("autoUpdate", Boolean.toString(autoUpdate));
         user.setProperty("modpackUrlOverride", modpackUrlOverride == null ? "" : modpackUrlOverride.trim());
         user.setProperty("extraJvmArgs", extraJvmArgs == null ? "" : extraJvmArgs.trim());
-        user.setProperty("uiStyle", uiStyle == null || uiStyle.isBlank() ? "clean" : uiStyle.trim());
+        user.setProperty("uiStyle", uiStyle == null || uiStyle.isBlank() ? "hand" : uiStyle.trim());
         user.setProperty("keepLogs", Boolean.toString(keepLogs));
-        user.setProperty("customModsDir", customModsDir == null ? "" : customModsDir.trim());
         user.setProperty("serverHostOverride", serverHostOverride == null ? "" : serverHostOverride.trim());
         user.setProperty("serverPortOverride", Integer.toString(serverPortOverride));
         try (Writer w = Files.newBufferedWriter(userFile, StandardCharsets.UTF_8)) {
