@@ -21,7 +21,10 @@ import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.net.URI;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -68,11 +71,55 @@ public final class LauncherApp {
         Net.setMaxParallelDownloads(cfg.maxDownloads());
         this.t = Theme.load(cfg.projectName, cfg.minecraftVersion, cfg.uiStyle());
         this.cardW = t.style == Theme.Style.HAND ? 440 : CARD_W;
+        installFancyMenuAssets();
         long totalMb = ((com.sun.management.OperatingSystemMXBean)
                 java.lang.management.ManagementFactory.getOperatingSystemMXBean()).getTotalMemorySize() / 1048576;
         this.maxRam = (int) Math.max(2048, totalMb - 2048);
         this.ramMb = Math.min(cfg.ramMb(), maxRam);
         this.autoConnect = cfg.autoConnect();
+        installFancyMenuAssets();
+    }
+
+    /** Копирует ассеты FancyMenu из jar в .minecraft/assets/fancymenu/ при первом запуске. */
+    private void installFancyMenuAssets() {
+        try {
+            Path minecraftDir = cfg.gameDir;
+            Path assetsDir = minecraftDir.resolve("assets").resolve("fancymenu");
+            Files.createDirectories(assetsDir);
+
+            String[] files = {
+                    "assets/fancymenu/textures/background.png",
+                    "assets/fancymenu/textures/icon-e.png",
+                    "assets/fancymenu/textures/gui/button_normal.png",
+                    "assets/fancymenu/textures/gui/button_hover.png",
+                    "assets/fancymenu/textures/gui/button_active.png",
+                    "assets/fancymenu/textures/gui/panel.png",
+                    "assets/fancymenu/textures/gui/logo.png",
+                    "assets/fancymenu/fonts/RussoOne-Regular.ttf",
+                    "assets/fancymenu/fancymenu.cfg"
+            };
+
+            for (String res : files) {
+                Path target = assetsDir.resolve(res.substring(res.indexOf('/') + 1));
+                // Для вложенных путей создаём подпапки
+                if (res.contains("/")) {
+                    String[] parts = res.split("/");
+                    Path nested = assetsDir;
+                    for (int i = 1; i < parts.length - 1; i++) {
+                        nested = nested.resolve(parts[i]);
+                        Files.createDirectories(nested);
+                    }
+                    target = nested.resolve(parts[parts.length - 1]);
+                }
+                try (InputStream in = LauncherApp.class.getResourceAsStream("/" + res)) {
+                    if (in != null) {
+                        Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Не удалось установить ассеты FancyMenu: " + e.getMessage());
+        }
     }
 
     public static void main(String[] args) {
