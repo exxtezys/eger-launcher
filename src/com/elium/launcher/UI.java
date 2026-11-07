@@ -511,6 +511,7 @@ final class UI {
                 case MILITARY -> new Color(0xC0442E);
                 case SKETCH -> t.text;
                 case CLEAN -> new Color(0xF2B33D);
+                case HAND -> t.accent;
             };
             float rr = t.style == Theme.Style.CLEAN ? h : 0;
             if (t.style != Theme.Style.CLEAN) g2.rotate(Math.toRadians(-4), w / 2.0, h / 2.0);
