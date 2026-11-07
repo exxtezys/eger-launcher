@@ -18,8 +18,8 @@ public class InstallerLibsTest {
         Path jar = Path.of(System.getenv("TEMP"), "opencode", "neo-inst", "neoforge-installer.jar");
         if (!Files.exists(jar)) jar = Path.of("C:\\Users\\User\\AppData\\Local\\Temp\\opencode\\neo-inst\\neoforge-installer.jar");
         if (!Files.exists(jar)) {
-            System.out.println("SKIP: нет установщика " + jar);
-            System.exit(0);
+            System.out.println("FAIL: нет установщика " + jar);
+            System.exit(1);
         }
         Path libs = Files.createTempDirectory("libs");
         List<Net.Task> tasks = GameInstaller.installerLibraryTasks(jar, libs);

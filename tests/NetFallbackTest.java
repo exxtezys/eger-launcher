@@ -122,10 +122,31 @@ public class NetFallbackTest {
             server2.stop(0);
         }
 
+        // Хост «моргает»: первые 3 запроса падают, потом отвечает. Установка не должна умирать.
+        AtomicInteger flakyHits = new AtomicInteger();
+        HttpServer flaky = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        flaky.createContext("/flaky/index.json", ex -> {
+            if (flakyHits.incrementAndGet() <= 5) { ex.sendResponseHeaders(503, -1); ex.close(); return; }
+            byte[] b = "{\"ok\":true}".getBytes(StandardCharsets.UTF_8);
+            ex.sendResponseHeaders(200, b.length);
+            try (OutputStream o = ex.getResponseBody()) { o.write(b); }
+        });
+        flaky.start();
+        try {
+            Net.resetHostOverrides();
+            String flakyUrl = "http://127.0.0.1:" + flaky.getAddress().getPort() + "/flaky/index.json";
+            String body = null;
+            IOException err = null;
+            try { body = Net.getText(flakyUrl); } catch (IOException e) { err = e; }
+            check("моргающий хост пережит (ошибка: " + err + ")", body != null);
+            check("повторных запросов было не меньше 4 (было " + flakyHits.get() + ")", flakyHits.get() >= 4);
+        } finally {
+            flaky.stop(0);
+        }
+
         // Прокси включён — зеркала выключены, остаётся только оригинал.
         Net.resetHostOverrides();
-        Net.setMirrorsEnabled(false);
-        check("без зеркал только оригинал",
+        Net.setMirrorsEnabled(false);        check("без зеркал только оригинал",
                 Net.candidatesForTesting("https://libraries.minecraft.net/a.jar").equals(java.util.List.of("https://libraries.minecraft.net/a.jar")));
         Net.setMirrorsEnabled(true);
         check("с зеркалами — оригинал и BMCLAPI",

@@ -41,8 +41,12 @@ public final class Net {
 
     private Net() {}
 
-    /** One file to fetch. sha1/size may be null/-1 when unknown. */
-    public record Task(String url, Path target, String sha1, long size) {}
+    /** One file to fetch. sha1/size may be null/-1 when unknown. label — название шага для сообщения об ошибке. */
+    public record Task(String url, Path target, String sha1, long size, String label) {
+        public Task(String url, Path target, String sha1, long size) {
+            this(url, target, sha1, size, null);
+        }
+    }
 
     /** Loading-screen feedback. All methods may be called from worker threads. */
     public interface Progress {
@@ -163,11 +167,17 @@ public final class Net {
 
     /** Отказ всех источников: текст для игрока, подробности — в лог. */
     static IOException allFailed(String url, List<String> tried, IOException last) {
+        return allFailed(url, tried, last, null);
+    }
+
+    static IOException allFailed(String url, List<String> tried, IOException last, String label) {
         String file = url.substring(url.lastIndexOf('/') + 1);
         if (file.isEmpty() || file.length() > 60) file = hostKey(url);
-        System.err.println("не удалось скачать " + url + ", опробованы: " + tried
+        System.err.println("не удалось скачать " + url + (label != null ? " (" + label + ")" : "")
+                + ", опробованы: " + tried
                 + (last != null ? ", последняя ошибка: " + last : ""));
         return new HostsUnavailableException("Не удалось скачать " + file
+                + (label != null ? " (шаг: " + label + ")" : "")
                 + ": перепробованы все источники (" + tried.size() + ").", last);
     }
 
@@ -178,8 +188,55 @@ public final class Net {
         }
     }
 
+    /**
+     * Контрольная сумма из соседнего файла «.sha1» (так публикует Maven).
+     * Ходит по тем же источникам, что и сама загрузка: официальный хост, потом зеркала.
+     * Возвращает null, если ни один источник не дал корректного sha1 — тогда файл
+     * считается непроверяемым, а не подозрительным.
+     */
+    public static String sha1Sidecar(String url) {
+        for (String u : candidates(url)) {
+            if (isBadMirror(u, url)) continue;
+            try {
+                HttpRequest req = HttpRequest.newBuilder(URI.create(u + ".sha1"))
+                        .timeout(Duration.ofSeconds(20))
+                        .header("User-Agent", "EliumLauncher")
+                        .build();
+                HttpResponse<String> r = HTTP.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                if (r.statusCode() != 200) continue;
+                java.util.regex.Matcher m = java.util.regex.Pattern
+                        .compile("\\b[0-9a-fA-F]{40}\\b").matcher(r.body());
+                if (m.find()) return m.group().toLowerCase(java.util.Locale.ROOT);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return null;
+            } catch (IOException | IllegalArgumentException e) {
+                // источник молчит — пробуем следующий
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Сколько раз пройти весь список источников. Один источник — заметно больше попыток:
+     * без зеркал единственный адрес надо пробовать упорнее, сети на плохом канале моргают.
+     */
     private static int passes(List<String> c) {
-        return c.size() == 1 ? 3 : 2;
+        return c.size() == 1 ? 7 : 4;
+    }
+
+    /**
+     * Пауза перед следующим кругом. Сбои на плохом канале идут «окнами», а не по одному:
+     * мгновенный повтор попадает в то же окно, поэтому ждём всё дольше (0.4, 0.8, 1.6... до 5 с).
+     */
+    private static void backoff(int pass) {
+        if (pass == 0) return;
+        long ms = Math.min(5_000L, 400L << Math.min(pass - 1, 4));
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     public static String getText(String url) throws IOException {
@@ -187,6 +244,7 @@ public final class Net {
         List<String> tried = new java.util.ArrayList<>();
         IOException last = null;
         for (int pass = 0; pass < passes(cands); pass++) {
+            backoff(pass);
             for (String u : cands) {
                 if (isBadMirror(u, url)) continue;
                 if (!tried.contains(u)) tried.add(u);
@@ -242,6 +300,7 @@ public final class Net {
         IOException last = null;
         Path tmp = t.target().resolveSibling(t.target().getFileName() + ".part");
         for (int pass = 0; pass < passes(cands); pass++) {
+            backoff(pass);
             for (String u : cands) {
                 if (mismatchedHere.contains(u) || isBadMirror(u, t.url())) continue;
                 if (!tried.contains(u)) tried.add(u);
@@ -283,7 +342,7 @@ public final class Net {
                 }
             }
         }
-        throw allFailed(t.url(), tried, last);
+        throw allFailed(t.url(), tried, last, t.label());
     }
 
     /** Single download with live byte progress (size taken from Content-Length). */
@@ -293,7 +352,8 @@ public final class Net {
         AtomicLong done = new AtomicLong();
         long[] total = {t.size()};
         p.bytes(0, total[0]);
-        download(t, new Counter() {
+        Task labeled = t.label() != null ? t : new Task(t.url(), t.target(), t.sha1(), t.size(), label);
+        download(labeled, new Counter() {
             @Override public void add(long n) { p.bytes(done.addAndGet(n), total[0]); }
             @Override public void length(long n) { if (n > 0) total[0] = n; }
         });

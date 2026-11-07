@@ -111,7 +111,8 @@ public final class GameInstaller {
     private void runNeoInstaller(Path javaw, String neo, Net.Progress p) throws IOException, InterruptedException {
         Path inst = dir.resolve("neoforge-installer.jar");
         Net.downloadOne("Скачивание установщика NeoForge " + neo,
-                new Net.Task(NEO_MAVEN + neo + "/neoforge-" + neo + "-installer.jar", inst, null, -1), p);
+                new Net.Task(NEO_MAVEN + neo + "/neoforge-" + neo + "-installer.jar", inst,
+                        Net.sha1Sidecar(NEO_MAVEN + neo + "/neoforge-" + neo + "-installer.jar"), -1), p);
         // Установщик качает свои библиотеки сам, мимо зеркал, и флаг --mirror на них не действует.
         // Поэтому кладём их заранее через Net (с перебором зеркал), и установщик их просто находит.
         Net.downloadAll("Библиотеки NeoForge", installerLibraryTasks(inst, libs), p, dir);

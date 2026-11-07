@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 public final class LauncherApp {
     private static final Pattern NICK = Pattern.compile("[A-Za-z0-9_]{3,16}");
     private static final int CARD_W = 340;
-    static final String VERSION = "0.3.0";
+    static final String VERSION = "0.4.0";
     private static final String[][] STEPS = {
             {"java", "Java 21"},
             {"game", "Minecraft"},
@@ -133,6 +133,8 @@ public final class LauncherApp {
     public static void main(String[] args) {
         try {
             Config cfg = new Config();
+            Mirrors.setStore(cfg.gameDir.resolve("mirror-choice.properties"));
+            if (!ProxyNet.enabled(cfg)) Mirrors.loadStore();
             Net.setClient(ProxyNet.client(cfg));
             if (cfg.autoUpdate() && SelfUpdate.run(cfg)) {
                 System.exit(0);

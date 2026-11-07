@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.nio.file.Path;
 
 /**
  * Р—РµСЂРєР°Р»Р° РґР»СЏ Р·Р°РіСЂСѓР·РѕРє: Р°РґСЂРµСЃР°, РєСѓРґР° РїРµСЂРµРµС…Р°С‚СЊ, РµСЃР»Рё РѕС„РёС†РёР°Р»СЊРЅС‹Р№ С…РѕСЃС‚ РЅРµ РѕС‚РІРµС‡Р°РµС‚.
@@ -77,7 +78,62 @@ public final class Mirrors {
     /** РџСЂРµРґРїРѕС‡С‚РµРЅРёРµ РїРѕ РіСЂСѓРїРїР°Рј: 0 вЂ” РѕС„РёС†РёР°Р»СЊРЅС‹Р№ С…РѕСЃС‚, 1..n вЂ” РЅРѕРјРµСЂ Р·РµСЂРєР°Р»Р°. */
     private static final Map<String, Integer> preferred = new java.util.concurrent.ConcurrentHashMap<>();
 
+    /** Куда складывать выбор разведки, чтобы не искать заново при каждом запуске. */
+    private static volatile Path store;
+
     private Mirrors() {}
+
+    /** Задать файл для сохранения выбора (null — не сохранять; тесты). */
+    public static void setStore(Path file) {
+        store = file;
+    }
+
+    /** Забыть выбор в памяти (файл не трогаем). */
+    public static void resetChoices() {
+        preferred.clear();
+    }
+
+    /** Прочитать сохранённый выбор с прошлого запуска. Нет файла или мусор — молча стартуем с оригинала. */
+    public static void loadStore() {
+        Path f = store;
+        if (f == null || !java.nio.file.Files.exists(f)) return;
+        java.util.Properties p = new java.util.Properties();
+        try (java.io.Reader r = java.nio.file.Files.newBufferedReader(f, java.nio.charset.StandardCharsets.UTF_8)) {
+            p.load(r);
+        } catch (java.io.IOException e) {
+            System.err.println("выбор зеркала не прочитан: " + e.getMessage());
+            return;
+        }
+        Map<String, Integer> choices = new LinkedHashMap<>();
+        for (String name : p.stringPropertyNames()) {
+            try {
+                choices.put(name, Integer.parseInt(p.getProperty(name).trim()));
+            } catch (NumberFormatException ignored) {
+                // мусор в файле — просто пропускаем
+            }
+        }
+        importChoices(choices);
+    }
+
+    private static void saveStore() {
+        Path f = store;
+        if (f == null) return;
+        StringBuilder b = new StringBuilder();
+        for (Group g : GROUPS) {
+            Integer v = preferred.get(g.name);
+            if (v != null && v > 0) b.append(g.name).append('=').append(v).append('\n');
+        }
+        try {
+            if (b.length() == 0) {
+                java.nio.file.Files.writeString(f, "", java.nio.charset.StandardCharsets.UTF_8);
+                return;
+            }
+            java.nio.file.Files.createDirectories(f.toAbsolutePath().getParent());
+            java.nio.file.Files.writeString(f, b.toString(), java.nio.charset.StandardCharsets.UTF_8);
+        } catch (java.io.IOException e) {
+            System.err.println("выбор зеркала не сохранён: " + e.getMessage());
+        }
+    }
 
     static List<Group> groups() {
         return GROUPS;
@@ -87,9 +143,11 @@ public final class Mirrors {
         return preferred.get(group);
     }
 
-    static void prefer(String group, int mirrorIndex) {
+    /** Выбор разведки: 0 — оригинал, 1..n — номер зеркала. Сразу сохраняется на диск. */
+    public static void prefer(String group, int mirrorIndex) {
         if (mirrorIndex <= 0) preferred.remove(group);
         else preferred.put(group, mirrorIndex);
+        saveStore();
     }
 
     private static Group groupOf(String url) {

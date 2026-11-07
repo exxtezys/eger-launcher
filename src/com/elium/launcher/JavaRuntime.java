@@ -19,6 +19,14 @@ public final class JavaRuntime {
      */
     static final String MIRROR_VERSION = "21.0.13+9";
 
+    /**
+     * Контрольная сумма пинованного zip JRE (MIRROR_VERSION). Официальный сайт
+     * отдаёт «latest», а зеркала — конкретный файл; sha1 пинаем, чтобы зеркало
+     * не подсунуть подмену. Совпадает с sha1 того же файла с api.adoptium.net.
+     */
+    public static final String MIRROR_ZIP_SHA1 = "4fe01d4fab407119629b4004c0f83080316cffc8";
+    public static final long MIRROR_ZIP_SIZE = 49106397L;
+
     private static String osName() {
         String os = System.getProperty("os.name", "").toLowerCase();
         return os.contains("win") ? "windows" : os.contains("mac") ? "mac" : "linux";
@@ -29,7 +37,10 @@ public final class JavaRuntime {
     }
 
     private static String adoptiumUrl() {
-        return "https://api.adoptium.net/v3/binary/latest/21/ga/" + osName() + "/" + archName() + "/jre/hotspot/normal/eclipse";
+        // Конкретная версия, а не «latest», чтобы sha1 совпадал с MIRROR_ZIP_SHA1.
+        String ver = MIRROR_VERSION.replace("+", "%2B");
+        return "https://api.adoptium.net/v3/binary/version/jdk-" + ver + "/"
+                + osName() + "/" + archName() + "/jre/hotspot/normal/eclipse";
     }
 
     /**
@@ -62,7 +73,9 @@ public final class JavaRuntime {
         if (Net.mirrorsEnabled()) {
             for (String m : mirrorUrls(MIRROR_VERSION, osName(), archName())) Net.addMirror(URL, m);
         }
-        Net.downloadOne("Скачивание Java 21", new Net.Task(URL, zip, null, -1), p);
+        Net.downloadOne("Скачивание Java 21", new Net.Task(URL, zip,
+                Net.mirrorsEnabled() ? MIRROR_ZIP_SHA1 : null,
+                Net.mirrorsEnabled() ? MIRROR_ZIP_SIZE : -1), p);
         p.update("Распаковка Java 21...", 0, 0);
         p.bytes(-1, -1);
         Path tmp = dir.resolveSibling("jre21.tmp");
