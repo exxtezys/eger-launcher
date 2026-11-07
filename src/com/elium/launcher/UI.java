@@ -93,6 +93,11 @@ final class UI {
         private BufferedImage render(int w, int h) {
             BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
             Graphics2D g = smooth(img.getGraphics());
+            if (t.style == Theme.Style.HAND) {
+                renderHand(g, w, h);
+                g.dispose();
+                return img;
+            }
             if (t.background != null) {
                 double s = Math.max((double) w / t.background.getWidth(), (double) h / t.background.getHeight());
                 int iw = (int) Math.ceil(t.background.getWidth() * s), ih = (int) Math.ceil(t.background.getHeight() * s);
@@ -120,6 +125,46 @@ final class UI {
             g.fillRect(0, 0, w, h);
             g.dispose();
             return img;
+        }
+
+        /** Paper poster: grain, blueprint grid, ink illustration fading in from the left, vignette. */
+        private void renderHand(Graphics2D g, int w, int h) {
+            g.setColor(t.bg);
+            g.fillRect(0, 0, w, h);
+            if (t.handPaper != null) {
+                double s = Math.max((double) w / t.handPaper.getWidth(), (double) h / t.handPaper.getHeight());
+                int iw = (int) Math.ceil(t.handPaper.getWidth() * s), ih = (int) Math.ceil(t.handPaper.getHeight() * s);
+                g.drawImage(t.handPaper, (w - iw) / 2, (h - ih) / 2, iw, ih, null);
+            }
+
+            int step = Math.max(24, Math.round(w * 0.04f));
+            g.setColor(alpha(t.inkSoft, 11));
+            g.setStroke(new BasicStroke(1f));
+            for (int x = 0; x < w; x += step) g.drawLine(x, 0, x, h);
+            for (int y = 0; y < h; y += step) g.drawLine(0, y, w, y);
+
+            if (t.handHero != null) {
+                double s = Math.min((w * 0.5) / t.handHero.getWidth(), (h * 1.02) / t.handHero.getHeight());
+                int iw = (int) (t.handHero.getWidth() * s), ih = (int) (t.handHero.getHeight() * s);
+                int x = w - iw + 8, y = h - ih;
+                BufferedImage layer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+                Graphics2D lg = smooth(layer.getGraphics());
+                lg.drawImage(t.handHero, x, y, iw, ih, null);
+                lg.setComposite(AlphaComposite.DstIn);
+                float edge = x + iw * 0.42f;
+                lg.setPaint(new java.awt.LinearGradientPaint(x, 0, edge, 0, new float[]{0f, 1f},
+                        new Color[]{new Color(0, 0, 0, 0), new Color(0, 0, 0, 255)}));
+                lg.fillRect(x, 0, iw + 2, h);
+                lg.dispose();
+                g.drawImage(layer, 0, 0, null);
+            }
+
+            g.setPaint(new RadialGradientPaint(w * 0.44f, h * 0.48f, Math.max(w, h) * 0.72f,
+                    new float[]{0.5f, 1f},
+                    new Color[]{new Color(0, 0, 0, 0), new Color(28, 27, 24, 46)}));
+            g.fillRect(0, 0, w, h);
+            g.setPaint(new GradientPaint(0, h * 0.62f, new Color(0, 0, 0, 0), 0, h, new Color(28, 27, 24, 26)));
+            g.fillRect(0, 0, w, h);
         }
     }
 
@@ -414,8 +459,8 @@ final class UI {
                     g2.setColor(alpha(t.accent, 70));
                     g2.drawLine(1, h - 2, w - 2, h - 2);
                 }
-                if (getText().isEmpty() && !hasFocus()) {
-                    g2.setColor(t.muted);
+                if (getText().isEmpty()) {
+                    g2.setColor(alpha(t.muted, 210));
                     g2.setFont(t.font(java.awt.Font.PLAIN, 12f));
                     FontMetrics fm = g2.getFontMetrics();
                     g2.drawString(placeholder, 8, (h - fm.getHeight()) / 2 + fm.getAscent());
