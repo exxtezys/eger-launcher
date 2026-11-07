@@ -50,6 +50,7 @@ public final class LauncherApp {
     private UI.Field nickField;
     private UI.Btn play;
     private UI.Btn settings;
+    private UI.Btn proxyBtn;
     private UI.Progress bar;
     private JLabel status;
     private UI.Pill server;
@@ -69,6 +70,7 @@ public final class LauncherApp {
     private LauncherApp(Config cfg) {
         this.cfg = cfg;
         Net.setMaxParallelDownloads(cfg.maxDownloads());
+        Net.setClient(ProxyNet.client(cfg));
         this.t = Theme.load(cfg.projectName, cfg.minecraftVersion, cfg.uiStyle());
         this.cardW = t.style == Theme.Style.HAND ? 440 : CARD_W;
         installFancyMenuAssets();
@@ -131,6 +133,7 @@ public final class LauncherApp {
     public static void main(String[] args) {
         try {
             Config cfg = new Config();
+            Net.setClient(ProxyNet.client(cfg));
             if (cfg.autoUpdate() && SelfUpdate.run(cfg)) {
                 System.exit(0);
                 return;
@@ -290,7 +293,7 @@ public final class LauncherApp {
         card.add(nickField);
 
         play = new UI.Btn(t, hand ? "НА ДЕГУСТАЦИЮ" : "В БОЙ", UI.Kind.PRIMARY);
-        play.setBounds(pad, hand ? 132 : 150, iw - (hand ? 62 : 58), 54);
+        play.setBounds(pad, hand ? 132 : 150, iw - (hand ? 138 : 132), 54);
         play.addActionListener(e -> start());
         card.add(play);
 
@@ -300,6 +303,13 @@ public final class LauncherApp {
         settings.setBounds(pad + iw - 54, hand ? 132 : 150, hand ? 54 : 50, 54);
         settings.addActionListener(e -> openSettings());
         card.add(settings);
+
+        proxyBtn = new UI.Btn(t, proxyLabel(), UI.Kind.GHOST);
+        proxyBtn.setFont(t.font(Font.PLAIN, hand ? 11f : 12f));
+        proxyBtn.setToolTipText(ProxyNet.describe(cfg));
+        proxyBtn.setBounds(pad + iw - 54 - (hand ? 76 : 74), hand ? 132 : 150, hand ? 68 : 66, 54);
+        proxyBtn.addActionListener(e -> openProxy());
+        card.add(proxyBtn);
 
         status = text(summary(), Font.PLAIN, 13f, t.muted);
         status.setBounds(pad, hand ? 198 : 226, iw, 20);
@@ -498,8 +508,152 @@ public final class LauncherApp {
         d.setVisible(true);
     }
 
+    private String proxyLabel() {
+        if (ProxyNet.enabled(cfg)) return "ПРОКСИ ВКЛ";
+        return "ПРОКСИ";
+    }
+
+    private void openProxy() {
+        JDialog d = new JDialog(frame, "Прокси", true);
+        d.setUndecorated(true);
+        int dw = 560, dh = 500;
+        d.setSize(dw, dh);
+        d.setShape(new RoundRectangle2D.Double(0, 0, dw, dh, t.radius * 2, t.radius * 2));
+        UI.Card root = new UI.Card(t, t.dialog);
+        d.setContentPane(root);
+        dragMove(root, d);
+
+        JLabel head = text("ПРОКСИ", Font.BOLD, 28f, t.text);
+        head.setBounds(44, 24, 400, 36);
+        root.add(head);
+        JLabel sub = text("СЛУЖЕБНЫЙ КАНАЛ · ЧЕРЕЗ НЕГО ИДЁТ СВЯЗЬ", Font.PLAIN, 11.5f, t.muted);
+        sub.setBounds(44, 60, 460, 18);
+        root.add(sub);
+
+        int lx = 44, cw = dw - 88, y = 96;
+
+        JLabel typeLabel = text("Тип прокси", Font.PLAIN, 12f, t.muted);
+        typeLabel.setBounds(lx, y, cw, 16);
+        root.add(typeLabel);
+        y += 18;
+        UI.Select typeBox = new UI.Select(t,
+                new String[]{"Выключен", "SOCKS5", "HTTP"},
+                new String[]{"off", "socks", "http"},
+                cfg.proxyType(), v -> { });
+        typeBox.setBounds(lx, y, cw, 36);
+        root.add(typeBox);
+        y += 50;
+
+        JLabel hostLabel = text("Хост и порт", Font.PLAIN, 12f, t.muted);
+        hostLabel.setBounds(lx, y, cw, 16);
+        root.add(hostLabel);
+        y += 18;
+        UI.Field hostField = new UI.Field(t, cfg.proxyHost(), "127.0.0.1");
+        hostField.setBounds(lx, y, cw - 126, 42);
+        root.add(hostField);
+        UI.Field portField = new UI.Field(t, Integer.toString(cfg.proxyPort()), "1080");
+        portField.setBounds(lx + cw - 116, y, 116, 42);
+        root.add(portField);
+        y += 54;
+
+        JLabel userLabel = text("Логин и пароль (если нужны)", Font.PLAIN, 12f, t.muted);
+        userLabel.setBounds(lx, y, cw, 16);
+        root.add(userLabel);
+        y += 18;
+        UI.Field userField = new UI.Field(t, cfg.proxyUser(), "логин");
+        userField.setBounds(lx, y, (cw - 12) / 2, 42);
+        root.add(userField);
+        UI.Pass passField = new UI.Pass(t, cfg.proxyPass());
+        passField.setBounds(lx + (cw + 12) / 2, y, (cw - 12) / 2, 42);
+        root.add(passField);
+        y += 52;
+
+        JLabel check = text(" ", Font.PLAIN, 12f, t.muted);
+        check.setBounds(lx, y, cw, 38);
+        root.add(check);
+        y += 40;
+
+        UI.Btn test = new UI.Btn(t, "Проверить связь", UI.Kind.GHOST);
+        test.setBounds(lx, y, 200, 40);
+        test.addActionListener(e -> {
+            check.setForeground(t.muted);
+            check.setText("Проверяем...");
+            String type = typeBox.value();
+            String host = hostField.getText().trim();
+            int port = parsePort(portField.getText(), cfg.proxyPort());
+            String u = userField.getText().trim();
+            String p = new String(passField.getPassword());
+            Thread th = new Thread(() -> {
+                String msg;
+                Color col;
+                try {
+                    if ("off".equals(type) || host.isBlank()) {
+                        msg = "Сначала выберите тип прокси и укажите хост";
+                        col = t.offline;
+                    } else {
+                        msg = ProxyNet.test(type, host, port, u, p);
+                        col = msg.startsWith("Связь есть") ? t.online : t.offline;
+                    }
+                } catch (Exception ex) {
+                    msg = "Прокси не ответил: " + ex.getMessage();
+                    col = t.offline;
+                }
+                String fm = msg;
+                Color fc = col;
+                SwingUtilities.invokeLater(() -> {
+                    check.setForeground(fc);
+                    check.setText(fm);
+                });
+            }, "proxy-test");
+            th.setDaemon(true);
+            th.start();
+        });
+        root.add(test);
+
+        UI.Btn cancel = new UI.Btn(t, "Отмена", UI.Kind.GHOST);
+        cancel.setBounds(44, dh - 64, 140, 42);
+        cancel.addActionListener(e -> d.dispose());
+        root.add(cancel);
+
+        UI.Btn save = new UI.Btn(t, "Сохранить", UI.Kind.PRIMARY);
+        save.setFont(t.font(Font.BOLD, 15f));
+        save.setBounds(dw - 44 - 180, dh - 64, 180, 42);
+        save.addActionListener(e -> {
+            try {
+                String type = typeBox.value();
+                String host = hostField.getText().trim();
+                int port = parsePort(portField.getText(), cfg.proxyPort());
+                cfg.saveProxy(type, host, port, userField.getText().trim(), new String(passField.getPassword()));
+                Net.setClient(ProxyNet.client(cfg));
+                proxyBtn.setText(proxyLabel());
+                proxyBtn.setToolTipText(ProxyNet.describe(cfg));
+                proxyBtn.repaint();
+                status.setText(summary());
+                d.dispose();
+            } catch (Exception ex) {
+                error(ex);
+            }
+        });
+        root.add(save);
+        d.getRootPane().setDefaultButton(save);
+
+        d.setLocationRelativeTo(frame);
+        d.setVisible(true);
+    }
+
+    private static int parsePort(String text, int def) {
+        try {
+            int n = Integer.parseInt(text.trim());
+            return n > 0 && n < 65536 ? n : def;
+        } catch (Exception e) {
+            return def;
+        }
+    }
+
     private String summary() {
-        return "Память " + gb(ramMb) + (autoConnect && !cfg.effectiveServerHost().isEmpty() ? " · автовход на сервер" : "");
+        String s = "Память " + gb(ramMb) + (autoConnect && !cfg.effectiveServerHost().isEmpty() ? " · автовход на сервер" : "");
+        if (ProxyNet.enabled(cfg)) s += " · " + ProxyNet.describe(cfg);
+        return s;
     }
 
     private static String gb(int mb) {
@@ -535,7 +689,8 @@ public final class LauncherApp {
             String text;
             Color col;
             try {
-                ServerPing.Status st = ServerPing.ping(cfg.effectiveServerHost(), cfg.effectiveServerPort());
+                ServerPing.Status st = ServerPing.ping(cfg.effectiveServerHost(), cfg.effectiveServerPort(),
+                        ProxyNet.socketProxy(cfg));
                 text = "Приёмка открыта · " + st.online() + "/" + st.max() + " дегустаторов";
                 col = t.online;
             } catch (Exception e) {

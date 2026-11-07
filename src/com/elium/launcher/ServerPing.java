@@ -16,7 +16,11 @@ public final class ServerPing {
     public record Status(int online, int max) {}
 
     public static Status ping(String host, int port) throws IOException {
-        try (Socket s = new Socket()) {
+        return ping(host, port, null);
+    }
+
+    public static Status ping(String host, int port, java.net.Proxy proxy) throws IOException {
+        try (Socket s = proxy == null ? new Socket() : new Socket(proxy)) {
             s.connect(new InetSocketAddress(host, port), 3000);
             s.setSoTimeout(3000);
             DataOutputStream out = new DataOutputStream(s.getOutputStream());

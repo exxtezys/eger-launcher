@@ -3,6 +3,7 @@ package com.elium.launcher;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
@@ -543,6 +544,41 @@ final class UI {
                 FontMetrics fm = g2.getFontMetrics();
                 g2.drawString(placeholder, 16, (getHeight() - fm.getHeight()) / 2 + fm.getAscent());
             }
+            g2.dispose();
+            super.paintComponent(g);
+        }
+    }
+
+    /** Поле ввода пароля: тот же вид, что у Field, но символы скрыты. */
+    static final class Pass extends JPasswordField {
+        private final Theme t;
+
+        Pass(Theme t, String text) {
+            super(text);
+            this.t = t;
+            setOpaque(false);
+            setForeground(t.text);
+            setCaretColor(t.accent);
+            setSelectionColor(alpha(t.accent, 120));
+            setFont(t.font(java.awt.Font.PLAIN, 16f));
+            setBorder(new javax.swing.border.EmptyBorder(0, 8, 0, 8));
+            addFocusListener(new java.awt.event.FocusAdapter() {
+                @Override public void focusGained(java.awt.event.FocusEvent e) { repaint(); }
+                @Override public void focusLost(java.awt.event.FocusEvent e) { repaint(); }
+            });
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            if (t.style != Theme.Style.HAND) {
+                super.paintComponent(g);
+                return;
+            }
+            Graphics2D g2 = smooth(g);
+            int w = getWidth(), h = getHeight();
+            g2.setColor(hasFocus() ? t.accent : alpha(t.text, 170));
+            g2.setStroke(new BasicStroke(hasFocus() ? 2f : 1.1f));
+            g2.drawLine(1, h - 2, w - 2, h - 2);
             g2.dispose();
             super.paintComponent(g);
         }
@@ -1124,13 +1160,19 @@ final class UI {
             popup.pack();
             try {
                 java.awt.Point p = getLocationOnScreen();
-                popup.setLocation(p.x, p.y + getHeight() + 2);
+                int ph = popup.getHeight();
+                java.awt.Rectangle screen = getGraphicsConfiguration().getBounds();
+                int y = p.y + getHeight() + 2;
+                if (y + ph > screen.y + screen.height - 8) y = Math.max(screen.y + 8, p.y - ph - 2);
+                popup.setLocation(p.x, y);
             } catch (java.awt.IllegalComponentStateException e) {
                 return;
             }
             if (outside == null) {
                 outside = event -> {
                     if (!(event instanceof MouseEvent me) || popup == null || !popup.isVisible()) return;
+                    // только настоящее нажатие: enter/exit при движении к списку закрывать нельзя
+                    if (me.getID() != MouseEvent.MOUSE_PRESSED) return;
                     java.awt.Component c = me.getComponent();
                     if (c != null && (c == Select.this
                             || javax.swing.SwingUtilities.isDescendingFrom(c, Select.this)

@@ -16,6 +16,10 @@ import java.util.stream.Collectors;
 public final class GameLauncher {
     private GameLauncher() {}
 
+    private static boolean isWindows() {
+        return System.getProperty("os.name", "").toLowerCase().contains("win");
+    }
+
     public static Process launch(Config cfg, Path javaw, GameInstaller.Profile prof,
                                  String nick, int ramMb, boolean connect) throws IOException {
         Path dir = cfg.gameDir;
@@ -47,6 +51,7 @@ public final class GameLauncher {
         cmd.add("-Xms" + Math.min(ramMb, 1024) + "M");
         cmd.add("-XX:+UseG1GC");
         cmd.add("-Dfile.encoding=UTF-8");
+        cmd.addAll(ProxyNet.jvmArgs(cfg));
         for (String arg : cfg.extraJvmArgs().split("\\s+")) {
             if (!arg.isBlank()) cmd.add(arg);
         }
@@ -66,7 +71,7 @@ public final class GameLauncher {
         if (cfg.keepLogs()) {
             pb.redirectOutput(dir.resolve("game-output.log").toFile());
         } else {
-            pb.redirectOutput(new java.io.File("NUL"));
+            pb.redirectOutput(new java.io.File(isWindows() ? "NUL" : "/dev/null"));
         }
         return pb.start();
     }

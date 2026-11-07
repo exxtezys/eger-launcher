@@ -28,11 +28,16 @@ public final class Net {
         maxParallelDownloads = Math.max(1, Math.min(64, n));
     }
 
-    private static final HttpClient HTTP = HttpClient.newBuilder()
+    private static volatile HttpClient HTTP = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
             .followRedirects(HttpClient.Redirect.ALWAYS)
             .connectTimeout(Duration.ofSeconds(15))
             .build();
+
+    /** Подменяет клиент (например, на настроенный через прокси). */
+    public static void setClient(HttpClient c) {
+        if (c != null) HTTP = c;
+    }
 
     private Net() {}
 

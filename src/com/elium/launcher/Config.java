@@ -88,6 +88,33 @@ public final class Config {
 
     public String uiStyle() { return strProp("uiStyle", "hand"); }
 
+    public String proxyType() { return strProp("proxyType", "off"); }
+
+    public String proxyHost() { return strProp("proxyHost", ""); }
+
+    public int proxyPort() { return intProp("proxyPort", 1080, 1, 65535); }
+
+    public String proxyUser() { return strProp("proxyUser", ""); }
+
+    public String proxyPass() { return strProp("proxyPass", ""); }
+
+    /** Прокси включён только когда выбран тип (socks/http) и задан хост. */
+    public boolean proxyOn() {
+        String type = proxyType();
+        return ("socks".equalsIgnoreCase(type) || "http".equalsIgnoreCase(type)) && !proxyHost().isBlank();
+    }
+
+    public void saveProxy(String type, String host, int port, String login, String pass) throws IOException {
+        user.setProperty("proxyType", type == null || type.isBlank() ? "off" : type.trim());
+        user.setProperty("proxyHost", host == null ? "" : host.trim());
+        user.setProperty("proxyPort", Integer.toString(port));
+        user.setProperty("proxyUser", login == null ? "" : login.trim());
+        user.setProperty("proxyPass", pass == null ? "" : pass);
+        try (Writer w = Files.newBufferedWriter(userFile, StandardCharsets.UTF_8)) {
+            user.store(w, projectName + " launcher");
+        }
+    }
+
     public boolean keepLogs() { return boolProp("keepLogs", true); }
 
     public String serverHostOverride() { return strProp("serverHostOverride", ""); }
