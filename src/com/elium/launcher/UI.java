@@ -469,6 +469,11 @@ final class UI {
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = smooth(g);
             int w = getWidth(), h = getHeight();
+            if (t.style == Theme.Style.HAND) {
+                paintHand(g2, w, h);
+                g2.dispose();
+                return;
+            }
             boolean square = t.style != Theme.Style.CLEAN;
             float rr = square ? 0 : h;
             g2.setColor(new Color(0, 0, 0, 90));
@@ -494,6 +499,36 @@ final class UI {
             }
             g2.dispose();
         }
+
+        private void paintHand(Graphics2D g2, int w, int h) {
+            g2.setColor(alpha(t.panel, 190));
+            g2.fillRect(0, 0, w, h);
+            Ink.hatch(g2, new java.awt.Rectangle(0, 0, w, h), (float) Math.toRadians(45), 6f, alpha(t.inkSoft, 34));
+            float x0, x1;
+            if (value < 0) {
+                float seg = w * 0.32f;
+                x0 = -seg + (w + seg) * phase;
+                x1 = x0 + seg;
+            } else {
+                x0 = 0;
+                x1 = (float) (w * Math.min(1, value));
+            }
+            float left = Math.max(0, x0), right = Math.min(w, x1);
+            if (right > left) {
+                java.awt.geom.Path2D.Float fill = new java.awt.geom.Path2D.Float();
+                fill.moveTo(left, 0);
+                fill.lineTo(right, 0);
+                Random r = new Random(1939);
+                for (int y = 0; y <= h; y += 3) {
+                    fill.lineTo(right - 1.5f + r.nextFloat() * 3f, y);
+                }
+                fill.lineTo(left, h);
+                fill.closePath();
+                g2.setColor(t.accent);
+                g2.fill(fill);
+            }
+            Ink.tornBorder(g2, 1, 1, w - 2, h - 2, alpha(t.text, 200), 41);
+        }
     }
 
     /** Pill with a colored dot: server status. */
@@ -501,16 +536,25 @@ final class UI {
         private final Theme t;
         private String text = "";
         private Color dot;
+        private final Timer pulse;
+        private float pulsePhase;
 
         Pill(Theme t) {
             this.t = t;
             this.dot = t.muted;
             setFont(t.font(java.awt.Font.PLAIN, 13f));
+            pulse = new Timer(40, e -> {
+                pulsePhase = (pulsePhase + 0.04f) % 1.8f;
+                repaint();
+            });
         }
 
         void set(String text, Color dot) {
             this.text = text;
             this.dot = dot;
+            boolean beat = t.style == Theme.Style.HAND && t.online.equals(dot);
+            if (beat && !pulse.isRunning()) pulse.start();
+            if (!beat) pulse.stop();
             setSize(getPreferredSize());
             repaint();
         }
@@ -524,9 +568,29 @@ final class UI {
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = smooth(g);
-            int h = getHeight();
+            int h = getHeight(), w = getWidth();
+            if (t.style == Theme.Style.HAND) {
+                g2.setColor(alpha(t.panel, 185));
+                g2.fillRect(0, 0, w, h);
+                Ink.tornBorder(g2, 1, 1, w - 2, h - 2, alpha(t.text, 190), 57);
+                int cy = h / 2;
+                boolean beat = t.online.equals(dot);
+                if (beat) {
+                    int halo = 10 + Math.round((float) (Math.sin(pulsePhase / 1.8f * Math.PI * 2) * 3));
+                    g2.setColor(alpha(t.accent, 42));
+                    g2.fillOval(12 - halo + 6, cy - halo, halo * 2, halo * 2);
+                }
+                g2.setColor(dot);
+                g2.fillOval(14, cy - 4, 8, 8);
+                g2.setColor(t.text);
+                g2.setFont(getFont());
+                FontMetrics fm = g2.getFontMetrics();
+                g2.drawString(text, 34, (h - fm.getHeight()) / 2 + fm.getAscent());
+                g2.dispose();
+                return;
+            }
             g2.setColor(new Color(0, 0, 0, 90));
-            g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), h, h, h));
+            g2.fill(new RoundRectangle2D.Float(0, 0, w, h, h, h));
             g2.setColor(alpha(dot, 70));
             g2.fillOval(10, h / 2 - 8, 16, 16);
             g2.setColor(dot);
@@ -573,11 +637,16 @@ final class UI {
 
         void stop() { anim.stop(); }
 
-        static int rowHeight() { return 30; }
+        static int rowHeight() { return 26; }
 
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = smooth(g);
+            if (t.style == Theme.Style.HAND) {
+                paintHand(g2);
+                g2.dispose();
+                return;
+            }
             g2.setFont(getFont());
             FontMetrics fm = g2.getFontMetrics();
             int rh = rowHeight();
@@ -609,6 +678,60 @@ final class UI {
             }
             g2.dispose();
         }
+
+        private void paintHand(Graphics2D g2) {
+            int rh = rowHeight();
+            java.awt.Font mono = t.font(java.awt.Font.PLAIN, 13f);
+            g2.setFont(mono);
+            FontMetrics fm = g2.getFontMetrics();
+            for (int i = 0; i < labels.length; i++) {
+                int y = i * rh, cy = y + rh / 2;
+                String num = roman(i + 1);
+                g2.setColor(states[i] == State.PENDING ? alpha(t.muted, 170) : t.inkSoft);
+                g2.drawString(num, 0, (y + (rh - fm.getHeight()) / 2) + fm.getAscent());
+                int mx = 34;
+                switch (states[i]) {
+                    case DONE -> {
+                        g2.setColor(t.text);
+                        g2.setStroke(new BasicStroke(2.1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                        g2.drawPolyline(new int[]{mx - 6, mx - 1, mx + 7}, new int[]{cy, cy + 5, cy - 6}, 3);
+                    }
+                    case ACTIVE -> {
+                        java.awt.geom.AffineTransform old = g2.getTransform();
+                        g2.rotate(Math.toRadians(spin * 0.6), mx, cy);
+                        g2.setColor(alpha(t.accent, 180));
+                        Ink.orbit(g2, mx, cy, 11, 4.5f, spin * 0.01f, alpha(t.accent, 210));
+                        g2.setTransform(old);
+                        g2.setColor(t.accent);
+                        g2.fillOval(mx - 3, cy - 3, 6, 6);
+                    }
+                    case PENDING -> {
+                        g2.setColor(alpha(t.muted, 140));
+                        g2.setStroke(new BasicStroke(1.1f));
+                        g2.drawOval(mx - 3, cy - 3, 6, 6);
+                    }
+                }
+                g2.setFont(t.font(java.awt.Font.PLAIN, 14f));
+                g2.setColor(states[i] == State.PENDING ? alpha(t.muted, 150) : t.text);
+                FontMetrics lfm = g2.getFontMetrics();
+                g2.drawString(labels[i], 58, (y + (rh - lfm.getHeight()) / 2) + lfm.getAscent());
+                g2.setFont(mono);
+            }
+        }
+
+        private static String roman(int n) {
+            return switch (n) {
+                case 1 -> "I";
+                case 2 -> "II";
+                case 3 -> "III";
+                case 4 -> "IV";
+                case 5 -> "V";
+                case 6 -> "VI";
+                case 7 -> "VII";
+                case 8 -> "VIII";
+                default -> String.valueOf(n);
+            };
+        }
     }
 
     static final class Badge extends JComponent {
@@ -638,6 +761,10 @@ final class UI {
             g2.setColor(ink);
             g2.setStroke(new BasicStroke(1.6f));
             g2.draw(new RoundRectangle2D.Float(1.5f, 1.5f, w - 3f, h - 3f, rr, rr));
+            if (t.style == Theme.Style.HAND) {
+                g2.setStroke(new BasicStroke(1f));
+                g2.draw(new RoundRectangle2D.Float(4.5f, 4.5f, w - 9f, h - 9f, rr, rr));
+            }
             g2.setFont(getFont());
             centerText(g2, text, w, h);
             g2.dispose();
@@ -663,7 +790,25 @@ final class UI {
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = smooth(g);
-            int h = getHeight(), sw = 42, sh = 24, y = (h - sh) / 2;
+            int h = getHeight();
+            if (t.style == Theme.Style.HAND) {
+                int s = 22, y = (h - s) / 2;
+                g2.setColor(on ? t.accent : alpha(t.panel, 190));
+                g2.fillRect(0, y, s, s);
+                Ink.tornBorder(g2, 0.5f, y + 0.5f, s - 1, s - 1, alpha(t.text, 220), 91);
+                if (on) {
+                    g2.setColor(t.onAccent);
+                    g2.setStroke(new BasicStroke(2.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                    g2.drawPolyline(new int[]{5, 9, 17}, new int[]{y + 11, y + 16, y + 6}, 3);
+                }
+                g2.setColor(t.text);
+                g2.setFont(getFont());
+                FontMetrics fm = g2.getFontMetrics();
+                g2.drawString(label, s + 12, (h - fm.getHeight()) / 2 + fm.getAscent());
+                g2.dispose();
+                return;
+            }
+            int sw = 42, sh = 24, y = (h - sh) / 2;
             g2.setColor(on ? t.accent : new Color(255, 255, 255, 40));
             g2.fill(new RoundRectangle2D.Float(0, y, sw, sh, sh, sh));
             g2.setColor(Color.WHITE);
@@ -717,6 +862,30 @@ final class UI {
             Graphics2D g2 = smooth(g);
             int pad = 10, w = getWidth() - pad * 2, cy = getHeight() / 2;
             double f = (value - min) / (double) Math.max(1, max - min);
+            if (t.style == Theme.Style.HAND) {
+                g2.setColor(alpha(t.text, 200));
+                g2.setStroke(new BasicStroke(1.2f));
+                g2.drawLine(pad, cy, pad + w, cy);
+                g2.setColor(alpha(t.inkSoft, 150));
+                for (int i = 0; i <= 10; i++) {
+                    int x = pad + w * i / 10;
+                    g2.drawLine(x, cy - 4, x, cy - 1);
+                    if (i % 5 == 0) g2.drawLine(x, cy + 1, x, cy + 4);
+                }
+                int kx = (int) (pad + w * f);
+                g2.setColor(t.accent);
+                g2.setStroke(new BasicStroke(3f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                g2.drawLine(pad, cy, kx, cy);
+                g2.fillOval(kx - 10, cy - 10, 20, 20);
+                g2.setColor(t.panel);
+                g2.fillOval(kx - 6, cy - 6, 12, 12);
+                g2.setColor(alpha(t.text, 170));
+                g2.setStroke(new BasicStroke(1f));
+                g2.drawLine(kx - 3, cy - 2, kx + 3, cy - 2);
+                g2.drawLine(kx - 3, cy + 2, kx + 3, cy + 2);
+                g2.dispose();
+                return;
+            }
             g2.setColor(new Color(255, 255, 255, 30));
             g2.fill(new RoundRectangle2D.Float(pad, cy - 3, w, 6, 6, 6));
             g2.setColor(t.accent);
@@ -727,6 +896,203 @@ final class UI {
             g2.setColor(Color.WHITE);
             g2.fillOval(kx - 7, cy - 7, 14, 14);
             g2.dispose();
+        }
+    }
+
+    /** Hand-drawn dropdown; the open list lives in a borderless JWindow. */
+    static final class Select extends JComponent {
+        private final Theme t;
+        private final String[] labels, values;
+        private final java.util.function.Consumer<String> onChange;
+        private int selected;
+        private javax.swing.JWindow popup;
+        private Rows rows;
+        private java.awt.event.AWTEventListener outside;
+
+        Select(Theme t, String[] labels, String[] values, String value,
+               java.util.function.Consumer<String> onChange) {
+            this.t = t;
+            this.labels = labels;
+            this.values = values;
+            this.onChange = onChange;
+            this.selected = Math.max(0, java.util.Arrays.asList(values).indexOf(value));
+            setFont(t.font(java.awt.Font.PLAIN, 14f));
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            setFocusable(true);
+            addMouseListener(new MouseAdapter() {
+                @Override public void mouseClicked(MouseEvent e) {
+                    if (popup != null && popup.isVisible()) close(); else open();
+                }
+            });
+            addKeyListener(new java.awt.event.KeyAdapter() {
+                @Override public void keyPressed(java.awt.event.KeyEvent e) {
+                    switch (e.getKeyCode()) {
+                        case java.awt.event.KeyEvent.VK_DOWN, java.awt.event.KeyEvent.VK_UP,
+                             java.awt.event.KeyEvent.VK_ENTER, java.awt.event.KeyEvent.VK_SPACE -> {
+                            open();
+                            e.consume();
+                        }
+                        case java.awt.event.KeyEvent.VK_ESCAPE -> close();
+                        default -> { }
+                    }
+                }
+            });
+        }
+
+        String value() { return values[Math.min(selected, values.length - 1)]; }
+
+        @Override
+        public Dimension getPreferredSize() {
+            FontMetrics fm = getFontMetrics(getFont());
+            int w = 0;
+            for (String s : labels) w = Math.max(w, fm.stringWidth(s));
+            return new Dimension(w + 48, 34);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = smooth(g);
+            int w = getWidth(), h = getHeight();
+            g2.setFont(getFont());
+            FontMetrics fm = g2.getFontMetrics();
+            int ty = (h - fm.getHeight()) / 2 + fm.getAscent();
+            if (t.style == Theme.Style.HAND) {
+                g2.setColor(alpha(t.panel, 200));
+                g2.fillRect(0, 0, w, h);
+                Ink.tornBorder(g2, 1, 1, w - 2, h - 2, alpha(t.text, 210), 61);
+                g2.setColor(t.text);
+                g2.drawString(labels[selected], 10, ty);
+                int ax = w - 18, ay = h / 2;
+                g2.fillPolygon(new int[]{ax - 5, ax + 5, ax}, new int[]{ay - 3, ay - 3, ay + 4}, 3);
+            } else {
+                float rr = Math.min(12, t.radius * 2);
+                g2.setColor(t.field);
+                g2.fill(new RoundRectangle2D.Float(0, 0, w, h, rr, rr));
+                g2.setColor(alpha(t.text, 60));
+                g2.draw(new RoundRectangle2D.Float(0.5f, 0.5f, w - 1, h - 1, rr, rr));
+                g2.setColor(t.text);
+                g2.drawString(labels[selected], 12, ty);
+                int ax = w - 18, ay = h / 2;
+                g2.fillPolygon(new int[]{ax - 5, ax + 5, ax}, new int[]{ay - 3, ay - 3, ay + 4}, 3);
+            }
+            g2.dispose();
+        }
+
+        private void open() {
+            if (labels.length == 0) return;
+            if (popup == null) {
+                java.awt.Window owner = javax.swing.SwingUtilities.getWindowAncestor(this);
+                popup = owner == null ? new javax.swing.JWindow() : new javax.swing.JWindow(owner);
+                rows = new Rows();
+                popup.setContentPane(rows);
+                popup.setAlwaysOnTop(true);
+                rows.addMouseListener(new MouseAdapter() {
+                    @Override public void mouseClicked(MouseEvent e) {
+                        int i = e.getY() / rows.rowH();
+                        if (i >= 0 && i < labels.length) choose(i);
+                    }
+                });
+                rows.addKeyListener(new java.awt.event.KeyAdapter() {
+                    @Override public void keyPressed(java.awt.event.KeyEvent e) {
+                        switch (e.getKeyCode()) {
+                            case java.awt.event.KeyEvent.VK_DOWN ->
+                                    selected = Math.min(labels.length - 1, selected + 1);
+                            case java.awt.event.KeyEvent.VK_UP ->
+                                    selected = Math.max(0, selected - 1);
+                            case java.awt.event.KeyEvent.VK_ENTER -> {
+                                choose(selected);
+                                e.consume();
+                                return;
+                            }
+                            case java.awt.event.KeyEvent.VK_ESCAPE -> {
+                                close();
+                                e.consume();
+                                return;
+                            }
+                            default -> { return; }
+                        }
+                        rows.repaint();
+                        e.consume();
+                    }
+                });
+            }
+            rows.setPreferredSize(new Dimension(Math.max(getWidth(), getPreferredSize().width),
+                    labels.length * rows.rowH()));
+            popup.pack();
+            try {
+                java.awt.Point p = getLocationOnScreen();
+                popup.setLocation(p.x, p.y + getHeight() + 2);
+            } catch (java.awt.IllegalComponentStateException e) {
+                return;
+            }
+            if (outside == null) {
+                outside = event -> {
+                    if (!(event instanceof MouseEvent me) || popup == null || !popup.isVisible()) return;
+                    java.awt.Component c = me.getComponent();
+                    if (c != null && (c == Select.this
+                            || javax.swing.SwingUtilities.isDescendingFrom(c, Select.this)
+                            || javax.swing.SwingUtilities.isDescendingFrom(c, rows))) return;
+                    close();
+                };
+                java.awt.Toolkit.getDefaultToolkit().addAWTEventListener(outside,
+                        java.awt.AWTEvent.MOUSE_EVENT_MASK);
+            }
+            popup.setVisible(true);
+            rows.requestFocusInWindow();
+        }
+
+        private void close() {
+            if (popup != null) popup.setVisible(false);
+            if (outside != null) {
+                java.awt.Toolkit.getDefaultToolkit().removeAWTEventListener(outside);
+                outside = null;
+            }
+            requestFocusInWindow();
+        }
+
+        private void choose(int index) {
+            selected = index;
+            repaint();
+            close();
+            onChange.accept(value());
+        }
+
+        private final class Rows extends JPanel {
+            Rows() {
+                super(null);
+                setOpaque(true);
+                setFocusable(true);
+                setBackground(t.panel);
+            }
+
+            int rowH() { return 32; }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = smooth(g);
+                int w = getWidth(), h = getHeight();
+                if (t.style == Theme.Style.HAND) {
+                    g2.setColor(t.panel);
+                    g2.fillRect(0, 0, w, h);
+                    Ink.tornBorder(g2, 1, 1, w - 2, h - 2, alpha(t.text, 220), 73);
+                } else {
+                    g2.setColor(t.dialog);
+                    g2.fillRect(0, 0, w, h);
+                    g2.setColor(alpha(t.text, 60));
+                    g2.drawRect(0, 0, w - 1, h - 1);
+                }
+                g2.setFont(t.font(java.awt.Font.PLAIN, 14f));
+                FontMetrics fm = g2.getFontMetrics();
+                for (int i = 0; i < labels.length; i++) {
+                    int y = i * rowH();
+                    if (i == selected) {
+                        g2.setColor(t.style == Theme.Style.HAND ? t.accent : alpha(t.accent, 90));
+                        g2.fillRect(t.style == Theme.Style.HAND ? 3 : 2, y + 2, w - (t.style == Theme.Style.HAND ? 6 : 4), rowH() - 4);
+                    }
+                    g2.setColor(i == selected && t.style == Theme.Style.HAND ? t.onAccent : t.text);
+                    g2.drawString(labels[i], 12, y + (rowH() - fm.getHeight()) / 2 + fm.getAscent());
+                }
+            }
         }
     }
 }
