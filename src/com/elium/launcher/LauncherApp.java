@@ -80,14 +80,16 @@ public final class LauncherApp {
         installFancyMenuAssets();
     }
 
-    /** Копирует ассеты FancyMenu из jar в .minecraft/assets/fancymenu/ при первом запуске. */
+    /** Копирует ассеты и конфиг FancyMenu из jar в .minecraft/ при первом запуске. */
     private void installFancyMenuAssets() {
         try {
             Path minecraftDir = cfg.gameDir;
+
+            // --- Ассеты в .minecraft/assets/fancymenu/ ---
             Path assetsDir = minecraftDir.resolve("assets").resolve("fancymenu");
             Files.createDirectories(assetsDir);
 
-            String[] files = {
+            String[] assetFiles = {
                     "assets/fancymenu/textures/background.png",
                     "assets/fancymenu/textures/icon-e.png",
                     "assets/fancymenu/textures/gui/button_normal.png",
@@ -99,26 +101,30 @@ public final class LauncherApp {
                     "assets/fancymenu/fancymenu.cfg"
             };
 
-            for (String res : files) {
-                Path target = assetsDir.resolve(res.substring(res.indexOf('/') + 1));
-                // Для вложенных путей создаём подпапки
-                if (res.contains("/")) {
-                    String[] parts = res.split("/");
-                    Path nested = assetsDir;
-                    for (int i = 1; i < parts.length - 1; i++) {
-                        nested = nested.resolve(parts[i]);
-                        Files.createDirectories(nested);
-                    }
-                    target = nested.resolve(parts[parts.length - 1]);
-                }
-                try (InputStream in = LauncherApp.class.getResourceAsStream("/" + res)) {
-                    if (in != null) {
-                        Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
-                    }
-                }
+            for (String res : assetFiles) {
+                copyResourceToPath(res, assetsDir);
             }
+
+            // --- Конфиг и 레이аут в .minecraft/config/fancymenu/ ---
+            Path configDir = minecraftDir.resolve("config").resolve("fancymenu");
+            Path layoutsDir = configDir.resolve("layouts");
+            Files.createDirectories(layoutsDir);
+
+            copyResourceToPath("assets/fancymenu/fancymenu.cfg", configDir);
+            copyResourceToPath("assets/fancymenu/layouts/ege-r-hand.json", layoutsDir);
+
         } catch (Exception e) {
             System.err.println("Не удалось установить ассеты FancyMenu: " + e.getMessage());
+        }
+    }
+
+    private void copyResourceToPath(String resourcePath, Path targetDir) throws Exception {
+        String fileName = resourcePath.substring(resourcePath.lastIndexOf('/') + 1);
+        Path target = targetDir.resolve(fileName);
+        try (InputStream in = LauncherApp.class.getResourceAsStream("/" + resourcePath)) {
+            if (in != null) {
+                Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+            }
         }
     }
 
