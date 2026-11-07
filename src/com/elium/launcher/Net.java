@@ -66,19 +66,121 @@ public final class Net {
         default void length(long n) {}
     }
 
-    public static String getText(String url) throws IOException {
-        try {
-            HttpRequest req = HttpRequest.newBuilder(URI.create(url))
-                    .timeout(Duration.ofSeconds(30))
-                    .header("User-Agent", "EliumLauncher")
-                    .build();
-            HttpResponse<String> r = HTTP.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-            if (r.statusCode() != 200) throw new IOException("HTTP " + r.statusCode() + " for " + url);
-            return r.body();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException("interrupted", e);
+    // ---------- зеркала ----------
+
+    /** Сколько несовпадений sha1 с одного зеркала, прежде чем перестать к нему обращаться. */
+    static final int BAD_MIRROR_LIMIT = 3;
+
+    public static int badMirrorLimit() {
+        return BAD_MIRROR_LIMIT;
+    }
+
+    private static volatile boolean mirrorsEnabled = true;
+    private static final java.util.Map<String, List<String>> overrides = new java.util.concurrent.ConcurrentHashMap<>();
+    private static final java.util.Map<String, AtomicInteger> mismatches = new java.util.concurrent.ConcurrentHashMap<>();
+
+    /** Выключает зеркала (например, когда игрок сам включил прокси). */
+    public static void setMirrorsEnabled(boolean on) {
+        mirrorsEnabled = on;
+    }
+
+    /** Для тестов: задать зеркало для конкретного адреса. */
+    public static void addMirrorForTesting(String url, String mirror) {
+        overrides.computeIfAbsent(url, k -> new java.util.concurrent.CopyOnWriteArrayList<>()).add(mirror);
+    }
+
+    /** Для тестов: сбросить подмены и счётчики битых зеркал. */
+    public static void resetHostOverrides() {
+        overrides.clear();
+        mismatches.clear();
+        mirrorsEnabled = true;
+    }
+
+    /** Все источники для адреса по порядку: оригинал и зеркала (или зеркало первым, если так решила разведка). */
+    static List<String> candidates(String url) {
+        List<String> o = overrides.get(url);
+        if (o != null) {
+            List<String> out = new java.util.ArrayList<>();
+            out.add(url);
+            out.addAll(o);
+            return out;
         }
+        if (!mirrorsEnabled) return List.of(url);
+        return Mirrors.ordered(url);
+    }
+
+    /** Для тестов: порядок источников для адреса. */
+    public static List<String> candidatesForTesting(String url) {
+        return candidates(url);
+    }
+
+    private static String hostKey(String url) {
+        try {
+            URI u = URI.create(url);
+            return u.getScheme() + "://" + u.getRawAuthority() + "/";
+        } catch (IllegalArgumentException e) {
+            return url;
+        }
+    }
+
+    private static boolean isBadMirror(String candidate, String original) {
+        if (candidate.equals(original)) return false;
+        AtomicInteger n = mismatches.get(hostKey(candidate));
+        return n != null && n.get() >= BAD_MIRROR_LIMIT;
+    }
+
+    private static void noteMismatch(String candidate, String original) {
+        if (candidate.equals(original)) return;
+        int n = mismatches.computeIfAbsent(hostKey(candidate), k -> new AtomicInteger()).incrementAndGet();
+        if (n == BAD_MIRROR_LIMIT) System.err.println("зеркало исключено до конца сессии: " + hostKey(candidate));
+    }
+
+    /** Отказ всех источников: текст для игрока, подробности — в лог. */
+    static IOException allFailed(String url, List<String> tried, IOException last) {
+        String file = url.substring(url.lastIndexOf('/') + 1);
+        if (file.isEmpty() || file.length() > 60) file = hostKey(url);
+        System.err.println("не удалось скачать " + url + ", опробованы: " + tried
+                + (last != null ? ", последняя ошибка: " + last : ""));
+        return new HostsUnavailableException("Не удалось скачать " + file
+                + ": перепробованы все источники (" + tried.size() + ").", last);
+    }
+
+    /** Ни оригинал, ни зеркала не ответили. */
+    public static final class HostsUnavailableException extends IOException {
+        HostsUnavailableException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
+    private static int passes(List<String> c) {
+        return c.size() == 1 ? 3 : 2;
+    }
+
+    public static String getText(String url) throws IOException {
+        List<String> cands = candidates(url);
+        List<String> tried = new java.util.ArrayList<>();
+        IOException last = null;
+        for (int pass = 0; pass < passes(cands); pass++) {
+            for (String u : cands) {
+                if (isBadMirror(u, url)) continue;
+                if (!tried.contains(u)) tried.add(u);
+                try {
+                    HttpRequest req = HttpRequest.newBuilder(URI.create(u))
+                            .timeout(Duration.ofSeconds(30))
+                            .header("User-Agent", "EliumLauncher")
+                            .build();
+                    HttpResponse<String> r = HTTP.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+                    if (r.statusCode() != 200) throw new IOException("HTTP " + r.statusCode() + " for " + u);
+                    return r.body();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new IOException("interrupted", e);
+                } catch (IOException e) {
+                    last = e;
+                }
+            }
+        }
+        throw allFailed(url, tried, last);
     }
 
     public static boolean isValid(Path file, String sha1, long size) throws IOException {
@@ -103,45 +205,59 @@ public final class Net {
         download(t, n -> {});
     }
 
-    /** Streams the file to <target>.part, reporting bytes to the counter, verifies, then moves into place. */
+    /**
+     * Streams the file to <target>.part, reporting bytes to the counter, verifies, then moves into place.
+     * Если источник отказал, пробует следующий (оригинал и зеркала), а не долбится в тот же адрес.
+     */
     public static void download(Task t, Counter c) throws IOException {
+        List<String> cands = candidates(t.url());
+        List<String> tried = new java.util.ArrayList<>();
+        java.util.Set<String> mismatchedHere = new java.util.HashSet<>();
         IOException last = null;
-        for (int attempt = 1; attempt <= 3; attempt++) {
-            Path tmp = t.target().resolveSibling(t.target().getFileName() + ".part");
-            long got = 0;
-            try {
-                Files.createDirectories(t.target().getParent());
-                HttpRequest req = HttpRequest.newBuilder(URI.create(t.url()))
-                        .timeout(Duration.ofMinutes(5))
-                        .header("User-Agent", "EliumLauncher")
-                        .build();
-                HttpResponse<InputStream> r = HTTP.send(req, HttpResponse.BodyHandlers.ofInputStream());
-                try (InputStream in = r.body()) {
-                    if (r.statusCode() != 200) throw new IOException("HTTP " + r.statusCode() + " for " + t.url());
-                    c.length(r.headers().firstValueAsLong("content-length").orElse(-1));
-                    try (OutputStream out = Files.newOutputStream(tmp)) {
-                        byte[] buf = new byte[65536];
-                        int n;
-                        while ((n = in.read(buf)) > 0) {
-                            out.write(buf, 0, n);
-                            got += n;
-                            c.add(n);
+        Path tmp = t.target().resolveSibling(t.target().getFileName() + ".part");
+        for (int pass = 0; pass < passes(cands); pass++) {
+            for (String u : cands) {
+                if (mismatchedHere.contains(u) || isBadMirror(u, t.url())) continue;
+                if (!tried.contains(u)) tried.add(u);
+                long got = 0;
+                try {
+                    Files.createDirectories(t.target().getParent());
+                    HttpRequest req = HttpRequest.newBuilder(URI.create(u))
+                            .timeout(Duration.ofMinutes(5))
+                            .header("User-Agent", "EliumLauncher")
+                            .build();
+                    HttpResponse<InputStream> r = HTTP.send(req, HttpResponse.BodyHandlers.ofInputStream());
+                    try (InputStream in = r.body()) {
+                        if (r.statusCode() != 200) throw new IOException("HTTP " + r.statusCode() + " for " + u);
+                        c.length(r.headers().firstValueAsLong("content-length").orElse(-1));
+                        try (OutputStream out = Files.newOutputStream(tmp)) {
+                            byte[] buf = new byte[65536];
+                            int n;
+                            while ((n = in.read(buf)) > 0) {
+                                out.write(buf, 0, n);
+                                got += n;
+                                c.add(n);
+                            }
                         }
                     }
+                    if (!isValid(tmp, t.sha1(), t.size())) {
+                        mismatchedHere.add(u);
+                        noteMismatch(u, t.url());
+                        throw new IOException("Checksum mismatch: " + u);
+                    }
+                    Files.move(tmp, t.target(), StandardCopyOption.REPLACE_EXISTING);
+                    return;
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new IOException("interrupted", e);
+                } catch (IOException e) {
+                    last = e;
+                    c.add(-got);
+                    Files.deleteIfExists(tmp);
                 }
-                if (!isValid(tmp, t.sha1(), t.size())) throw new IOException("Checksum mismatch: " + t.url());
-                Files.move(tmp, t.target(), StandardCopyOption.REPLACE_EXISTING);
-                return;
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new IOException("interrupted", e);
-            } catch (IOException e) {
-                last = e;
-                c.add(-got);
-                Files.deleteIfExists(tmp);
             }
         }
-        throw last;
+        throw allFailed(t.url(), tried, last);
     }
 
     /** Single download with live byte progress (size taken from Content-Length). */

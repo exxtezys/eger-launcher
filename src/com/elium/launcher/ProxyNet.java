@@ -20,12 +20,13 @@ public final class ProxyNet {
         return cfg.proxyOn();
     }
 
-    /** HTTP-клиент с учётом прокси из настроек. */
+    /** HTTP-клиент с учётом прокси из настроек. Если прокси включён, зеркала не нужны и выключаются. */
     public static HttpClient client(Config cfg) {
         HttpClient.Builder b = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
                 .followRedirects(HttpClient.Redirect.ALWAYS)
                 .connectTimeout(Duration.ofSeconds(15));
+        Net.setMirrorsEnabled(!enabled(cfg));
         if (!enabled(cfg)) return b.build();
 
         b.proxy(ProxySelector.of(new InetSocketAddress(cfg.proxyHost(), cfg.proxyPort())));
