@@ -4,217 +4,164 @@ layout-meta {
   identifier = options_screen
   layout_index = 0
   is_enabled = true
-  render_custom_elements_behind_vanilla = true
+  render_custom_elements_behind_vanilla = false
 }
 
 element {
-  element_type = shape
-  instance_identifier = bg_dark
+  element_type = textured_plane
+  instance_identifier = pda_background
   x = 0
   y = 0
   width = 2000
   height = 1400
   anchor_point = top-left
-  color = #0D0F0DFF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
+  texture_path = config/fancymenu/assets/pda_bg.png
+  texture_tile_mode = repeat
+}
+
+element {
+  element_type = textured_plane
+  instance_identifier = frame_tl
+  x = 20
+  y = 20
+  width = 64
+  height = 64
+  anchor_point = top-left
+  texture_path = config/fancymenu/assets/pda_frame_corner.png
+}
+
+element {
+  element_type = textured_plane
+  instance_identifier = frame_tr
+  x = 1916
+  y = 20
+  width = 64
+  height = 64
+  anchor_point = top-left
+  texture_path = config/fancymenu/assets/pda_frame_corner.png
+  mirror_x = true
+}
+
+element {
+  element_type = textured_plane
+  instance_identifier = frame_bl
+  x = 20
+  y = 1316
+  width = 64
+  height = 64
+  anchor_point = top-left
+  texture_path = config/fancymenu/assets/pda_frame_corner.png
+  mirror_y = true
+}
+
+element {
+  element_type = textured_plane
+  instance_identifier = frame_br
+  x = 1916
+  y = 1316
+  width = 64
+  height = 64
+  anchor_point = top-left
+  texture_path = config/fancymenu/assets/pda_frame_corner.png
+  mirror_x = true
+  mirror_y = true
 }
 
 element {
   element_type = shape
   instance_identifier = border_top
-  x = 40
-  y = 40
-  width = 1920
+  x = 84
+  y = 20
+  width = 1832
   height = 4
   anchor_point = top-left
-  color = #3D3428FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
+  color = #508050FF
 }
 
 element {
   element_type = shape
   instance_identifier = border_bottom
-  x = 40
-  y = 1356
-  width = 1920
+  x = 84
+  y = 1376
+  width = 1832
   height = 4
   anchor_point = top-left
-  color = #3D3428FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
+  color = #508050FF
 }
 
 element {
   element_type = shape
   instance_identifier = border_left
-  x = 40
-  y = 40
+  x = 20
+  y = 84
   width = 4
-  height = 1320
+  height = 1232
   anchor_point = top-left
-  color = #3D3428FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
+  color = #508050FF
 }
 
 element {
   element_type = shape
   instance_identifier = border_right
-  x = 1956
-  y = 40
+  x = 1976
+  y = 84
   width = 4
-  height = 1320
+  height = 1232
   anchor_point = top-left
-  color = #3D3428FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-}
-
-element {
-  element_type = shape
-  instance_identifier = corner_tl_inner
-  x = 38
-  y = 38
-  width = 24
-  height = 24
-  anchor_point = top-left
-  color = #FFB833FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 12
-  corner_radius_bottom_right = 0
-}
-
-element {
-  element_type = shape
-  instance_identifier = corner_tr_inner
-  x = 1938
-  y = 38
-  width = 24
-  height = 24
-  anchor_point = top-left
-  color = #FFB833FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 12
-}
-
-element {
-  element_type = shape
-  instance_identifier = corner_bl_inner
-  x = 38
-  y = 1334
-  width = 24
-  height = 24
-  anchor_point = top-left
-  color = #FFB833FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 12
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-}
-
-element {
-  element_type = shape
-  instance_identifier = corner_br_inner
-  x = 1938
-  y = 1334
-  width = 24
-  height = 24
-  anchor_point = top-left
-  color = #FFB833FF
-  corner_radius_top_left = 12
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
+  color = #508050FF
 }
 
 element {
   element_type = text_v2
-  instance_identifier = logo_stalker
-  x = 80
-  y = 100
+  instance_identifier = title_stalker
+  x = 100
+  y = 120
   width = 600
-  height = 80
+  height = 60
   anchor_point = top-left
   source = S.T.A.L.K.E.R.
   source_mode = direct
-  shadow = true
-  base_color = #FFB833FF
-  scale = 3.0
+  shadow = false
+  base_color = #60C060FF
+  scale = 2.5
 }
 
 element {
   element_type = shape
-  instance_identifier = logo_underline
-  x = 84
-  y = 160
-  width = 150
-  height = 3
+  instance_identifier = title_separator
+  x = 100
+  y = 175
+  width = 200
+  height = 2
   anchor_point = top-left
-  color = #FFB833FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
+  color = #408040FF
 }
 
 element {
   element_type = text_v2
   instance_identifier = subtitle_zone
-  x = 84
-  y = 172
+  x = 100
+  y = 182
   width = 400
   height = 24
   anchor_point = top-left
   source = ЗОНА ЧЕРНОБЫЛИ
   source_mode = direct
   shadow = false
-  base_color = #4A8F4AFF
+  base_color = #50A050FF
   scale = 1.0
 }
 
 element {
-  element_type = shape
+  element_type = textured_plane
   instance_identifier = options_panel
   x = 400
   y = 350
   width = 1200
   height = 700
   anchor_point = top-left
-  color = #1A1F1AFF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-}
-
-element {
-  element_type = shape
-  instance_identifier = options_panel_border
-  x = 398
-  y = 348
-  width = 1204
-  height = 704
-  anchor_point = top-left
-  color = #3D3428FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
+  texture_path = config/fancymenu/assets/pda_panel.png
+  texture_tile_mode = stretch
 }
 
 element {
@@ -227,9 +174,9 @@ element {
   anchor_point = top-centered
   source = НАСТРОЙКИ
   source_mode = direct
-  shadow = true
-  base_color = #FFB833FF
-  scale = 2.0
+  shadow = false
+  base_color = #80FF80FF
+  scale = 1.8
 }
 
 element {
@@ -238,101 +185,114 @@ element {
   x = 1000
   y = 460
   width = 400
-  height = 24
+  height = 30
   anchor_point = top-centered
   source = ИГРОВЫЕ ПАРАМЕТРЫ
   source_mode = direct
   shadow = false
-  base_color = #4A8F4AFF
+  base_color = #60C060FF
   scale = 1.1
 }
 
 element {
   element_type = shape
-  instance_identifier = config_line_1
-  x = 420
-  y = 520
-  width = 1160
-  height = 50
-  anchor_point = top-left
-  color = #2D2B26FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-}
-
-element {
-  element_type = shape
-  instance_identifier = config_line_2
-  x = 420
-  y = 580
-  width = 1160
-  height = 50
-  anchor_point = top-left
-  color = #2D2B26FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-}
-
-element {
-  element_type = shape
-  instance_identifier = config_line_3
-  x = 420
-  y = 640
-  width = 1160
-  height = 50
-  anchor_point = top-left
-  color = #2D2B26FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-}
-
-element {
-  element_type = shape
-  instance_identifier = toggle_indicator_1
-  x = 1520
+  instance_identifier = option_row_1
+  x = 450
   y = 530
-  width = 40
-  height = 30
+  width = 1100
+  height = 50
   anchor_point = top-left
-  color = #4A8F4AFF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
+  color = #103010FF
 }
 
 element {
   element_type = shape
-  instance_identifier = toggle_indicator_2
-  x = 1520
+  instance_identifier = option_row_1_border
+  x = 448
+  y = 528
+  width = 1104
+  height = 54
+  anchor_point = top-left
+  color = #408040FF
+}
+
+element {
+  element_type = shape
+  instance_identifier = option_row_2
+  x = 450
   y = 590
-  width = 40
+  width = 1100
+  height = 50
+  anchor_point = top-left
+  color = #103010FF
+}
+
+element {
+  element_type = shape
+  instance_identifier = option_row_2_border
+  x = 448
+  y = 588
+  width = 1104
+  height = 54
+  anchor_point = top-left
+  color = #408040FF
+}
+
+element {
+  element_type = shape
+  instance_identifier = option_row_3
+  x = 450
+  y = 650
+  width = 1100
+  height = 50
+  anchor_point = top-left
+  color = #103010FF
+}
+
+element {
+  element_type = shape
+  instance_identifier = option_row_3_border
+  x = 448
+  y = 648
+  width = 1104
+  height = 54
+  anchor_point = top-left
+  color = #408040FF
+}
+
+element {
+  element_type = shape
+  instance_identifier = toggle_on
+  x = 1480
+  y = 540
+  width = 50
   height = 30
   anchor_point = top-left
-  color = #3D3428FF
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
+  color = #60C060FF
+}
+
+element {
+  element_type = shape
+  instance_identifier = toggle_off
+  x = 1480
+  y = 600
+  width = 50
+  height = 30
+  anchor_point = top-left
+  color = #306030FF
 }
 
 element {
   element_type = text_v2
-  instance_identifier = footer_copyright
+  instance_identifier = footer_version
   x = 1000
-  y = 1320
+  y = 1340
   width = 800
   height = 20
   anchor_point = bottom-centered
   source = © 2012 GSC Game World
   source_mode = direct
   shadow = false
-  base_color = #4A4D4AFF
+  base_color = #408040FF
   scale = 0.8
 }
