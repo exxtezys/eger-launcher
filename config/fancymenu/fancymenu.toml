@@ -1,0 +1,18 @@
+# FancyMenu конфигурация — лаунчер «Егерь» 1.0.0
+# Стиль: ПДА (S.T.A.L.K.E.R. зелёный монохром)
+
+[menu]
+active-layout = "ege-pda"
+
+[layout.ege-pda]
+name = "Егерь ПДА"
+version = "1.0.0"
+description = "S.T.A.L.K.E.R. ПДА стиль - зелёный монохромный интерфейс"
+
+[customization]
+enabled = true
+directory = "customization"
+
+[background]
+type = "color"
+source = "#0a1a0a"

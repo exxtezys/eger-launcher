@@ -21,10 +21,6 @@ if ($LASTEXITCODE -ne 0) { throw 'javac failed' }
 Copy-Item "$root\src\launcher.properties","$root\src\theme.properties" "$out\classes\"
 if (Test-Path "$root\theme\icon.png") { Copy-Item "$root\theme\icon.png" "$out\classes\" }
 if (Test-Path "$root\theme") { Copy-Item "$root\theme\*" "$out\classes\" -Recurse }
-if (Test-Path "$root\src\main\resources\assets\fancymenu") {
-    New-Item -ItemType Directory -Force "$out\classes\assets\fancymenu" | Out-Null
-    Copy-Item "$root\src\main\resources\assets\fancymenu\*" "$out\classes\assets\fancymenu\" -Recurse
-}
 if (Test-Path "$root\src\main\resources\config") {
     New-Item -ItemType Directory -Force "$out\classes\config" | Out-Null
     Copy-Item "$root\src\main\resources\config\*" "$out\classes\config\" -Recurse
@@ -55,10 +51,6 @@ if ($Exe) {
     # Тема и картинки рядом с exe — правятся без пересборки
     Copy-Item "$root\src\theme.properties" "$dist\EgerLauncher\"
     if (Test-Path "$root\theme") { Copy-Item "$root\theme\*" "$dist\EgerLauncher\" -Recurse }
-    if (Test-Path "$root\src\main\resources\assets\fancymenu") {
-        New-Item -ItemType Directory -Force "$dist\EgerLauncher\assets\fancymenu" | Out-Null
-        Copy-Item "$root\src\main\resources\assets\fancymenu\*" "$dist\EgerLauncher\assets\fancymenu\" -Recurse
-    }
     if (Test-Path "$root\src\main\resources\mods") {
         New-Item -ItemType Directory -Force "$dist\EgerLauncher\mods" | Out-Null
         Copy-Item "$root\src\main\resources\mods\*" "$dist\EgerLauncher\mods\" -Recurse

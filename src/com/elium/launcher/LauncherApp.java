@@ -24,6 +24,7 @@ import java.net.URI;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Random;
@@ -79,50 +80,134 @@ public final class LauncherApp {
         this.maxRam = (int) Math.max(2048, totalMb - 2048);
         this.ramMb = Math.min(cfg.ramMb(), maxRam);
         this.autoConnect = cfg.autoConnect();
-        installFancyMenuAssets();
     }
 
-    /** Копирует ассеты и конфиг FancyMenu из jar в .minecraft/ при первом запуске. */
+    /** Universal identifier + class name of every screen that gets an Eger layout. */
+    private static final String[][] FM_SCREENS = {
+            {"title_screen", "net.minecraft.client.gui.screens.TitleScreen"},
+            {"progress_screen", "net.minecraft.client.gui.screens.ProgressScreen"},
+            {"connect_screen", "net.minecraft.client.gui.screens.ConnectScreen"},
+            {"receiving_level_screen", "net.minecraft.client.gui.screens.ReceivingLevelScreen"},
+            {"pause_screen", "net.minecraft.client.gui.screens.PauseScreen"},
+            {"join_multiplayer_screen", "net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen"},
+            {"options_screen", "net.minecraft.client.gui.screens.options.OptionsScreen"},
+            {"create_world_screen", "net.minecraft.client.gui.screens.worldselection.CreateWorldScreen"},
+            {"death_screen", "net.minecraft.client.gui.screens.DeathScreen"},
+            {"disconnected_screen", "net.minecraft.client.gui.screens.DisconnectedScreen"},
+    };
+
+    private static final String[] FM_ASSETS = {
+            "paper.png", "paper_dark.png", "brass_strip.png", "stamp_eger.png"
+    };
+
+    private static final String[] FM_LAYOUTS = {
+            "ege-title.txt", "ege-loading.txt", "ege-connect.txt", "ege-receiving.txt",
+            "ege-pause.txt", "ege-stations.txt", "ege-options.txt", "ege-newworld.txt",
+            "ege-death.txt", "ege-disconnected.txt"
+    };
+
+    /** Токен в раскладках, который заменяется на абсолютный путь к папке ассетов. */
+    private static final String FM_ASSETS_TOKEN = "local:config/fancymenu/assets/";
+
+    /** Копирует картинки и раскладки FancyMenu из jar в .minecraft/config/fancymenu/. */
     private void installFancyMenuAssets() {
         try {
-            Path minecraftDir = cfg.gameDir;
+            Path fancyMenuDir = cfg.gameDir.resolve("config").resolve("fancymenu");
 
-            // --- Ассеты в .minecraft/assets/fancymenu/ ---
-            Path assetsDir = minecraftDir.resolve("assets").resolve("fancymenu");
+            // --- Картинки для раскладок: .minecraft/config/fancymenu/assets/ ---
+            Path assetsDir = fancyMenuDir.resolve("assets");
             Files.createDirectories(assetsDir);
-
-            String[] assetFiles = {
-                    "assets/fancymenu/textures/background.png",
-                    "assets/fancymenu/textures/icon-e.png",
-                    "assets/fancymenu/textures/gui/button_normal.png",
-                    "assets/fancymenu/textures/gui/button_hover.png",
-                    "assets/fancymenu/textures/gui/button_active.png",
-                    "assets/fancymenu/textures/gui/panel.png",
-                    "assets/fancymenu/textures/gui/logo.png",
-                    "assets/fancymenu/fonts/RussoOne-Regular.ttf",
-                    "assets/fancymenu/fancymenu.cfg"
-            };
-
-            for (String res : assetFiles) {
-                copyResourceToPath(res, assetsDir);
+            for (String asset : FM_ASSETS) {
+                copyResourceToPath("config/fancymenu/assets/" + asset, assetsDir, true);
             }
 
-            // --- Конфиг и 레이аут в .minecraft/config/fancymenu/ ---
-            Path configDir = minecraftDir.resolve("config").resolve("fancymenu");
-            Path layoutsDir = configDir.resolve("layouts");
-            Files.createDirectories(layoutsDir);
+            // --- По одной раскладке на экран: .minecraft/config/fancymenu/customization/ ---
+            // FancyMenu понимает только абсолютный путь в "local:" (относительный резолвится
+            // не всегда), поэтому подставляем реальный путь к папке ассетов при установке.
+            Path customizationDir = fancyMenuDir.resolve("customization");
+            Files.createDirectories(customizationDir);
+            String assetsPrefix = "local:"
+                    + cfg.gameDir.toAbsolutePath().toString().replace('\\', '/')
+                    + "/config/fancymenu/assets/";
+            for (String layout : FM_LAYOUTS) {
+                copyResourceToPath("config/fancymenu/customization/" + layout, customizationDir, true);
+                Path dest = customizationDir.resolve(layout);
+                String text = new String(Files.readAllBytes(dest), StandardCharsets.UTF_8);
+                if (text.contains(FM_ASSETS_TOKEN)) {
+                    Files.write(dest, text.replace(FM_ASSETS_TOKEN, assetsPrefix).getBytes(StandardCharsets.UTF_8));
+                }
+            }
 
-            copyResourceToPath("config/fancymenu/fancymenu.toml", configDir);
-            copyResourceToPath("config/fancymenu/layouts/ege-r-hand.json", layoutsDir);
+            ensureCustomizableMenu(fancyMenuDir);
+            ensureFancyMenuOptions(fancyMenuDir);
 
         } catch (Exception e) {
             System.err.println("Не удалось установить ассеты FancyMenu: " + e.getMessage());
         }
     }
 
-    private void copyResourceToPath(String resourcePath, Path targetDir) throws Exception {
+    /**
+     * FancyMenu applies layouts only to screens listed in customizablemenus.txt, and that
+     * file accepts CLASS identifiers only - universal ones like "title_screen" are rejected
+     * as "illegal universal identifier". Make sure every themed screen is listed without
+     * touching whatever the player added on their own.
+     */
+    private void ensureCustomizableMenu(Path fancyMenuDir) {
+        Path file = fancyMenuDir.resolve("customizablemenus.txt");
+        try {
+            String content = Files.exists(file)
+                    ? new String(Files.readAllBytes(file), StandardCharsets.UTF_8)
+                    : "type = customizablemenus\n";
+            StringBuilder missing = new StringBuilder();
+            for (String[] screen : FM_SCREENS) {
+                if (content.contains(screen[1])) {
+                    continue;
+                }
+                content = content.replaceAll("(?s)\\b" + screen[0] + "\\s*\\{[^}]*\\}\\s*", "");
+                missing.append(screen[1]).append(" {\n}\n\n");
+            }
+            if (missing.length() == 0) {
+                return;
+            }
+            if (!content.contains("type =")) {
+                content = "type = customizablemenus\n\n" + content;
+            }
+            content = content.stripTrailing() + "\n\n" + missing;
+            Files.write(file, content.getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            System.err.println("Failed to update customizablemenus.txt: " + e.getMessage());
+        }
+    }
+
+    /**
+     * FancyMenu рисует поверх любых экранов панель "Customization / Tools / Help".
+     * В оформленной сборке она мешает (закрывает верх раскладки), поэтому выключаем её.
+     * Файл создаётся самим модом, так что правим только нужный ключ.
+     */
+    private void ensureFancyMenuOptions(Path fancyMenuDir) {
+        Path file = fancyMenuDir.resolve("options.txt");
+        try {
+            String content = Files.exists(file)
+                    ? new String(Files.readAllBytes(file), StandardCharsets.UTF_8)
+                    : "##[customization]\n\nB:show_customization_overlay = 'false';\n";
+            String patched = content.replace(
+                    "B:show_customization_overlay = 'true';",
+                    "B:show_customization_overlay = 'false';");
+            if (patched.equals(content) && content.contains("show_customization_overlay")) {
+                return;
+            }
+            Files.write(file, patched.getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            System.err.println("Failed to update fancymenu options.txt: " + e.getMessage());
+        }
+    }
+
+    private void copyResourceToPath(String resourcePath, Path targetDir, boolean overwrite) throws Exception {
         String fileName = resourcePath.substring(resourcePath.lastIndexOf('/') + 1);
         Path target = targetDir.resolve(fileName);
+        if (!overwrite && Files.exists(target)) {
+            return;
+        }
         try (InputStream in = LauncherApp.class.getResourceAsStream("/" + resourcePath)) {
             if (in != null) {
                 Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);

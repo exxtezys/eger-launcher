@@ -2,4 +2,9 @@ build/
 dist/
 release/
 __pycache__/
-
+sftp_pass.txt
+askpass.cmd
+upload_*.ps1
+upload_fancymenu_config.ps1
+upload_all_final.ps1
+versions.json

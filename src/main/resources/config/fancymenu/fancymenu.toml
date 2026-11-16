@@ -1,16 +1,18 @@
-# FancyMenu конфигурация — лаунчер «Егерь» 0.3.0
-# Стиль: HAND (рукная работа, 1939, бумага + латунь)
+# FancyMenu конфигурация — лаунчер «Егерь» 1.0.0
+# Стиль: ПДА (S.T.A.L.K.E.R. зелёный монохром)
 
 [menu]
-active-layout = "ege-r-hand"
+active-layout = "ege-pda"
 
-[layout.ege-r-hand]
-name = "Егерь HAND"
-version = "0.3.0"
-description = "Стиль ручной работы 1939 для лаунчера Егерь"
+[layout.ege-pda]
+name = "Егерь ПДА"
+version = "1.0.0"
+description = "S.T.A.L.K.E.R. ПДА стиль - зелёный монохромный интерфейс"
+
+[customization]
+enabled = true
+directory = "customization"
 
 [background]
-type = "image"
-source = "fancymenu:textures/background.png"
-scale = "cover"
-brightness = 0.85
+type = "color"
+source = "#0a1a0a"
