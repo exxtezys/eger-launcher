@@ -2,16 +2,12 @@
 # Стиль: ПДА (S.T.A.L.K.E.R. зелёный монохром)
 
 [menu]
-active-layout = "ege-pda"
+active-layout = "ege-pda-title"
 
-[layout.ege-pda]
+[layout.ege-pda-title]
 name = "Егерь ПДА"
 version = "1.0.0"
 description = "S.T.A.L.K.E.R. ПДА стиль - зелёный монохромный интерфейс"
-
-[customization]
-enabled = true
-directory = "customization"
 
 [background]
 type = "color"
