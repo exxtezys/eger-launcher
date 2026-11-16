@@ -8,65 +8,55 @@ layout-meta {
 }
 
 element {
-  element_type = textured_plane
-  instance_identifier = pda_background
+  element_type = shape
+  instance_identifier = bg_fill
   x = 0
   y = 0
   width = 2000
   height = 1400
   anchor_point = top-left
-  texture_path = config/fancymenu/assets/pda_bg.png
-  texture_tile_mode = repeat
+  color = #0a1a0aFF
 }
-
 element {
-  element_type = textured_plane
+  element_type = shape
   instance_identifier = frame_tl
   x = 20
   y = 20
   width = 64
   height = 64
   anchor_point = top-left
-  texture_path = config/fancymenu/assets/pda_frame_corner.png
+  color = #508050FF
 }
-
 element {
-  element_type = textured_plane
+  element_type = shape
   instance_identifier = frame_tr
   x = 1916
   y = 20
   width = 64
   height = 64
   anchor_point = top-left
-  texture_path = config/fancymenu/assets/pda_frame_corner.png
-  mirror_x = true
+  color = #508050FF
 }
-
 element {
-  element_type = textured_plane
+  element_type = shape
   instance_identifier = frame_bl
   x = 20
   y = 1316
   width = 64
   height = 64
   anchor_point = top-left
-  texture_path = config/fancymenu/assets/pda_frame_corner.png
-  mirror_y = true
+  color = #508050FF
 }
-
 element {
-  element_type = textured_plane
+  element_type = shape
   instance_identifier = frame_br
   x = 1916
   y = 1316
   width = 64
   height = 64
   anchor_point = top-left
-  texture_path = config/fancymenu/assets/pda_frame_corner.png
-  mirror_x = true
-  mirror_y = true
+  color = #508050FF
 }
-
 element {
   element_type = shape
   instance_identifier = border_top
@@ -77,7 +67,6 @@ element {
   anchor_point = top-left
   color = #508050FF
 }
-
 element {
   element_type = shape
   instance_identifier = border_bottom
@@ -88,7 +77,6 @@ element {
   anchor_point = top-left
   color = #508050FF
 }
-
 element {
   element_type = shape
   instance_identifier = border_left
@@ -99,7 +87,6 @@ element {
   anchor_point = top-left
   color = #508050FF
 }
-
 element {
   element_type = shape
   instance_identifier = border_right
@@ -110,9 +97,8 @@ element {
   anchor_point = top-left
   color = #508050FF
 }
-
 element {
-  element_type = text_v2
+  element_type = text
   instance_identifier = title_stalker
   x = 100
   y = 120
@@ -121,14 +107,13 @@ element {
   anchor_point = top-left
   source = S.T.A.L.K.E.R.
   source_mode = direct
-  shadow = false
+  shadow = true
   base_color = #60C060FF
   scale = 2.5
 }
-
 element {
   element_type = shape
-  instance_identifier = title_separator
+  instance_identifier = separator
   x = 100
   y = 175
   width = 200
@@ -136,9 +121,8 @@ element {
   anchor_point = top-left
   color = #408040FF
 }
-
 element {
-  element_type = text_v2
+  element_type = text
   instance_identifier = subtitle_zone
   x = 100
   y = 182
@@ -151,22 +135,29 @@ element {
   base_color = #50A050FF
   scale = 1.0
 }
-
 element {
-  element_type = textured_plane
-  instance_identifier = stations_panel
+  element_type = shape
+  instance_identifier = panel
   x = 300
   y = 350
   width = 1400
   height = 700
   anchor_point = top-left
-  texture_path = config/fancymenu/assets/pda_panel.png
-  texture_tile_mode = stretch
+  color = #103010FF
 }
-
 element {
-  element_type = text_v2
-  instance_identifier = headline_stations
+  element_type = shape
+  instance_identifier = panel_border
+  x = 298
+  y = 348
+  width = 1404
+  height = 704
+  anchor_point = top-left
+  color = #508050FF
+}
+element {
+  element_type = text
+  instance_identifier = headline
   x = 1000
   y = 400
   width = 400
@@ -178,10 +169,9 @@ element {
   base_color = #80FF80FF
   scale = 1.8
 }
-
 element {
-  element_type = text_v2
-  instance_identifier = subtitle_available
+  element_type = text
+  instance_identifier = subtitle
   x = 1000
   y = 460
   width = 400
@@ -193,77 +183,9 @@ element {
   base_color = #60C060FF
   scale = 1.1
 }
-
 element {
-  element_type = shape
-  instance_identifier = server_header
-  x = 350
-  y = 520
-  width = 1300
-  height = 40
-  anchor_point = top-left
-  color = #103010FF
-}
-
-element {
-  element_type = shape
-  instance_identifier = server_header_border
-  x = 348
-  y = 518
-  width = 1304
-  height = 44
-  anchor_point = top-left
-  color = #508050FF
-}
-
-element {
-  element_type = text_v2
-  instance_identifier = header_name
-  x = 370
-  y = 528
-  width = 400
-  height = 24
-  anchor_point = top-left
-  source = СТАНЦИЯ
-  source_mode = direct
-  shadow = false
-  base_color = #80FF80FF
-  scale = 1.0
-}
-
-element {
-  element_type = text_v2
-  instance_identifier = header_players
-  x = 850
-  y = 528
-  width = 150
-  height = 24
-  anchor_point = top-left
-  source = ИГРОКИ
-  source_mode = direct
-  shadow = false
-  base_color = #60C060FF
-  scale = 1.0
-}
-
-element {
-  element_type = text_v2
-  instance_identifier = header_signal
-  x = 1100
-  y = 528
-  width = 200
-  height = 24
-  anchor_point = top-left
-  source = СИГНАЛ
-  source_mode = direct
-  shadow = false
-  base_color = #60C060FF
-  scale = 1.0
-}
-
-element {
-  element_type = text_v2
-  instance_identifier = footer_version
+  element_type = text
+  instance_identifier = footer
   x = 1000
   y = 1340
   width = 800
