@@ -1,0 +1,368 @@
+type = fancymenu_layout
+
+layout-meta {
+  identifier = create_world_screen
+  layout_index = 0
+  is_enabled = true
+  render_custom_elements_behind_vanilla = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = bg_dark
+  x = 0
+  y = 0
+  width = 2000
+  height = 1400
+  anchor_point = top-left
+  color = #0D0F0DFF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = shape
+  instance_identifier = border_top
+  x = 40
+  y = 40
+  width = 1920
+  height = 4
+  anchor_point = top-left
+  color = #3D3428FF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = shape
+  instance_identifier = border_bottom
+  x = 40
+  y = 1356
+  width = 1920
+  height = 4
+  anchor_point = top-left
+  color = #3D3428FF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = shape
+  instance_identifier = border_left
+  x = 40
+  y = 40
+  width = 4
+  height = 1320
+  anchor_point = top-left
+  color = #3D3428FF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = shape
+  instance_identifier = border_right
+  x = 1956
+  y = 40
+  width = 4
+  height = 1320
+  anchor_point = top-left
+  color = #3D3428FF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = shape
+  instance_identifier = corner_tl_inner
+  x = 38
+  y = 38
+  width = 24
+  height = 24
+  anchor_point = top-left
+  color = #FFB833FF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 12
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = shape
+  instance_identifier = corner_tr_inner
+  x = 1938
+  y = 38
+  width = 24
+  height = 24
+  anchor_point = top-left
+  color = #FFB833FF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 12
+}
+
+element {
+  element_type = shape
+  instance_identifier = corner_bl_inner
+  x = 38
+  y = 1334
+  width = 24
+  height = 24
+  anchor_point = top-left
+  color = #FFB833FF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 12
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = shape
+  instance_identifier = corner_br_inner
+  x = 1938
+  y = 1334
+  width = 24
+  height = 24
+  anchor_point = top-left
+  color = #FFB833FF
+  corner_radius_top_left = 12
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = logo_stalker
+  x = 80
+  y = 100
+  width = 600
+  height = 80
+  anchor_point = top-left
+  source = S.T.A.L.K.E.R.
+  source_mode = direct
+  shadow = true
+  base_color = #FFB833FF
+  scale = 3.0
+}
+
+element {
+  element_type = shape
+  instance_identifier = logo_underline
+  x = 84
+  y = 160
+  width = 150
+  height = 3
+  anchor_point = top-left
+  color = #FFB833FF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = subtitle_zone
+  x = 84
+  y = 172
+  width = 400
+  height = 24
+  anchor_point = top-left
+  source = ЗОНА ЧЕРНОБЫЛИ
+  source_mode = direct
+  shadow = false
+  base_color = #4A8F4AFF
+  scale = 1.0
+}
+
+element {
+  element_type = shape
+  instance_identifier = newworld_panel
+  x = 400
+  y = 350
+  width = 1200
+  height = 700
+  anchor_point = top-left
+  color = #1A1F1AFF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = shape
+  instance_identifier = newworld_panel_border
+  x = 398
+  y = 348
+  width = 1204
+  height = 704
+  anchor_point = top-left
+  color = #3D3428FF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = headline_newworld
+  x = 1000
+  y = 400
+  width = 400
+  height = 50
+  anchor_point = top-centered
+  source = НОВАЯ ПАРТИЯ
+  source_mode = direct
+  shadow = true
+  base_color = #FFB833FF
+  scale = 2.0
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = subtitle_sector
+  x = 1000
+  y = 460
+  width = 400
+  height = 24
+  anchor_point = top-centered
+  source = ОФОРМЛЕНИЕ УЧАСТКА
+  source_mode = direct
+  shadow = false
+  base_color = #4A8F4AFF
+  scale = 1.1
+}
+
+element {
+  element_type = shape
+  instance_identifier = sector_frame
+  x = 450
+  y = 520
+  width = 320
+  height = 200
+  anchor_point = top-left
+  color = #2D2B26FF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = shape
+  instance_identifier = sector_frame_border
+  x = 448
+  y = 518
+  width = 324
+  height = 204
+  anchor_point = top-left
+  color = #3D3428FF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = sector_label
+  x = 610
+  y = 610
+  width = 160
+  height = 30
+  anchor_point = centered
+  source = СЕКТОР 7
+  source_mode = direct
+  shadow = true
+  base_color = #FFB833FF
+  scale = 1.3
+}
+
+element {
+  element_type = shape
+  instance_identifier = difficulty_badge
+  x = 850
+  y = 540
+  width = 200
+  height = 50
+  anchor_point = top-left
+  color = #8F4A4AFF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = difficulty_text
+  x = 950
+  y = 550
+  width = 180
+  height = 30
+  anchor_point = top-centered
+  source = ОПАСНОСТЬ: ВЫСОКАЯ
+  source_mode = direct
+  shadow = true
+  base_color = #FF6B6BFF
+  scale = 1.0
+}
+
+element {
+  element_type = shape
+  instance_identifier = warning_triangle
+  x = 470
+  y = 740
+  width = 50
+  height = 50
+  anchor_point = top-left
+  color = #FFB833FF
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = warning_text
+  x = 540
+  y = 755
+  width = 600
+  height = 24
+  anchor_point = top-left
+  source = ВНИМАНИЕ: ЗОНА АКТИВНОГО ИЗЛУЧЕНИЯ
+  source_mode = direct
+  shadow = false
+  base_color = #FFB833FF
+  scale = 0.9
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = footer_copyright
+  x = 1000
+  y = 1320
+  width = 800
+  height = 20
+  anchor_point = bottom-centered
+  source = © 2012 GSC Game World
+  source_mode = direct
+  shadow = false
+  base_color = #4A4D4AFF
+  scale = 0.8
+}
