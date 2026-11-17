@@ -51,6 +51,13 @@ if ($Exe) {
     # Тема и картинки рядом с exe — правятся без пересборки
     Copy-Item "$root\src\theme.properties" "$dist\EgerLauncher\"
     if (Test-Path "$root\theme") { Copy-Item "$root\theme\*" "$dist\EgerLauncher\" -Recurse }
+    # ПДА-ассеты (фон, логотип) — копируем из ресурсов, если тема их не содержит
+    if (-not (Test-Path "$dist\EgerLauncher\pda_bg.png")) {
+        Copy-Item "$root\src\main\resources\config\fancymenu\assets\pda_bg.png" "$dist\EgerLauncher\pda_bg.png" -ErrorAction SilentlyContinue
+    }
+    if (-not (Test-Path "$dist\EgerLauncher\pda_logo.png")) {
+        Copy-Item "$root\src\main\resources\config\fancymenu\assets\pda_logo.png" "$dist\EgerLauncher\pda_logo.png" -ErrorAction SilentlyContinue
+    }
     if (Test-Path "$root\src\main\resources\mods") {
         New-Item -ItemType Directory -Force "$dist\EgerLauncher\mods" | Out-Null
         Copy-Item "$root\src\main\resources\mods\*" "$dist\EgerLauncher\mods\" -Recurse

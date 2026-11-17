@@ -28,10 +28,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class LauncherApp {
     private static final Pattern NICK = Pattern.compile("[A-Za-z0-9_]{3,16}");
+    private static final Pattern RESOURCE_PACKS = Pattern.compile("(?m)^resourcePacks:\\[(.*?)\\]$");
     private static final int CARD_W = 340;
     static final String VERSION = "0.4.0";
     private static final String[][] STEPS = {
@@ -74,6 +76,7 @@ public final class LauncherApp {
         Net.setClient(ProxyNet.client(cfg));
         this.t = Theme.load(cfg.projectName, cfg.minecraftVersion, cfg.uiStyle());
         this.cardW = t.style == Theme.Style.HAND ? 440 : CARD_W;
+        installPdaResourcePack();
         installFancyMenuAssets();
         long totalMb = ((com.sun.management.OperatingSystemMXBean)
                 java.lang.management.ManagementFactory.getOperatingSystemMXBean()).getTotalMemorySize() / 1048576;
@@ -109,6 +112,43 @@ public final class LauncherApp {
     /** Токен в раскладках, который заменяется на абсолютный путь к папке ассетов. */
     private static final String FM_ASSETS_TOKEN = "local:config/fancymenu/assets/";
 
+    /**
+     * Ставит ресурс-пак «eger-pda» и включает его в options.txt.
+     *
+     * Пак перекрашивает ванильные виджеты в зелёный монохром ПДА и убирает
+     * логотип Minecraft / жёлтый splash с главного меню, которые иначе
+     * рисуются поверх раскладки FancyMenu.
+     */
+    private void installPdaResourcePack() {
+        try {
+            Path packs = cfg.gameDir.resolve("resourcepacks");
+            Files.createDirectories(packs);
+            copyResourceToPath("config/resourcepacks/eger-pda.zip", packs, true);
+
+            Path options = cfg.gameDir.resolve("options.txt");
+            if (!Files.exists(options)) {
+                return;
+            }
+            String text = new String(Files.readAllBytes(options), StandardCharsets.UTF_8);
+            Matcher m = RESOURCE_PACKS.matcher(text);
+            if (!m.find()) {
+                return;
+            }
+            String current = m.group(1).trim();
+            if (current.contains("eger-pda.zip")) {
+                return;
+            }
+            String updated = current.isEmpty()
+                    ? "[\"file/eger-pda.zip\"]"
+                    : "[" + current + ",\"file/eger-pda.zip\"]";
+            String patched = text.substring(0, m.start()) + "resourcePacks:" + updated
+                    + text.substring(m.end());
+            Files.write(options, patched.getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            System.err.println("Не удалось установить ресурс-пак ПДА: " + e.getMessage());
+        }
+    }
+
     /** Копирует картинки и раскладки FancyMenu из jar в .minecraft/config/fancymenu/. */
     private void installFancyMenuAssets() {
         try {
@@ -120,6 +160,14 @@ public final class LauncherApp {
             for (String asset : FM_ASSETS) {
                 copyResourceToPath("config/fancymenu/assets/" + asset, assetsDir, true);
             }
+
+            // --- fancymenu.toml ---
+            copyResourceToPath("config/fancymenu/fancymenu.toml", fancyMenuDir, true);
+
+            // --- Layout JSON (ПДА) ---
+            Path layoutsDir = fancyMenuDir.resolve("layouts");
+            Files.createDirectories(layoutsDir);
+            copyResourceToPath("config/fancymenu/layouts/ege-pda-title.json", layoutsDir, true);
 
             // --- По одной раскладке на экран: .minecraft/config/fancymenu/customization/ ---
             // FancyMenu понимает только абсолютный путь в "local:" (относительный резолвится
@@ -180,9 +228,10 @@ public final class LauncherApp {
     }
 
     /**
-     * FancyMenu рисует поверх любых экранов панель "Customization / Tools / Help".
-     * В оформленной сборке она мешает (закрывает верх раскладки), поэтому выключаем её.
-     * Файл создаётся самим модом, так что правим только нужный ключ.
+     * Правит options.txt самого FancyMenu:
+     *  - убирает панель "Customization / Tools / Help", которая закрывает верх раскладки;
+     *  - подписывает окно игры в стиле ПДА.
+     * Файл создаётся самим модом, так что трогаем только нужные ключи.
      */
     private void ensureFancyMenuOptions(Path fancyMenuDir) {
         Path file = fancyMenuDir.resolve("options.txt");
@@ -190,10 +239,12 @@ public final class LauncherApp {
             String content = Files.exists(file)
                     ? new String(Files.readAllBytes(file), StandardCharsets.UTF_8)
                     : "##[customization]\n\nB:show_customization_overlay = 'false';\n";
-            String patched = content.replace(
-                    "B:show_customization_overlay = 'true';",
-                    "B:show_customization_overlay = 'false';");
-            if (patched.equals(content) && content.contains("show_customization_overlay")) {
+            String patched = content
+                    .replace("B:show_customization_overlay = 'true';",
+                             "B:show_customization_overlay = 'false';")
+                    .replace("S:custom_window_title = '';",
+                             "S:custom_window_title = 'S.T.A.L.K.E.R. — ПДА';");
+            if (patched.equals(content) && Files.exists(file)) {
                 return;
             }
             Files.write(file, patched.getBytes(StandardCharsets.UTF_8));

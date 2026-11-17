@@ -55,8 +55,8 @@ public final class Config {
             try (Reader r = Files.newBufferedReader(userFile, StandardCharsets.UTF_8)) { user.load(r); }
         }
         if (user.getProperty("uiStyleRevision") == null) {
-            user.setProperty("uiStyle", "hand");
-            user.setProperty("uiStyleRevision", "1");
+            user.setProperty("uiStyle", "clean");
+            user.setProperty("uiStyleRevision", "2");
             try (Writer w = Files.newBufferedWriter(userFile, StandardCharsets.UTF_8)) {
                 user.store(w, projectName + " launcher");
             } catch (IOException e) {

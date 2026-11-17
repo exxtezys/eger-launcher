@@ -1,0 +1,4 @@
+# FancyMenu parses these plain-text layouts with a strict reader:
+# a byte-order mark or mangled line endings make every layout fail with
+# "Missing type: ?type = fancymenu_layout". Keep them LF-only.
+src/main/resources/config/fancymenu/customization/*.txt text eol=lf
