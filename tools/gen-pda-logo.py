@@ -47,11 +47,12 @@ def main():
     d.line([(8, 8), (20, 8)], fill=ACCENT, width=2)
     d.line([(8, H - 9), (20, H - 9)], fill=ACCENT, width=2)
 
-    # small "signal" ticks on the right, PDA style
+    # small "signal" staircase on the right, PDA style
     for i in range(5):
         h = 8 + i * 6
-        d.rectangle([W - 26, H - 14 - h, W - 16, H - 14], fill=ACCENT)
-    d.line([(W - 30, H - 15), (W - 12, H - 15)], fill=MUTED, width=1)
+        x0 = W - 78 + i * 11
+        d.rectangle([x0, H - 14 - h, x0 + 8, H - 14], fill=ACCENT)
+    d.line([(W - 80, H - 15), (W - 12, H - 15)], fill=MUTED, width=1)
 
     for out in OUTS:
         out.parent.mkdir(parents=True, exist_ok=True)
