@@ -33,7 +33,7 @@ public final class Theme {
     public final Style style;
     public final double backgroundDim;
     public final String title, subtitle;
-    public final BufferedImage background, logo, icon, handHero, handPaper, handIcon;
+    public final BufferedImage background, logo, icon, handHero, handPaper, handIcon, scene;
     public final List<String[]> links = new ArrayList<>();
     public final Font displayFont, bodyFont;
 
@@ -111,6 +111,7 @@ public final class Theme {
         handPaper = image(str("hand.paper", "paper.png"));
         BufferedImage hi = image(str("hand.icon", "hand-icon.png"));
         handIcon = hi != null ? hi : icon;
+        scene = image(str("scene", ""));
 
         Font display = loadFontFile("font.display.file");
         if (display == null) display = loadFontFile("font.file");

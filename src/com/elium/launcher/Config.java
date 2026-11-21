@@ -54,9 +54,15 @@ public final class Config {
         if (Files.exists(userFile)) {
             try (Reader r = Files.newBufferedReader(userFile, StandardCharsets.UTF_8)) { user.load(r); }
         }
-        if (user.getProperty("uiStyleRevision") == null) {
-            user.setProperty("uiStyle", "clean");
-            user.setProperty("uiStyleRevision", "2");
+        // Ревизия 3 — новая «комната приёмки»: старые конфиги переводим на неё один раз.
+        int styleRevision = 0;
+        try {
+            styleRevision = Integer.parseInt(user.getProperty("uiStyleRevision", "0").trim());
+        } catch (NumberFormatException ignored) {
+        }
+        if (styleRevision < 3) {
+            user.setProperty("uiStyle", "hand");
+            user.setProperty("uiStyleRevision", "3");
             try (Writer w = Files.newBufferedWriter(userFile, StandardCharsets.UTF_8)) {
                 user.store(w, projectName + " launcher");
             } catch (IOException e) {

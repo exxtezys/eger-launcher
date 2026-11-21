@@ -1,284 +1,203 @@
 type = fancymenu_layout
 
-
-
 layout-meta {
-
   identifier = connect_screen
-
   layout_index = 0
-
   is_enabled = true
-
   render_custom_elements_behind_vanilla = true
-
 }
-
-
 
 element {
   element_type = shape
-  instance_identifier = bg_fill
+  instance_identifier = egertopaper
   x = 0
   y = 0
-  width = 427
-  height = 240
+  width = 2000
+  height = 1400
   anchor_point = top-left
-  color = #0a1a0aD8
+  color = #DCD3BC
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
 }
 
 element {
   element_type = shape
-  instance_identifier = border_top
+  instance_identifier = egertopband
   x = 0
   y = 0
-  width = 427
-  height = 1
+  width = 2000
+  height = 6
   anchor_point = top-left
-  color = #60C060FF
+  color = #4A3626
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
 }
 
 element {
   element_type = shape
-  instance_identifier = border_bottom
-  x = 0
-  y = 239
-  width = 427
-  height = 1
-  anchor_point = top-left
-  color = #60C060FF
-}
-
-element {
-  element_type = shape
-  instance_identifier = border_left
+  instance_identifier = egerbottomband
   x = 0
   y = 0
-  width = 1
-  height = 240
-  anchor_point = top-left
-  color = #60C060FF
+  width = 2000
+  height = 6
+  anchor_point = bottom-left
+  color = #4A3626
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
 }
 
 element {
   element_type = shape
-  instance_identifier = border_right
-  x = 426
+  instance_identifier = egerside_l
+  x = 0
   y = 0
-  width = 1
-  height = 240
+  width = 4
+  height = 1400
   anchor_point = top-left
-  color = #60C060FF
+  color = #4A3626
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
 }
 
 element {
   element_type = shape
-  instance_identifier = corner_0_h
-  x = 4
-  y = 4
-  width = 16
-  height = 1
-  anchor_point = top-left
-  color = #60C060FF
+  instance_identifier = egerside_r
+  x = 0
+  y = 0
+  width = 4
+  height = 1400
+  anchor_point = top-right
+  color = #4A3626
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
 }
 
 element {
   element_type = shape
-  instance_identifier = corner_0_v
-  x = 4
-  y = 4
-  width = 1
-  height = 16
-  anchor_point = top-left
-  color = #60C060FF
+  instance_identifier = egerbottom_vignette
+  x = 0
+  y = 0
+  width = 2000
+  height = 30
+  anchor_point = bottom-left
+  color = #18130E
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
 }
 
 element {
   element_type = shape
-  instance_identifier = corner_1_h
-  x = 407
-  y = 4
-  width = 16
-  height = 1
+  instance_identifier = egertop_vignette
+  x = 0
+  y = 0
+  width = 2000
+  height = 30
   anchor_point = top-left
-  color = #60C060FF
-}
-
-element {
-  element_type = shape
-  instance_identifier = corner_1_v
-  x = 422
-  y = 4
-  width = 1
-  height = 16
-  anchor_point = top-left
-  color = #60C060FF
-}
-
-element {
-  element_type = shape
-  instance_identifier = corner_2_h
-  x = 4
-  y = 235
-  width = 16
-  height = 1
-  anchor_point = top-left
-  color = #60C060FF
-}
-
-element {
-  element_type = shape
-  instance_identifier = corner_2_v
-  x = 4
-  y = 220
-  width = 1
-  height = 16
-  anchor_point = top-left
-  color = #60C060FF
-}
-
-element {
-  element_type = shape
-  instance_identifier = corner_3_h
-  x = 407
-  y = 235
-  width = 16
-  height = 1
-  anchor_point = top-left
-  color = #60C060FF
-}
-
-element {
-  element_type = shape
-  instance_identifier = corner_3_v
-  x = 422
-  y = 220
-  width = 1
-  height = 16
-  anchor_point = top-left
-  color = #60C060FF
+  color = #18130E
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
 }
 
 element {
   element_type = text_v2
-  instance_identifier = header
-  x = 16
-  y = 8
-  width = 240
-  height = 16
+  instance_identifier = egertitle
+  x = 24
+  y = 20
+  width = 560
+  height = 72
   anchor_point = top-left
-  source = ПОДКЛЮЧЕНИЕ
+  source = ЕГЕРЬ
   source_mode = direct
   shadow = true
-  enable_scrolling = false
-  auto_line_wrapping = false
-  base_color = #8CFF8CFF
-  scale = 1.2
-}
-
-element {
-  element_type = text_v2
-  instance_identifier = subtitle
-  x = 16
-  y = 25
-  width = 240
-  height = 8
-  anchor_point = top-left
-  source = УСТАНОВКА СВЯЗИ
-  source_mode = direct
-  shadow = false
-  enable_scrolling = false
-  auto_line_wrapping = false
-  base_color = #56AE56FF
-  scale = 0.55
+  base_color = #231F19
+  scale = 2.8
 }
 
 element {
   element_type = shape
-  instance_identifier = header_rule
-  x = 16
-  y = 37
-  width = 96
-  height = 1
+  instance_identifier = egerrule
+  x = 26
+  y = 54
+  width = 120
+  height = 2
   anchor_point = top-left
-  color = #60C060FF
+  color = #8B2E22
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
 }
 
 element {
   element_type = text_v2
-  instance_identifier = pda_label
-  x = 331
-  y = 10
-  width = 80
-  height = 8
+  instance_identifier = egersub
+  x = 27
+  y = 62
+  width = 640
+  height = 16
   anchor_point = top-left
-  source = ПДА-1.0
+  source = ОПЫТНАЯ ДЕГУСТАЦИОННАЯ СТАНЦИЯ · 1939
   source_mode = direct
   shadow = false
-  enable_scrolling = false
-  auto_line_wrapping = false
-  base_color = #56AE56FF
-  scale = 0.55
+  base_color = #6B6354
+  scale = 1.0
 }
 
 element {
   element_type = text_v2
-  instance_identifier = pda_state
-  x = 331
-  y = 20
-  width = 80
-  height = 8
-  anchor_point = top-left
-  source = [ СВЯЗЬ ]
-  source_mode = direct
-  shadow = false
-  enable_scrolling = false
-  auto_line_wrapping = false
-  base_color = #60C060FF
-  scale = 0.55
-}
-
-element {
-  element_type = shape
-  instance_identifier = status_rule
+  instance_identifier = egerheadline
   x = 0
-  y = 220
-  width = 427
-  height = 1
-  anchor_point = top-left
-  color = #60C060FF
+  y = -150
+  width = 1200
+  height = 48
+  anchor_point = bottom-centered
+  source = МНОГОИГРОКОВАЯ
+  source_mode = direct
+  shadow = true
+  base_color = #8B2E22
+  scale = 1.6
 }
 
 element {
   element_type = text_v2
-  instance_identifier = status
-  x = 12
-  y = 224
-  width = 180
-  height = 8
-  anchor_point = top-left
-  source = [ ПДА: ОНЛАЙН ]
+  instance_identifier = egersub
+  x = 0
+  y = -96
+  width = 1200
+  height = 24
+  anchor_point = bottom-centered
+  source = ПОДКЛЮЧЕНИЕ К СТАНЦИИ
   source_mode = direct
   shadow = false
-  enable_scrolling = false
-  auto_line_wrapping = false
-  base_color = #60C060FF
-  scale = 0.55
+  base_color = #C4B5A5
+  scale = 1.0
 }
 
 element {
   element_type = text_v2
-  instance_identifier = status_right
-  x = 323
-  y = 224
-  width = 100
-  height = 8
-  anchor_point = top-left
-  source = СЕКТОР 07 / 04:17
+  instance_identifier = egerfooter
+  x = 0
+  y = -28
+  width = 900
+  height = 12
+  anchor_point = bottom-centered
+  source = © 1944 Наркомат пищевой промышленности
   source_mode = direct
   shadow = false
-  enable_scrolling = false
-  auto_line_wrapping = false
-  base_color = #56AE56FF
-  scale = 0.5
+  base_color = #C4B5A5
+  scale = 0.7
 }

@@ -135,11 +135,33 @@ final class UI {
     /** Full-window backdrop: picture (cover-scaled + dimmed) or gradient with a faint pixel pattern. */
     static final class Backdrop extends JPanel {
         private final Theme t;
+        private final Scene scene;
         private BufferedImage cache;
+        private javax.swing.Timer tick;
+        private final long t0 = System.nanoTime();
 
         Backdrop(Theme t) {
             super(null);
             this.t = t;
+            this.scene = t.scene != null ? new Scene() : null;
+        }
+
+        @Override
+        public void addNotify() {
+            super.addNotify();
+            if (scene != null && tick == null) {
+                tick = new javax.swing.Timer(50, e -> repaint());
+                tick.start();
+            }
+        }
+
+        @Override
+        public void removeNotify() {
+            if (tick != null) {
+                tick.stop();
+                tick = null;
+            }
+            super.removeNotify();
         }
 
         @Override
@@ -147,13 +169,20 @@ final class UI {
             int w = getWidth(), h = getHeight();
             if (cache == null || cache.getWidth() != w || cache.getHeight() != h) cache = render(w, h);
             g.drawImage(cache, 0, 0, null);
+            if (scene != null) {
+                Graphics2D g2 = smooth(g);
+                g2.scale(w / (double) Scene.W, h / (double) Scene.H);
+                scene.paint(g2, (System.nanoTime() - t0) / 1e9);
+                g2.dispose();
+            }
         }
 
         private BufferedImage render(int w, int h) {
             BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
             Graphics2D g = smooth(img.getGraphics());
             if (t.style == Theme.Style.HAND) {
-                renderHand(g, w, h);
+                if (t.scene != null) renderScene(g, w, h);
+                else renderHand(g, w, h);
                 g.dispose();
                 return img;
             }
@@ -184,6 +213,18 @@ final class UI {
             g.fillRect(0, 0, w, h);
             g.dispose();
             return img;
+        }
+
+        /** Готовая комната: рисунок уже несёт свет и материалы, живые детали — в Scene. */
+        private void renderScene(Graphics2D g, int w, int h) {
+            BufferedImage s = t.scene;
+            double k = Math.max((double) w / s.getWidth(), (double) h / s.getHeight());
+            int iw = (int) Math.ceil(s.getWidth() * k), ih = (int) Math.ceil(s.getHeight() * k);
+            g.drawImage(s, (w - iw) / 2, (h - ih) / 2, iw, ih, null);
+            g.setPaint(new GradientPaint(0, 0, new Color(28, 22, 14, 26), 0, h * 0.2f, new Color(0, 0, 0, 0)));
+            g.fillRect(0, 0, w, (int) (h * 0.2f));
+            g.setPaint(new GradientPaint(0, h * 0.84f, new Color(0, 0, 0, 0), 0, h, new Color(24, 17, 10, 40)));
+            g.fillRect(0, (int) (h * 0.84f), w, h);
         }
 
         /** Paper poster: grain, blueprint grid, ink illustration fading in from the left, vignette. */
@@ -326,6 +367,17 @@ final class UI {
             g.setColor(alpha(Color.WHITE, 60));
             g.drawLine(6, 2, w - 8, 2);
             Ink.tornBorder(g, 1.5f, 1.5f, w - 3f, h - 5f, alpha(ink, 235), w * 31L + h);
+            // карточка приколота к стене двумя латунными кнопками
+            for (int px : new int[]{16, w - 16}) {
+                g.setColor(new Color(30, 24, 16, 70));
+                g.fillOval(px - 4, 10, 10, 8);
+                g.setColor(new Color(96, 72, 38));
+                g.fillOval(px - 4, 6, 9, 9);
+                g.setColor(new Color(196, 158, 92));
+                g.fillOval(px - 3, 7, 7, 7);
+                g.setColor(new Color(248, 226, 174, 190));
+                g.fillOval(px - 2, 8, 3, 2);
+            }
             g.dispose();
             return img;
         }
