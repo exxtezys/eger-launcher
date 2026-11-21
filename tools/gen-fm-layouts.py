@@ -198,24 +198,28 @@ SCREENS = [
 
 def build(identifier, headline, sub_headline, dark, button_ids):
     elements = paper_sheet(dark)
+    elements += new_header(ACCENT, MUTED)
 
     if identifier == "title_screen":
-        elements += new_header(ACCENT, MUTED)
+        if headline:
+            elements.append(text("newheadline", headline, 30, 148, 500, 20,
+                                 "top-left", ACCENT, 1.15, False))
+        if sub_headline:
+            elements.append(text("newsubhead", sub_headline, 30, 164, 500, 14,
+                                 "top-left", MUTED, 0.85, False))
         elements += new_footer()
         elements += [new_button(b) for b in button_ids]
     else:
-        # For non-title screens: dark band + header + sub-headline + footer
         if dark:
             elements.append(shape("newband", CREAM_SHADE, 0, 0, 2000, 50, "mid-left"))
-        elements += new_header(ACCENT, MUTED)
-        # sub-headline only for screens that have them (progress/receiving/death show)
+        if headline:
+            elements.append(text("newheadline", headline, 0, -95, 1200, 28,
+                                 "bottom-centered", ACCENT, 1.8, True))
         if sub_headline:
-            elements.append(text("newsubhead", sub_headline, 0, -70, 1200, 20,
-                                 "bottom-centered", ACCENT_HOVER, 1.2, True))
+            elements.append(text("newsubhead", sub_headline, 0, -68, 1200, 16,
+                                 "bottom-centered", MUTED, 1.0, False))
         elements += new_footer()
-        if identifier == "pause_screen":
-            elements += [new_button(b) for b in button_ids]
-        if identifier == "death_screen":
+        if button_ids:
             elements += [new_button(b) for b in button_ids]
 
     return layout(identifier, elements)

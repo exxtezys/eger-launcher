@@ -249,6 +249,36 @@ element {
 
 element {
   element_type = text_v2
+  instance_identifier = newheadline
+  x = 30
+  y = 148
+  width = 500
+  height = 20
+  anchor_point = top-left
+  source = ДОСТУПНЫЕ РЕЖИМЫ
+  source_mode = direct
+  shadow = false
+  base_color = #8B2E22
+  scale = 1.15
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = newsubhead
+  x = 30
+  y = 164
+  width = 500
+  height = 14
+  anchor_point = top-left
+  source = ОБЪЯВЛЕНИЕ ОТДЕЛА МАЙОНЕЗА
+  source_mode = direct
+  shadow = false
+  base_color = #A88866
+  scale = 0.85
+}
+
+element {
+  element_type = text_v2
   instance_identifier = newfooter
   x = 0
   y = -20
