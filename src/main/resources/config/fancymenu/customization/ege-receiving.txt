@@ -248,48 +248,33 @@ element {
 }
 
 element {
-  element_type = shape
-  instance_identifier = newband
-  x = 0
-  y = 0
-  width = 2000
-  height = 50
-  anchor_point = mid-left
-  color = #D9C495
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-}
-
-element {
   element_type = text_v2
   instance_identifier = newheadline
-  x = 0
-  y = -95
-  width = 1200
-  height = 28
-  anchor_point = bottom-centered
+  x = 30
+  y = 148
+  width = 700
+  height = 22
+  anchor_point = top-left
   source = ПРИЁМ
   source_mode = direct
   shadow = true
   base_color = #8B2E22
-  scale = 1.8
+  scale = 1.25
 }
 
 element {
   element_type = text_v2
   instance_identifier = newsubhead
-  x = 0
-  y = -68
-  width = 1200
-  height = 16
-  anchor_point = bottom-centered
+  x = 30
+  y = 168
+  width = 700
+  height = 14
+  anchor_point = top-left
   source = Загрузка сохранения партии
   source_mode = direct
   shadow = false
   base_color = #A88866
-  scale = 1.0
+  scale = 0.9
 }
 
 element {

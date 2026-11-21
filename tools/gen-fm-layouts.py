@@ -210,14 +210,12 @@ def build(identifier, headline, sub_headline, dark, button_ids):
         elements += new_footer()
         elements += [new_button(b) for b in button_ids]
     else:
-        if dark:
-            elements.append(shape("newband", CREAM_SHADE, 0, 0, 2000, 50, "mid-left"))
         if headline:
-            elements.append(text("newheadline", headline, 0, -95, 1200, 28,
-                                 "bottom-centered", ACCENT, 1.8, True))
+            elements.append(text("newheadline", headline, 30, 148, 700, 22,
+                                 "top-left", ACCENT, 1.25, True))
         if sub_headline:
-            elements.append(text("newsubhead", sub_headline, 0, -68, 1200, 16,
-                                 "bottom-centered", MUTED, 1.0, False))
+            elements.append(text("newsubhead", sub_headline, 30, 168, 700, 14,
+                                 "top-left", MUTED, 0.9, False))
         elements += new_footer()
         if button_ids:
             elements += [new_button(b) for b in button_ids]
