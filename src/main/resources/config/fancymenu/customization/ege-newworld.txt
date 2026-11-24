@@ -7,207 +7,174 @@ layout-meta {
   render_custom_elements_behind_vanilla = true
 }
 
+menu_background {
+  image_path = [source:location]{"placeholder":"local","values":{"path":"/config/fancymenu/assets/anim_bg.gif"}}
+  slide = false
+  repeat_texture = false
+  background_type = image
+}
+
+customization {
+  action = backgroundoptions
+  keepaspectratio = true
+}
+
 element {
   element_type = shape
-  instance_identifier = newtopaper
-  x = 0
-  y = 0
-  width = 2000
-  height = 1400
+  instance_identifier = panel_left
+  x = 40
+  y = 80
+  width = 420
+  height = 520
+  anchor_point = top-left
+  color = #F5E8C6
+  corner_radius_top_left = 12
+  corner_radius_top_right = 12
+  corner_radius_bottom_left = 12
+  corner_radius_bottom_right = 12
+  base_opacity = 0.85
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = panel_right
+  x = 480
+  y = 80
+  width = 420
+  height = 520
   anchor_point = top-left
   color = #D9C495
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
+  corner_radius_top_left = 12
+  corner_radius_top_right = 12
+  corner_radius_bottom_left = 12
+  corner_radius_bottom_right = 12
+  base_opacity = 0.75
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
-  element_type = shape
-  instance_identifier = newtopstrip1
-  x = 0
-  y = 0
-  width = 2000
-  height = 3
-  anchor_point = top-left
-  color = #6B4222
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-}
-
-element {
-  element_type = shape
-  instance_identifier = newtopstrip2
-  x = 0
-  y = 3
-  width = 2000
-  height = 3
-  anchor_point = top-left
-  color = #8B2E22
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-}
-
-element {
-  element_type = shape
-  instance_identifier = newrivet_0
-  x = 20
-  y = 80
-  width = 8
-  height = 8
-  anchor_point = top-left
-  color = #4A2C1A
-  corner_radius_top_left = 4
-  corner_radius_top_right = 4
-  corner_radius_bottom_left = 4
-  corner_radius_bottom_right = 4
-}
-
-element {
-  element_type = shape
-  instance_identifier = newrivet_1
-  x = 20
-  y = 104
-  width = 8
-  height = 8
-  anchor_point = top-left
-  color = #4A2C1A
-  corner_radius_top_left = 4
-  corner_radius_top_right = 4
-  corner_radius_bottom_left = 4
-  corner_radius_bottom_right = 4
-}
-
-element {
-  element_type = shape
-  instance_identifier = newrivet_2
-  x = 20
-  y = 128
-  width = 8
-  height = 8
-  anchor_point = top-left
-  color = #4A2C1A
-  corner_radius_top_left = 4
-  corner_radius_top_right = 4
-  corner_radius_bottom_left = 4
-  corner_radius_bottom_right = 4
-}
-
-element {
-  element_type = shape
-  instance_identifier = newrivet_3
-  x = 20
-  y = 152
-  width = 8
-  height = 8
-  anchor_point = top-left
-  color = #4A2C1A
-  corner_radius_top_left = 4
-  corner_radius_top_right = 4
-  corner_radius_bottom_left = 4
-  corner_radius_bottom_right = 4
-}
-
-element {
-  element_type = shape
-  instance_identifier = newrivet_4
-  x = 20
-  y = 176
-  width = 8
-  height = 8
-  anchor_point = top-left
-  color = #4A2C1A
-  corner_radius_top_left = 4
-  corner_radius_top_right = 4
-  corner_radius_bottom_left = 4
-  corner_radius_bottom_right = 4
-}
-
-element {
-  element_type = shape
-  instance_identifier = newbottombar
-  x = 0
-  y = 0
-  width = 2000
-  height = 28
-  anchor_point = bottom-left
-  color = #8B2E22
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-}
-
-element {
-  element_type = shape
-  instance_identifier = newvignette_top
-  x = 0
-  y = 0
-  width = 2000
-  height = 16
-  anchor_point = top-left
-  color = #1A1410
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-}
-
-element {
-  element_type = shape
-  instance_identifier = newvignette_bot
-  x = 0
-  y = 0
-  width = 2000
-  height = 16
-  anchor_point = bottom-left
-  color = #1A1410
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-}
-
-element {
-  element_type = text_v2
-  instance_identifier = newtitle1
-  x = 36
-  y = 30
-  width = 600
-  height = 80
-  anchor_point = top-left
   source = ЕГЕРЬ
   source_mode = direct
   shadow = true
+  scale = 2.60
   base_color = #8B2E22
-  scale = 3.2
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  code_block_single_color = #737373FF
+  code_block_multi_color = #565656FF
+  headline_line_color = #A9A9A9FF
+  separation_line_color = #A9A9A9FF
+  hyperlink_color = #0771FCFF
+  quote_color = #818181FF
+  quote_indent = 8.0
+  quote_italic = false
+  bullet_list_dot_color = #A9A9A9FF
+  bullet_list_indent = 8.0
+  bullet_list_spacing = 3.0
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = title1
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 60
+  y = 90
+  width = 400
+  height = 60
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
-  element_type = text_v2
-  instance_identifier = newtitle2
-  x = 34
-  y = 34
-  width = 580
-  height = 76
-  anchor_point = top-left
   source = ЕГЕРЬ
   source_mode = direct
   shadow = true
-  base_color = #A88866
-  scale = 3.2
+  scale = 2.60
+  base_color = #C9A96E
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  code_block_single_color = #737373FF
+  code_block_multi_color = #565656FF
+  headline_line_color = #A9A9A9FF
+  separation_line_color = #A9A9A9FF
+  hyperlink_color = #0771FCFF
+  quote_color = #818181FF
+  quote_indent = 8.0
+  quote_italic = false
+  bullet_list_dot_color = #A9A9A9FF
+  bullet_list_indent = 8.0
+  bullet_list_spacing = 3.0
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = title2
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 56
+  y = 94
+  width = 400
+  height = 60
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
   element_type = shape
-  instance_identifier = newrule1
-  x = 30
-  y = 88
-  width = 140
+  instance_identifier = rule1
+  x = 60
+  y = 150
+  width = 120
   height = 3
   anchor_point = top-left
   color = #8B2E22
@@ -215,14 +182,28 @@ element {
   corner_radius_top_right = 0
   corner_radius_bottom_left = 0
   corner_radius_bottom_right = 0
+  base_opacity = 1.00
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
   element_type = shape
-  instance_identifier = newrule2
-  x = 30
-  y = 93
-  width = 120
+  instance_identifier = rule2
+  x = 60
+  y = 155
+  width = 90
   height = 2
   anchor_point = top-left
   color = #C9A96E
@@ -230,64 +211,378 @@ element {
   corner_radius_top_right = 0
   corner_radius_bottom_left = 0
   corner_radius_bottom_right = 0
+  base_opacity = 1.00
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
-  element_type = text_v2
-  instance_identifier = newsub
-  x = 28
-  y = 105
-  width = 620
-  height = 28
-  anchor_point = top-left
   source = НАРКОМАТ ПИЩЕВОЙ ПРОМЫШЛЕННОСТИ · 1939
   source_mode = direct
   shadow = false
+  scale = 1.00
   base_color = #A88866
-  scale = 1.4
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  code_block_single_color = #737373FF
+  code_block_multi_color = #565656FF
+  headline_line_color = #A9A9A9FF
+  separation_line_color = #A9A9A9FF
+  hyperlink_color = #0771FCFF
+  quote_color = #818181FF
+  quote_indent = 8.0
+  quote_italic = false
+  bullet_list_dot_color = #A9A9A9FF
+  bullet_list_indent = 8.0
+  bullet_list_spacing = 3.0
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = sub
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 60
+  y = 165
+  width = 400
+  height = 20
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
-  element_type = text_v2
-  instance_identifier = newheadline
-  x = 30
-  y = 148
-  width = 700
-  height = 22
-  anchor_point = top-left
   source = НОВАЯ СТАНЦИЯ
   source_mode = direct
   shadow = true
+  scale = 1.30
   base_color = #8B2E22
-  scale = 1.25
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  code_block_single_color = #737373FF
+  code_block_multi_color = #565656FF
+  headline_line_color = #A9A9A9FF
+  separation_line_color = #A9A9A9FF
+  hyperlink_color = #0771FCFF
+  quote_color = #818181FF
+  quote_indent = 8.0
+  quote_italic = false
+  bullet_list_dot_color = #A9A9A9FF
+  bullet_list_indent = 8.0
+  bullet_list_spacing = 3.0
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = headline
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 60
+  y = 200
+  width = 400
+  height = 24
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
-  element_type = text_v2
-  instance_identifier = newsubhead
-  x = 30
-  y = 168
-  width = 700
-  height = 14
-  anchor_point = top-left
   source = Создание новой дегустационной точки
   source_mode = direct
   shadow = false
+  scale = 0.90
   base_color = #A88866
-  scale = 0.9
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  code_block_single_color = #737373FF
+  code_block_multi_color = #565656FF
+  headline_line_color = #A9A9A9FF
+  separation_line_color = #A9A9A9FF
+  hyperlink_color = #0771FCFF
+  quote_color = #818181FF
+  quote_indent = 8.0
+  quote_italic = false
+  bullet_list_dot_color = #A9A9A9FF
+  bullet_list_indent = 8.0
+  bullet_list_spacing = 3.0
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = subhead
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 60
+  y = 222
+  width = 400
+  height = 16
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
-  element_type = text_v2
-  instance_identifier = newfooter
-  x = 0
-  y = -20
-  width = 900
-  height = 10
-  anchor_point = bottom-centered
   source = © 1944 Опытная дегустационная станция
   source_mode = direct
   shadow = false
+  scale = 0.60
   base_color = #A88866
-  scale = 0.6
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  code_block_single_color = #737373FF
+  code_block_multi_color = #565656FF
+  headline_line_color = #A9A9A9FF
+  separation_line_color = #A9A9A9FF
+  hyperlink_color = #0771FCFF
+  quote_color = #818181FF
+  quote_indent = 8.0
+  quote_italic = false
+  bullet_list_dot_color = #A9A9A9FF
+  bullet_list_indent = 8.0
+  bullet_list_spacing = 3.0
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = footer
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = bottom-centered
+  x = 0
+  y = -12
+  width = 900
+  height = 12
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
+
+element {
+  element_type = shape
+  instance_identifier = rivet_0
+  x = 24
+  y = 100
+  width = 10
+  height = 10
+  anchor_point = top-left
+  color = #6B4222
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 1.00
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = rivet_1
+  x = 24
+  y = 170
+  width = 10
+  height = 10
+  anchor_point = top-left
+  color = #6B4222
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 1.00
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = rivet_2
+  x = 24
+  y = 240
+  width = 10
+  height = 10
+  anchor_point = top-left
+  color = #6B4222
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 1.00
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = rivet_3
+  x = 24
+  y = 310
+  width = 10
+  height = 10
+  anchor_point = top-left
+  color = #6B4222
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 1.00
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = rivet_4
+  x = 24
+  y = 380
+  width = 10
+  height = 10
+  anchor_point = top-left
+  color = #6B4222
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 1.00
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = rivet_5
+  x = 24
+  y = 450
+  width = 10
+  height = 10
+  anchor_point = top-left
+  color = #6B4222
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 1.00
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+

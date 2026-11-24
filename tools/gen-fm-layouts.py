@@ -1,234 +1,232 @@
 #!/usr/bin/env python3
-"""
-FancyMenu layouts — Complete redesign for "Егорь" 1939 theme.
-New visual language: bold asymmetrical paper, red accent strips,
-dynamic header blocks, redesigned buttons.
-
-Palette: Cream paper (#F5E8C6), Oxblood red (#8B2E22), Brass (#C9A96E),
-Ink black (#211812), Muted parchment (#A88866).
-All coordinates for Minecraft's default 854x480 window at GUI scale 2 → 427x240 logical canvas.
-"""
-
-import os
+"""FancyMenu layouts — Егерь 1939 room scene, rich composition."""
+import os, random
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "src", "main", "resources", "config", "fancymenu", "customization")
 
-# ── constants ──────────────────────────────────────────────────────────────
-CREAM          = "#F5E8C6"          # light paper/base
-CREAM_SHADE    = "#D9C495"          # paper shadow/wear
-ACCENT         = "#8B2E22"          # oxblood red
-ACCENT_HOVER   = "#A63B2C"          # accent hover
-MUTED          = "#A88866"          # secondary text / parchment
-HIGHLIGHT      = "#C9A96E"          # brass highlight
-RULER          = "#6B4222"          # dark ruler / strip
-VIGNETTE       = "#1A1410"          # deep vignette
-TITLE          = "ЕГЕРЬ"
-SUBTITLE       = "НАРКОМАТ ПИЩЕВОЙ ПРОМЫШЛЕННОСТИ · 1939"
-FOOTER         = "© 1944 Опытная дегустационная станция"
+TITLE = "ЕГЕРЬ"
+SUBTITLE = "НАРКОМАТ ПИЩЕВОЙ ПРОМЫШЛЕННОСТИ · 1939"
+FOOTER = "© 1944 Опытная дегустационная станция"
 
+CREAM = "#F5E8C6"; CREAM_SHADE = "#D9C495"; INK = "#211812"
+ACCENT = "#8B2E22"; ACCENT_HOVER = "#A63B2C"; MUTED = "#A88866"
+HIGHLIGHT = "#C9A96E"; RULER = "#6B4222"; VIGNETTE = "#1A1410"
 
-# ── vanilla_button — uses inline colors so no forward-ref issues ────────────
-def vanilla_button(eid, base="#8B2E22", hover="#211812"):
-    return "\n".join([
-        "vanilla_button {",
-        "  element_type = vanilla_button",
-        "  instance_identifier = %s" % eid,
-        "  label_base_color = %s" % base,
-        "  label_hover_color = %s" % hover,
-        "  label_scale = 1.0",
-        "  label_shadow = true",
-        "}",
-        "",
-    ])
+def uid(name): return "%s-%s" % (name, random.randint(1000, 9999))
 
+def layout(identifier, body):
+    return "type = fancymenu_layout\n\nlayout-meta {\n  identifier = %s\n  layout_index = 0\n  is_enabled = true\n  render_custom_elements_behind_vanilla = true\n}\n\nmenu_background {\n  image_path = [source:location]{\"placeholder\":\"local\",\"values\":{\"path\":\"/config/fancymenu/assets/anim_bg.gif\"}}\n  slide = false\n  repeat_texture = false\n  background_type = image\n}\n\ncustomization {\n  action = backgroundoptions\n  keepaspectratio = true\n}\n\n%s\n" % (identifier, body)
 
-# ── primitives ─────────────────────────────────────────────────────────────
-def layout(identifier, elements):
-    parts = [
-        "type = fancymenu_layout",
-        "",
-        "layout-meta {",
-        "  identifier = %s" % identifier,
-        "  layout_index = 0",
-        "  is_enabled = true",
-        "  render_custom_elements_behind_vanilla = true",
-        "}",
-        "",
-    ]
-    parts.extend(elements)
-    return "\n".join(parts).rstrip() + "\n"
+def image(eid, src, x, y, w, h, anchor="top-left", opacity=1.0, fade="no_fading"):
+    return """element {
+  source = [source:local]/config/fancymenu/assets/%s
+  repeat_texture = false
+  nine_slice_texture = false
+  nine_slice_texture_border_x = 5
+  nine_slice_texture_border_y = 5
+  element_type = image
+  instance_identifier = %s
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = %s
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = %.2f
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = %s
+  x = %d
+  y = %d
+  width = %d
+  height = %d
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
 
+""" % (src, eid, fade, opacity, anchor, x, y, w, h)
 
-def text(eid, value, x, y, w, h, anchor, color, scale=1.0, shadow=False):
-    return "\n".join([
-        "element {",
-        "  element_type = text_v2",
-        "  instance_identifier = %s" % eid,
-        "  x = %s" % x,
-        "  y = %s" % y,
-        "  width = %s" % w,
-        "  height = %s" % h,
-        "  anchor_point = %s" % anchor,
-        "  source = %s" % value,
-        "  source_mode = direct",
-        "  shadow = %s" % ("true" if shadow else "false"),
-        "  base_color = %s" % color,
-        "  scale = %s" % scale,
-        "}",
-        "",
-    ])
+def text(eid, value, x, y, w, h, anchor, color, scale=1.0, shadow=True):
+    return """element {
+  source = %s
+  source_mode = direct
+  shadow = %s
+  scale = %.2f
+  base_color = %s
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  code_block_single_color = #737373FF
+  code_block_multi_color = #565656FF
+  headline_line_color = #A9A9A9FF
+  separation_line_color = #A9A9A9FF
+  hyperlink_color = #0771FCFF
+  quote_color = #818181FF
+  quote_indent = 8.0
+  quote_italic = false
+  bullet_list_dot_color = #A9A9A9FF
+  bullet_list_indent = 8.0
+  bullet_list_spacing = 3.0
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = %s
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = %s
+  x = %d
+  y = %d
+  width = %d
+  height = %d
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
 
+""" % (value, "true" if shadow else "false", scale, color, eid, anchor, x, y, w, h)
 
-def shape(eid, color, x, y, w, h, anchor, radius=0):
-    return "\n".join([
-        "element {",
-        "  element_type = shape",
-        "  instance_identifier = %s" % eid,
-        "  x = %s" % x,
-        "  y = %s" % y,
-        "  width = %s" % w,
-        "  height = %s" % h,
-        "  anchor_point = %s" % anchor,
-        "  color = %s" % color,
-        "  corner_radius_top_left = %s" % radius,
-        "  corner_radius_top_right = %s" % radius,
-        "  corner_radius_bottom_left = %s" % radius,
-        "  corner_radius_bottom_right = %s" % radius,
-        "}",
-        "",
-    ])
+def shape(eid, color, x, y, w, h, anchor, radius=0, opacity=1.0):
+    return """element {
+  element_type = shape
+  instance_identifier = %s
+  x = %d
+  y = %d
+  width = %d
+  height = %d
+  anchor_point = %s
+  color = %s
+  corner_radius_top_left = %d
+  corner_radius_top_right = %d
+  corner_radius_bottom_left = %d
+  corner_radius_bottom_right = %d
+  base_opacity = %.2f
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
 
+""" % (eid, x, y, w, h, anchor, color, radius, radius, radius, radius, opacity)
 
-# ── build paper sheet with rivets (loop-based) ────────────────────────────
-def paper_sheet(dark):
-    base = CREAM_SHADE if dark else CREAM
-    rivets_color = "#4A2C1A" if dark else "#7B5130"
-    elements = [
-        shape("newtopaper", base, 0, 0, 2000, 1400, "top-left"),
-        # double top accent strip
-        shape("newtopstrip1", RULER, 0, 0, 2000, 3, "top-left"),
-        shape("newtopstrip2", ACCENT, 0, 3, 2000, 3, "top-left"),
-    ]
-    # brass rivet line left side
-    for i in range(5):
-        y = 80 + i * 24
-        elements.append(shape("newrivet_%d" % i, rivets_color, 20, y, 8, 8, "top-left", radius=4))
-    # brass accent bar bottom
-    elements.append(shape("newbottombar", ACCENT, 0, 0, 2000, 28, "bottom-left"))
-    # vignette bands
-    elements.append(shape("newvignette_top", VIGNETTE, 0, 0, 2000, 16, "top-left"))
-    elements.append(shape("newvignette_bot", VIGNETTE, 0, 0, 2000, 16, "bottom-left"))
-    return elements
+def btn(eid, label, x, y, w=220, h=40):
+    return """element {
+  button_element_executable_block_identifier = %s
+  [executable_block:%s][type:generic] = [executables:]
+  restartbackgroundanimations = true
+  loopbackgroundanimations = true
+  nine_slice_custom_background = false
+  nine_slice_border_x = 5
+  nine_slice_border_y = 5
+  hoverlabel = 
+  label = %s
+  navigatable = true
+  widget_active_state_requirement_container_identifier = %s
+  [loading_requirement_container_meta:%s] = [groups:][instances:]
+  element_type = custom_button
+  instance_identifier = %s
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = %d
+  y = %d
+  width = %d
+  height = %d
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
 
+""" % (uid("blk"), uid("blk"), label, uid("req"), uid("req"), eid, x, y, w, h)
 
-def new_header(brand_color, sub_color):
-    """Bold header: large title, rule, subtitle in shifted positions."""
-    return [
-        # large offset title (double-layer for depth)
-        text("newtitle1", TITLE, 36, 30, 600, 80, "top-left", brand_color, 3.2, True),
-        text("newtitle2", TITLE, 34, 34, 580, 76, "top-left", sub_color, 3.2, True),
-        # double rule
-        shape("newrule1", ACCENT, 30, 88, 140, 3, "top-left"),
-        shape("newrule2", HIGHLIGHT, 30, 93, 120, 2, "top-left"),
-        # subtitle block
-        text("newsub", SUBTITLE, 28, 105, 620, 28, "top-left", MUTED, 1.4, False),
-    ]
-
-
-def new_footer():
-    return [text("newfooter", FOOTER, 0, -20, 900, 10, "bottom-centered", MUTED, 0.6)]
-
-
-def new_button(eid, base="#8B2E22", hover="#211812"):
-    return "\n".join([
-        "vanilla_button {",
-        "  element_type = vanilla_button",
-        "  instance_identifier = %s" % eid,
-        "  label_base_color = %s" % base,
-        "  label_hover_color = %s" % hover,
-        "  label_scale = 1.1",
-        "  label_shadow = true",
-        "}",
-        "",
-    ])
-
-
-# ── screen definitions — entirely reimagined ───────────────────────────────
-# Each entry: (file_name, screen_identifier, headline, sub_headline, dark, button_ids)
-# dark=False means no ambient band; dark=True adds a dark shade band at top.
+# ── SCREENS ────────────────────────────────────────────────────────────────
 SCREENS = [
-    # title_screen — main menu, full width
-    ("ege-title.txt",   "title_screen",   "ДОСТУПНЫЕ РЕЖИМЫ", "ОБЪЯВЛЕНИЕ ОТДЕЛА МАЙОНЕЗА",     False, ["mc_titlescreen_singleplayer_button",
-                                                              "mc_titlescreen_multiplayer_button",
-                                                              "mc_titlescreen_options_button",
-                                                              "mc_titlescreen_quit_button"]),
-
-    # progress_screen — loading
-    ("ege-loading.txt", "progress_screen", "ДЕГУСТАЦИЯ",      "Маёнез maturity phase",               True,  []),
-
-    # connect_screen — multiplayer
-    ("ege-connect.txt", "connect_screen",  "ПОДКЛЮЧЕНИЕ",     "К станции через радиоволны",          True,  []),
-
-    # receiving_level_screen
-    ("ege-receiving.txt", "receiving_level_screen", "ПРИЁМ",        "Загрузка сохранения партии",          True,  []),
-
-    # pause_screen — F4
-    ("ege-pause.txt",   "pause_screen",    "ПАУЗА",          "Нажми R для продолжения",             True,  ["mc_pausescreen_return_to_game_button",
-                                                              "mc_pausescreen_options_button",
-                                                              "mc_pausescreen_quit_button"]),
-
-    # join_multiplayer_screen
-    ("ege-stations.txt","join_multiplayer_screen", "СТАНЦИИ",       "Доступные дегустационные точки",     True,  []),
-
-    # options_screen
-    ("ege-options.txt", "options_screen",  "ОПЦИИ",          "Настройка дегустации",               True,  []),
-
-    # create_world_screen
-    ("ege-newworld.txt","create_world_screen", "НОВАЯ СТАНЦИЯ",  "Создание новой дегустационной точки", True,  []),
-
-    # death_screen
-    ("ege-death.txt",   "death_screen",    "КОНЕЦ МАРИНАДИ",  "Дегустационный кома",                 True,  ["mc_deathscreen_respawn_button",
-                                                              "mc_deathscreen_titlemenu_button"]),
-
-    # disconnected_screen
-    ("ege-disconnected.txt", "disconnected_screen", "ОТСЫКЛЫВАЕМСЯ", "Станция временно недоступна", True,  []),
+    ("ege-title.txt", "title_screen", "ДОСТУПНЫЕ РЕЖИМЫ", "ОБЪЯВЛЕНИЕ ОТДЕЛА МАЙОНЕЗА", [
+        ("Играть", "mc_titlescreen_singleplayer_button"),
+        ("Сервер", "mc_titlescreen_multiplayer_button"),
+        ("Настройки", "mc_titlescreen_options_button"),
+        ("Выйти", "mc_titlescreen_quit_button"),
+    ]),
+    ("ege-loading.txt", "progress_screen", "ДЕГУСТАЦИЯ", "Маёнез maturity phase", []),
+    ("ege-connect.txt", "connect_screen", "ПОДКЛЮЧЕНИЕ", "К станции через радиоволны", []),
+    ("ege-receiving.txt", "receiving_level_screen", "ПРИЁМ", "Загрузка сохранения партии", []),
+    ("ege-pause.txt", "pause_screen", "ПАУЗА", "Нажми R для продолжения", [
+        ("Вернуться", "mc_pausescreen_return_to_game_button"),
+        ("Настройки", "mc_pausescreen_options_button"),
+        ("Выйти", "mc_pausescreen_quit_button"),
+    ]),
+    ("ege-stations.txt", "join_multiplayer_screen", "СТАНЦИИ", "Доступные дегустационные точки", []),
+    ("ege-options.txt", "options_screen", "ОПЦИИ", "Настройка дегустации", []),
+    ("ege-newworld.txt", "create_world_screen", "НОВАЯ СТАНЦИЯ", "Создание новой дегустационной точки", []),
+    ("ege-death.txt", "death_screen", "КОНЕЦ МАРИНАДИ", "Дегустационный кома", [
+        ("Возродиться", "mc_deathscreen_respawn_button"),
+        ("В меню", "mc_deathscreen_titlemenu_button"),
+    ]),
+    ("ege-disconnected.txt", "disconnected_screen", "ОТСЫКЛЫВАЕМСЯ", "Станция временно недоступна", []),
 ]
 
-
-def build(identifier, headline, sub_headline, dark, button_ids):
-    elements = paper_sheet(dark)
-    elements += new_header(ACCENT, MUTED)
-
-    if identifier == "title_screen":
-        if headline:
-            elements.append(text("newheadline", headline, 30, 148, 500, 20,
-                                 "top-left", ACCENT, 1.15, False))
-        if sub_headline:
-            elements.append(text("newsubhead", sub_headline, 30, 164, 500, 14,
-                                 "top-left", MUTED, 0.85, False))
-        elements += new_footer()
-        elements += [new_button(b) for b in button_ids]
-    else:
-        if headline:
-            elements.append(text("newheadline", headline, 30, 148, 700, 22,
-                                 "top-left", ACCENT, 1.25, True))
-        if sub_headline:
-            elements.append(text("newsubhead", sub_headline, 30, 168, 700, 14,
-                                 "top-left", MUTED, 0.9, False))
-        elements += new_footer()
-        if button_ids:
-            elements += [new_button(b) for b in button_ids]
-
-    return layout(identifier, elements)
-
+def build(ident, headline, sub, buttons):
+    body = ""
+    # composition: window/table panel on left, decorations
+    body += shape("panel_left", CREAM, 40, 80, 420, 520, "top-left", 12, 0.85)
+    body += shape("panel_right", CREAM_SHADE, 480, 80, 420, 520, "top-left", 12, 0.75)
+    # title block
+    body += text("title1", TITLE, 60, 90, 400, 60, "top-left", ACCENT, 2.6, True)
+    body += text("title2", TITLE, 56, 94, 400, 60, "top-left", HIGHLIGHT, 2.6, True)
+    body += shape("rule1", ACCENT, 60, 150, 120, 3, "top-left")
+    body += shape("rule2", HIGHLIGHT, 60, 155, 90, 2, "top-left")
+    body += text("sub", SUBTITLE, 60, 165, 400, 20, "top-left", MUTED, 1.0, False)
+    # screen headline
+    body += text("headline", headline, 60, 200, 400, 24, "top-left", ACCENT, 1.3, True)
+    body += text("subhead", sub, 60, 222, 400, 16, "top-left", MUTED, 0.9, False)
+    # footer
+    body += text("footer", FOOTER, 0, -12, 900, 12, "bottom-centered", MUTED, 0.6, False)
+    # buttons on right bottom
+    bx, by = 520, 420
+    for label, vid in buttons:
+        body += btn(vid, label, bx, by, 200, 42)
+        by += 52
+    # rivets
+    for i in range(6):
+        body += shape("rivet_%d" % i, RULER, 24, 100 + i*70, 10, 10, "top-left", 5)
+    return layout(ident, body)
 
 def main():
-    for name, ident, headline, subtitle, dark, btn_ids in SCREENS:
+    for name, ident, headline, sub, buttons in SCREENS:
         path = os.path.join(OUT, name)
         with open(path, "w", encoding="utf-8", newline="\n") as f:
-            f.write(build(ident, headline, subtitle, dark, btn_ids))
+            f.write(build(ident, headline, sub, buttons))
         print("wrote", name)
-
 
 main()
