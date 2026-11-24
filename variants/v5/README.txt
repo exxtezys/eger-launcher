@@ -1,1 +1,2 @@
-Variant 5 — palette parchment — mode 0
+Variant 5: v5_parchment
+Palette: #F2EAD8, #E4D8C0, #C8BA98, #2A2218, #5A3A22, #724A2C, #C9A96E, #8A7248, #8A7C68, #A09480, #1A1610, #B8965A, #F8F0E0, 0.18

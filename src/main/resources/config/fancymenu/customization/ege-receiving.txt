@@ -21,18 +21,45 @@ customization {
 
 element {
   element_type = shape
-  instance_identifier = win_tl
+  instance_identifier = overlay
+  x = 0
+  y = 0
+  width = 427
+  height = 240
+  anchor_point = top-left
+  color = #1A1410
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+  base_opacity = 0.20
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = plaque_shadow
   x = 8
   y = 8
-  width = 200
-  height = 60
+  width = 250
+  height = 52
   anchor_point = top-left
-  color = #F5E8C6
-  corner_radius_top_left = 8
-  corner_radius_top_right = 8
-  corner_radius_bottom_left = 8
-  corner_radius_bottom_right = 8
-  base_opacity = 0.88
+  color = #C4B48A
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 0.45
   appearance_delay = no_delay
   appearance_delay_seconds = 1.0
   fade_in_v2 = no_fading
@@ -48,18 +75,18 @@ element {
 
 element {
   element_type = shape
-  instance_identifier = panel
-  x = 8
-  y = 72
-  width = 260
-  height = 160
+  instance_identifier = plaque
+  x = 6
+  y = 6
+  width = 250
+  height = 52
   anchor_point = top-left
   color = #F5E8C6
-  corner_radius_top_left = 8
-  corner_radius_top_right = 8
-  corner_radius_bottom_left = 8
-  corner_radius_bottom_right = 8
-  base_opacity = 0.85
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 0.90
   appearance_delay = no_delay
   appearance_delay_seconds = 1.0
   fade_in_v2 = no_fading
@@ -74,27 +101,87 @@ element {
 }
 
 element {
-  element_type = shape
-  instance_identifier = table
-  x = 272
-  y = 72
-  width = 147
-  height = 160
-  anchor_point = top-left
-  color = #D9C495
-  corner_radius_top_left = 8
-  corner_radius_top_right = 8
-  corner_radius_bottom_left = 8
-  corner_radius_bottom_right = 8
-  base_opacity = 0.80
+  source = [source:local]/config/fancymenu/assets/paper.png
+  repeat_texture = false
+  nine_slice_texture = false
+  nine_slice_texture_border_x = 5
+  nine_slice_texture_border_y = 5
+  element_type = image
+  instance_identifier = plaque_tex
   appearance_delay = no_delay
   appearance_delay_seconds = 1.0
   fade_in_v2 = no_fading
   fade_in_speed = 1.0
   fade_out = no_fading
   fade_out_speed = 1.0
+  base_opacity = 0.14
   auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
   sticky_anchor = false
+  anchor_point = top-left
+  x = 6
+  y = 6
+  width = 250
+  height = 52
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = [source:local]/config/fancymenu/assets/brass_strip.png
+  repeat_texture = false
+  nine_slice_texture = false
+  nine_slice_texture_border_x = 5
+  nine_slice_texture_border_y = 5
+  element_type = image
+  instance_identifier = plaque_brass
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 0.60
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 6
+  y = 6
+  width = 250
+  height = 3
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = [source:local]/config/fancymenu/assets/brass_strip.png
+  repeat_texture = false
+  nine_slice_texture = false
+  nine_slice_texture_border_x = 5
+  nine_slice_texture_border_y = 5
+  element_type = image
+  instance_identifier = plaque_brass_b
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 0.35
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 6
+  y = 55
+  width = 250
+  height = 3
   stretch_x = false
   stretch_y = false
   stay_on_screen = true
@@ -104,7 +191,7 @@ element {
   source = ЕГЕРЬ
   source_mode = direct
   shadow = true
-  scale = 1.60
+  scale = 1.20
   base_color = #8B2E22
   text_border = 0
   line_spacing = 1
@@ -113,7 +200,7 @@ element {
   remove_html_breaks = true
   parse_markdown = false
   element_type = text_v2
-  instance_identifier = title1
+  instance_identifier = title
   appearance_delay = no_delay
   appearance_delay_seconds = 1.0
   fade_in_v2 = fadein
@@ -126,41 +213,8 @@ element {
   anchor_point = top-left
   x = 14
   y = 12
-  width = 190
-  height = 28
-  stretch_x = false
-  stretch_y = false
-  stay_on_screen = true
-}
-
-element {
-  source = ЕГЕРЬ
-  source_mode = direct
-  shadow = true
-  scale = 1.60
-  base_color = #C9A96E
-  text_border = 0
-  line_spacing = 1
-  enable_scrolling = false
-  auto_line_wrapping = true
-  remove_html_breaks = true
-  parse_markdown = false
-  element_type = text_v2
-  instance_identifier = title2
-  appearance_delay = no_delay
-  appearance_delay_seconds = 1.0
-  fade_in_v2 = fadein
-  fade_in_speed = 1.0
-  fade_out = no_fading
-  fade_out_speed = 1.0
-  base_opacity = 1.0
-  auto_sizing = false
-  sticky_anchor = false
-  anchor_point = top-left
-  x = 12
-  y = 14
-  width = 190
-  height = 28
+  width = 120
+  height = 20
   stretch_x = false
   stretch_y = false
   stay_on_screen = true
@@ -168,45 +222,18 @@ element {
 
 element {
   element_type = shape
-  instance_identifier = rule1
+  instance_identifier = rule_a
   x = 14
-  y = 40
-  width = 60
-  height = 2
+  y = 30
+  width = 48
+  height = 1
   anchor_point = top-left
   color = #8B2E22
   corner_radius_top_left = 0
   corner_radius_top_right = 0
   corner_radius_bottom_left = 0
   corner_radius_bottom_right = 0
-  base_opacity = 1.00
-  appearance_delay = no_delay
-  appearance_delay_seconds = 1.0
-  fade_in_v2 = no_fading
-  fade_in_speed = 1.0
-  fade_out = no_fading
-  fade_out_speed = 1.0
-  auto_sizing = false
-  sticky_anchor = false
-  stretch_x = false
-  stretch_y = false
-  stay_on_screen = true
-}
-
-element {
-  element_type = shape
-  instance_identifier = rule2
-  x = 14
-  y = 43
-  width = 45
-  height = 1
-  anchor_point = top-left
-  color = #C9A96E
-  corner_radius_top_left = 0
-  corner_radius_top_right = 0
-  corner_radius_bottom_left = 0
-  corner_radius_bottom_right = 0
-  base_opacity = 1.00
+  base_opacity = 0.90
   appearance_delay = no_delay
   appearance_delay_seconds = 1.0
   fade_in_v2 = no_fading
@@ -224,8 +251,8 @@ element {
   source = НАРКОМАТ ПИЩЕВОЙ ПРОМЫШЛЕННОСТИ · 1939
   source_mode = direct
   shadow = false
-  scale = 0.70
-  base_color = #A88866
+  scale = 0.45
+  base_color = #8A7860
   text_border = 0
   line_spacing = 1
   enable_scrolling = false
@@ -233,7 +260,7 @@ element {
   remove_html_breaks = true
   parse_markdown = false
   element_type = text_v2
-  instance_identifier = sub
+  instance_identifier = subtitle
   appearance_delay = no_delay
   appearance_delay_seconds = 1.0
   fade_in_v2 = fadein
@@ -245,19 +272,19 @@ element {
   sticky_anchor = false
   anchor_point = top-left
   x = 14
-  y = 46
-  width = 190
-  height = 12
+  y = 33
+  width = 230
+  height = 8
   stretch_x = false
   stretch_y = false
   stay_on_screen = true
 }
 
 element {
-  source = ПРИЁМ
+  source = ПРИЁМ ДАННЫХ
   source_mode = direct
   shadow = true
-  scale = 1.00
+  scale = 0.72
   base_color = #8B2E22
   text_border = 0
   line_spacing = 1
@@ -278,20 +305,20 @@ element {
   sticky_anchor = false
   anchor_point = top-left
   x = 14
-  y = 78
-  width = 250
-  height = 16
+  y = 42
+  width = 160
+  height = 10
   stretch_x = false
   stretch_y = false
   stay_on_screen = true
 }
 
 element {
-  source = Загрузка сохранения партии
+  source = Ф-14
   source_mode = direct
   shadow = false
-  scale = 0.75
-  base_color = #A88866
+  scale = 0.50
+  base_color = #8A7248
   text_border = 0
   line_spacing = 1
   enable_scrolling = false
@@ -299,7 +326,40 @@ element {
   remove_html_breaks = true
   parse_markdown = false
   element_type = text_v2
-  instance_identifier = subhead
+  instance_identifier = form_no
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 210
+  y = 12
+  width = 40
+  height = 8
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = ПЕРЕДАЧА ДОКУМЕНТОВ
+  source_mode = direct
+  shadow = false
+  scale = 0.45
+  base_color = #A89878
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = status
   appearance_delay = no_delay
   appearance_delay_seconds = 1.0
   fade_in_v2 = fadein
@@ -310,21 +370,143 @@ element {
   auto_sizing = false
   sticky_anchor = false
   anchor_point = top-left
-  x = 14
-  y = 92
-  width = 250
-  height = 12
+  x = 120
+  y = 42
+  width = 130
+  height = 8
   stretch_x = false
   stretch_y = false
   stay_on_screen = true
 }
 
 element {
-  source = © 1944 Опытная дегустационная станция
+  element_type = shape
+  instance_identifier = badge
+  x = 340
+  y = 8
+  width = 80
+  height = 24
+  anchor_point = top-left
+  color = #E6D5B0
+  corner_radius_top_left = 4
+  corner_radius_top_right = 4
+  corner_radius_bottom_left = 4
+  corner_radius_bottom_right = 4
+  base_opacity = 0.75
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = [source:local]/config/fancymenu/assets/paper_dark.png
+  repeat_texture = false
+  nine_slice_texture = false
+  nine_slice_texture_border_x = 5
+  nine_slice_texture_border_y = 5
+  element_type = image
+  instance_identifier = badge_tex
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 0.15
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 340
+  y = 8
+  width = 80
+  height = 24
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = НКПП
+  source_mode = direct
+  shadow = true
+  scale = 0.55
+  base_color = #8B2E22
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = badge_t
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 346
+  y = 12
+  width = 68
+  height = 8
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = 1939
   source_mode = direct
   shadow = false
-  scale = 0.50
-  base_color = #A88866
+  scale = 0.45
+  base_color = #8A7860
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = badge_s
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 346
+  y = 20
+  width = 68
+  height = 8
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = © 1944 Опытная дегустационная станция · Архив НКПП
+  source_mode = direct
+  shadow = false
+  scale = 0.45
+  base_color = #A89878
   text_border = 0
   line_spacing = 1
   enable_scrolling = false
@@ -335,7 +517,7 @@ element {
   instance_identifier = footer
   appearance_delay = no_delay
   appearance_delay_seconds = 1.0
-  fade_in_v2 = fadein
+  fade_in_v2 = no_fading
   fade_in_speed = 1.0
   fade_out = no_fading
   fade_out_speed = 1.0
@@ -344,117 +526,9 @@ element {
   sticky_anchor = false
   anchor_point = bottom-centered
   x = 0
-  y = -8
-  width = 420
+  y = -10
+  width = 427
   height = 8
-  stretch_x = false
-  stretch_y = false
-  stay_on_screen = true
-}
-
-element {
-  element_type = shape
-  instance_identifier = rivet_0
-  x = 4
-  y = 80
-  width = 6
-  height = 6
-  anchor_point = top-left
-  color = #6B4222
-  corner_radius_top_left = 3
-  corner_radius_top_right = 3
-  corner_radius_bottom_left = 3
-  corner_radius_bottom_right = 3
-  base_opacity = 1.00
-  appearance_delay = no_delay
-  appearance_delay_seconds = 1.0
-  fade_in_v2 = no_fading
-  fade_in_speed = 1.0
-  fade_out = no_fading
-  fade_out_speed = 1.0
-  auto_sizing = false
-  sticky_anchor = false
-  stretch_x = false
-  stretch_y = false
-  stay_on_screen = true
-}
-
-element {
-  element_type = shape
-  instance_identifier = rivet_1
-  x = 4
-  y = 116
-  width = 6
-  height = 6
-  anchor_point = top-left
-  color = #6B4222
-  corner_radius_top_left = 3
-  corner_radius_top_right = 3
-  corner_radius_bottom_left = 3
-  corner_radius_bottom_right = 3
-  base_opacity = 1.00
-  appearance_delay = no_delay
-  appearance_delay_seconds = 1.0
-  fade_in_v2 = no_fading
-  fade_in_speed = 1.0
-  fade_out = no_fading
-  fade_out_speed = 1.0
-  auto_sizing = false
-  sticky_anchor = false
-  stretch_x = false
-  stretch_y = false
-  stay_on_screen = true
-}
-
-element {
-  element_type = shape
-  instance_identifier = rivet_2
-  x = 4
-  y = 152
-  width = 6
-  height = 6
-  anchor_point = top-left
-  color = #6B4222
-  corner_radius_top_left = 3
-  corner_radius_top_right = 3
-  corner_radius_bottom_left = 3
-  corner_radius_bottom_right = 3
-  base_opacity = 1.00
-  appearance_delay = no_delay
-  appearance_delay_seconds = 1.0
-  fade_in_v2 = no_fading
-  fade_in_speed = 1.0
-  fade_out = no_fading
-  fade_out_speed = 1.0
-  auto_sizing = false
-  sticky_anchor = false
-  stretch_x = false
-  stretch_y = false
-  stay_on_screen = true
-}
-
-element {
-  element_type = shape
-  instance_identifier = rivet_3
-  x = 4
-  y = 188
-  width = 6
-  height = 6
-  anchor_point = top-left
-  color = #6B4222
-  corner_radius_top_left = 3
-  corner_radius_top_right = 3
-  corner_radius_bottom_left = 3
-  corner_radius_bottom_right = 3
-  base_opacity = 1.00
-  appearance_delay = no_delay
-  appearance_delay_seconds = 1.0
-  fade_in_v2 = no_fading
-  fade_in_speed = 1.0
-  fade_out = no_fading
-  fade_out_speed = 1.0
-  auto_sizing = false
-  sticky_anchor = false
   stretch_x = false
   stretch_y = false
   stay_on_screen = true

@@ -21,270 +21,1262 @@ customization {
 
 element {
   element_type = shape
-  instance_identifier = panel
-  x = 40
-  y = 80
-  width = 420
-  height = 520
+  instance_identifier = overlay
+  x = 0
+  y = 0
+  width = 427
+  height = 240
+  anchor_point = top-left
+  color = #1A1410
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+  base_opacity = 0.20
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = paper_shadow
+  x = 12
+  y = 12
+  width = 266
+  height = 218
+  anchor_point = top-left
+  color = #C4B48A
+  corner_radius_top_left = 6
+  corner_radius_top_right = 6
+  corner_radius_bottom_left = 6
+  corner_radius_bottom_right = 6
+  base_opacity = 0.55
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = paper
+  x = 10
+  y = 10
+  width = 266
+  height = 218
   anchor_point = top-left
   color = #F5E8C6
-  corner_radius_top_left = 12
-  corner_radius_top_right = 12
-  corner_radius_bottom_left = 12
-  corner_radius_bottom_right = 12
-  base_opacity = 0.88
+  corner_radius_top_left = 6
+  corner_radius_top_right = 6
+  corner_radius_bottom_left = 6
+  corner_radius_bottom_right = 6
+  base_opacity = 0.93
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = [source:local]/config/fancymenu/assets/paper.png
+  repeat_texture = false
+  nine_slice_texture = false
+  nine_slice_texture_border_x = 5
+  nine_slice_texture_border_y = 5
+  element_type = image
+  instance_identifier = paper_tex
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 0.18
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 10
+  y = 10
+  width = 266
+  height = 218
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = pb_t
+  x = 14
+  y = 14
+  width = 258
+  height = 1
+  anchor_point = top-left
+  color = #8A7248
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+  base_opacity = 0.30
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = pb_b
+  x = 14
+  y = 223
+  width = 258
+  height = 1
+  anchor_point = top-left
+  color = #8A7248
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+  base_opacity = 0.30
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = pb_l
+  x = 14
+  y = 14
+  width = 1
+  height = 210
+  anchor_point = top-left
+  color = #8A7248
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+  base_opacity = 0.30
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = pb_r
+  x = 271
+  y = 14
+  width = 1
+  height = 210
+  anchor_point = top-left
+  color = #8A7248
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+  base_opacity = 0.30
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = [source:local]/config/fancymenu/assets/brass_strip.png
+  repeat_texture = false
+  nine_slice_texture = false
+  nine_slice_texture_border_x = 5
+  nine_slice_texture_border_y = 5
+  element_type = image
+  instance_identifier = brass_paper
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 0.55
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 10
+  y = 10
+  width = 266
+  height = 4
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = table_shadow
+  x = 282
+  y = 12
+  width = 135
+  height = 218
+  anchor_point = top-left
+  color = #1A1410
+  corner_radius_top_left = 6
+  corner_radius_top_right = 6
+  corner_radius_bottom_left = 6
+  corner_radius_bottom_right = 6
+  base_opacity = 0.35
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
   element_type = shape
   instance_identifier = table
-  x = 480
-  y = 80
-  width = 420
-  height = 520
+  x = 280
+  y = 10
+  width = 137
+  height = 218
   anchor_point = top-left
-  color = #D9C495
-  corner_radius_top_left = 12
-  corner_radius_top_right = 12
-  corner_radius_bottom_left = 12
-  corner_radius_bottom_right = 12
-  base_opacity = 0.80
+  color = #E6D5B0
+  corner_radius_top_left = 6
+  corner_radius_top_right = 6
+  corner_radius_bottom_left = 6
+  corner_radius_bottom_right = 6
+  base_opacity = 0.88
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
-  element_type = text_v2
-  instance_identifier = title1
+  source = [source:local]/config/fancymenu/assets/paper_dark.png
+  repeat_texture = false
+  nine_slice_texture = false
+  nine_slice_texture_border_x = 5
+  nine_slice_texture_border_y = 5
+  element_type = image
+  instance_identifier = table_tex
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 0.22
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 280
+  y = 10
+  width = 137
+  height = 218
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = [source:local]/config/fancymenu/assets/brass_strip.png
+  repeat_texture = false
+  nine_slice_texture = false
+  nine_slice_texture_border_x = 5
+  nine_slice_texture_border_y = 5
+  element_type = image
+  instance_identifier = brass_top
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 0.95
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 280
+  y = 10
+  width = 137
+  height = 6
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = [source:local]/config/fancymenu/assets/brass_strip.png
+  repeat_texture = false
+  nine_slice_texture = false
+  nine_slice_texture_border_x = 5
+  nine_slice_texture_border_y = 5
+  element_type = image
+  instance_identifier = brass_bot
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 0.95
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 280
+  y = 222
+  width = 137
+  height = 6
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = [source:local]/config/fancymenu/assets/stamp_eger.png
+  repeat_texture = false
+  nine_slice_texture = false
+  nine_slice_texture_border_x = 5
+  nine_slice_texture_border_y = 5
+  element_type = image
+  instance_identifier = stamp
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 0.85
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 220
+  y = 14
+  width = 44
+  height = 44
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
   source = ЕГЕРЬ
   source_mode = direct
   shadow = true
-  scale = 2.60
+  scale = 1.90
+  base_color = #1A1410
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = title_shadow
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 20
+  y = 18
+  width = 200
+  height = 30
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = ЕГЕРЬ
+  source_mode = direct
+  shadow = true
+  scale = 1.90
   base_color = #8B2E22
-  x = 60
-  y = 90
-  width = 400
-  height = 60
-  anchor_point = top-left
-}
-
-element {
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
   element_type = text_v2
-  instance_identifier = title2
-  source = ЕГЕРЬ
-  source_mode = direct
-  shadow = true
-  scale = 2.60
-  base_color = #C9A96E
-  x = 56
-  y = 94
-  width = 400
-  height = 60
+  instance_identifier = title
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
   anchor_point = top-left
+  x = 18
+  y = 16
+  width = 200
+  height = 30
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
   element_type = shape
-  instance_identifier = rule1
-  x = 60
-  y = 152
-  width = 120
-  height = 3
+  instance_identifier = rule_a
+  x = 18
+  y = 44
+  width = 72
+  height = 2
   anchor_point = top-left
   color = #8B2E22
   corner_radius_top_left = 0
   corner_radius_top_right = 0
   corner_radius_bottom_left = 0
   corner_radius_bottom_right = 0
-  base_opacity = 1.00
+  base_opacity = 0.95
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
   element_type = shape
-  instance_identifier = rule2
-  x = 60
-  y = 157
-  width = 90
-  height = 2
+  instance_identifier = rule_b
+  x = 18
+  y = 47
+  width = 52
+  height = 1
   anchor_point = top-left
   color = #C9A96E
   corner_radius_top_left = 0
   corner_radius_top_right = 0
   corner_radius_bottom_left = 0
   corner_radius_bottom_right = 0
-  base_opacity = 1.00
+  base_opacity = 0.85
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
-  element_type = text_v2
-  instance_identifier = sub
   source = НАРКОМАТ ПИЩЕВОЙ ПРОМЫШЛЕННОСТИ · 1939
   source_mode = direct
   shadow = false
-  scale = 1.00
-  base_color = #A88866
-  x = 60
-  y = 168
-  width = 400
-  height = 20
+  scale = 0.55
+  base_color = #8A7860
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = subtitle
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
   anchor_point = top-left
+  x = 18
+  y = 50
+  width = 210
+  height = 10
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
-  element_type = text_v2
-  instance_identifier = headline
-  source = КОНЕЦ МАРИНАДИ
-  source_mode = direct
-  shadow = true
-  scale = 1.30
-  base_color = #8B2E22
-  x = 60
-  y = 202
-  width = 400
-  height = 24
-  anchor_point = top-left
-}
-
-element {
-  element_type = text_v2
-  instance_identifier = subhead
-  source = Дегустационный кома
-  source_mode = direct
-  shadow = false
-  scale = 0.90
-  base_color = #A88866
-  x = 60
-  y = 226
-  width = 400
-  height = 16
-  anchor_point = top-left
-}
-
-element {
-  element_type = text_v2
-  instance_identifier = footer
-  source = © 1944 Опытная дегустационная станция
+  source = Ф-99
   source_mode = direct
   shadow = false
   scale = 0.60
-  base_color = #A88866
-  x = 0
-  y = -12
-  width = 900
-  height = 12
+  base_color = #8A7248
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = form_no
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 18
+  y = 64
+  width = 40
+  height = 10
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = ПАРТИЯ УТРАЧЕНА
+  source_mode = direct
+  shadow = false
+  scale = 0.52
+  base_color = #A89878
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = status
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 52
+  y = 64
+  width = 170
+  height = 10
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = sep
+  x = 18
+  y = 74
+  width = 244
+  height = 1
+  anchor_point = top-left
+  color = #8A7248
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+  base_opacity = 0.35
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = АКТ ПОТЕРИ
+  source_mode = direct
+  shadow = true
+  scale = 1.00
+  base_color = #8B2E22
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = headline
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 18
+  y = 80
+  width = 240
+  height = 14
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = Дегустационная комиссия фиксирует
+  source_mode = direct
+  shadow = false
+  scale = 0.65
+  base_color = #8A7860
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = subhead
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 18
+  y = 94
+  width = 240
+  height = 10
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = bullet_0
+  x = 18
+  y = 115
+  width = 2
+  height = 2
+  anchor_point = top-left
+  color = #8B2E22
+  corner_radius_top_left = 1
+  corner_radius_top_right = 1
+  corner_radius_bottom_left = 1
+  corner_radius_bottom_right = 1
+  base_opacity = 0.55
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = Зафиксирована потеря образца
+  source_mode = direct
+  shadow = false
+  scale = 0.58
+  base_color = #211812
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = body_0
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 24
+  y = 112
+  width = 230
+  height = 10
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = bullet_1
+  x = 18
+  y = 128
+  width = 2
+  height = 2
+  anchor_point = top-left
+  color = #8B2E22
+  corner_radius_top_left = 1
+  corner_radius_top_right = 1
+  corner_radius_bottom_left = 1
+  corner_radius_bottom_right = 1
+  base_opacity = 0.55
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = Комиссия рекомендует повторный допуск
+  source_mode = direct
+  shadow = false
+  scale = 0.58
+  base_color = #211812
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = body_1
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 24
+  y = 125
+  width = 230
+  height = 10
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = bullet_2
+  x = 18
+  y = 141
+  width = 2
+  height = 2
+  anchor_point = top-left
+  color = #8B2E22
+  corner_radius_top_left = 1
+  corner_radius_top_right = 1
+  corner_radius_bottom_left = 1
+  corner_radius_bottom_right = 1
+  base_opacity = 0.55
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = Материалы направлены в архив
+  source_mode = direct
+  shadow = false
+  scale = 0.58
+  base_color = #211812
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = body_2
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 24
+  y = 138
+  width = 230
+  height = 10
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = sig_line
+  x = 18
+  y = 196
+  width = 90
+  height = 1
+  anchor_point = top-left
+  color = #8A7248
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+  base_opacity = 0.35
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = Подпись ответственного
+  source_mode = direct
+  shadow = false
+  scale = 0.45
+  base_color = #A89878
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = sig_label
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 18
+  y = 198
+  width = 120
+  height = 8
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  source = ПАНЕЛЬ УПРАВЛЕНИЯ
+  source_mode = direct
+  shadow = false
+  scale = 0.50
+  base_color = #8A7860
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = panel_label
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 286
+  y = 20
+  width = 125
+  height = 10
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = panel_sep
+  x = 286
+  y = 30
+  width = 125
+  height = 1
+  anchor_point = top-left
+  color = #8A7248
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+  base_opacity = 0.30
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+vanilla_button {
+  button_element_executable_block_identifier = mc_deathscreen_respawn_button-exec
+  [executable_block:mc_deathscreen_respawn_button-exec][type:generic] = [executables:]
+  backgroundnormal = [source:local]/config/fancymenu/assets/btn_normal.png
+  backgroundhovered = [source:local]/config/fancymenu/assets/btn_hover.png
+  background_texture_inactive = [source:local]/config/fancymenu/assets/btn_normal.png
+  restartbackgroundanimations = true
+  loopbackgroundanimations = true
+  nine_slice_custom_background = true
+  nine_slice_border_x = 6
+  nine_slice_border_y = 6
+  navigatable = true
+  widget_active_state_requirement_container_identifier = mc_deathscreen_respawn_button-active
+  [loading_requirement_container_meta:mc_deathscreen_respawn_button-active] = [groups:][instances:]
+  element_type = vanilla_button
+  instance_identifier = mc_deathscreen_respawn_button
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 288
+  y = 164
+  width = 121
+  height = 20
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+  element_loading_requirement_container_identifier = mc_deathscreen_respawn_button-load
+  [loading_requirement_container_meta:mc_deathscreen_respawn_button-load] = [groups:][instances:]
+  hoverlabel = 
+  label = Возродиться
+  label_base_color = #F5EBD3
+  label_hover_color = #FFFFFF
+  label_scale = 1.0
+  label_shadow = true
+}
+
+vanilla_button {
+  button_element_executable_block_identifier = mc_deathscreen_titlemenu_button-exec
+  [executable_block:mc_deathscreen_titlemenu_button-exec][type:generic] = [executables:]
+  backgroundnormal = [source:local]/config/fancymenu/assets/btn_normal.png
+  backgroundhovered = [source:local]/config/fancymenu/assets/btn_hover.png
+  background_texture_inactive = [source:local]/config/fancymenu/assets/btn_normal.png
+  restartbackgroundanimations = true
+  loopbackgroundanimations = true
+  nine_slice_custom_background = true
+  nine_slice_border_x = 6
+  nine_slice_border_y = 6
+  navigatable = true
+  widget_active_state_requirement_container_identifier = mc_deathscreen_titlemenu_button-active
+  [loading_requirement_container_meta:mc_deathscreen_titlemenu_button-active] = [groups:][instances:]
+  element_type = vanilla_button
+  instance_identifier = mc_deathscreen_titlemenu_button
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = fadein
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  auto_sizing_base_screen_width = 1920
+  auto_sizing_base_screen_height = 1080
+  sticky_anchor = false
+  anchor_point = top-left
+  x = 288
+  y = 188
+  width = 121
+  height = 20
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+  element_loading_requirement_container_identifier = mc_deathscreen_titlemenu_button-load
+  [loading_requirement_container_meta:mc_deathscreen_titlemenu_button-load] = [groups:][instances:]
+  hoverlabel = 
+  label = В меню
+  label_base_color = #F5EBD3
+  label_hover_color = #FFFFFF
+  label_scale = 1.0
+  label_shadow = true
+}
+
+element {
+  source = © 1944 Опытная дегустационная станция · Архив НКПП
+  source_mode = direct
+  shadow = false
+  scale = 0.45
+  base_color = #A89878
+  text_border = 0
+  line_spacing = 1
+  enable_scrolling = false
+  auto_line_wrapping = true
+  remove_html_breaks = true
+  parse_markdown = false
+  element_type = text_v2
+  instance_identifier = footer
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  base_opacity = 1.0
+  auto_sizing = false
+  sticky_anchor = false
   anchor_point = bottom-centered
+  x = 0
+  y = -10
+  width = 427
+  height = 8
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
   element_type = shape
   instance_identifier = rivet_0
-  x = 24
-  y = 100
-  width = 10
-  height = 10
+  x = 12
+  y = 12
+  width = 4
+  height = 4
   anchor_point = top-left
-  color = #6B4222
-  corner_radius_top_left = 5
-  corner_radius_top_right = 5
-  corner_radius_bottom_left = 5
-  corner_radius_bottom_right = 5
-  base_opacity = 1.00
+  color = #B8965A
+  corner_radius_top_left = 2
+  corner_radius_top_right = 2
+  corner_radius_bottom_left = 2
+  corner_radius_bottom_right = 2
+  base_opacity = 0.75
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
   element_type = shape
   instance_identifier = rivet_1
-  x = 24
-  y = 170
-  width = 10
-  height = 10
+  x = 270
+  y = 12
+  width = 4
+  height = 4
   anchor_point = top-left
-  color = #6B4222
-  corner_radius_top_left = 5
-  corner_radius_top_right = 5
-  corner_radius_bottom_left = 5
-  corner_radius_bottom_right = 5
-  base_opacity = 1.00
+  color = #B8965A
+  corner_radius_top_left = 2
+  corner_radius_top_right = 2
+  corner_radius_bottom_left = 2
+  corner_radius_bottom_right = 2
+  base_opacity = 0.75
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
   element_type = shape
   instance_identifier = rivet_2
-  x = 24
-  y = 240
-  width = 10
-  height = 10
+  x = 12
+  y = 222
+  width = 4
+  height = 4
   anchor_point = top-left
-  color = #6B4222
-  corner_radius_top_left = 5
-  corner_radius_top_right = 5
-  corner_radius_bottom_left = 5
-  corner_radius_bottom_right = 5
-  base_opacity = 1.00
+  color = #B8965A
+  corner_radius_top_left = 2
+  corner_radius_top_right = 2
+  corner_radius_bottom_left = 2
+  corner_radius_bottom_right = 2
+  base_opacity = 0.75
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 element {
   element_type = shape
   instance_identifier = rivet_3
-  x = 24
-  y = 310
-  width = 10
-  height = 10
+  x = 270
+  y = 222
+  width = 4
+  height = 4
   anchor_point = top-left
-  color = #6B4222
-  corner_radius_top_left = 5
-  corner_radius_top_right = 5
-  corner_radius_bottom_left = 5
-  corner_radius_bottom_right = 5
-  base_opacity = 1.00
-}
-
-element {
-  element_type = shape
-  instance_identifier = rivet_4
-  x = 24
-  y = 380
-  width = 10
-  height = 10
-  anchor_point = top-left
-  color = #6B4222
-  corner_radius_top_left = 5
-  corner_radius_top_right = 5
-  corner_radius_bottom_left = 5
-  corner_radius_bottom_right = 5
-  base_opacity = 1.00
-}
-
-element {
-  element_type = shape
-  instance_identifier = rivet_5
-  x = 24
-  y = 450
-  width = 10
-  height = 10
-  anchor_point = top-left
-  color = #6B4222
-  corner_radius_top_left = 5
-  corner_radius_top_right = 5
-  corner_radius_bottom_left = 5
-  corner_radius_bottom_right = 5
-  base_opacity = 1.00
-}
-
-vanilla_button {
-  element_type = vanilla_button
-  instance_identifier = mc_deathscreen_respawn_button
-  label_base_color = #8B2E22
-  label_hover_color = #A63B2C
-  label_scale = 1.1
-  label_shadow = true
-}
-
-vanilla_button {
-  element_type = vanilla_button
-  instance_identifier = mc_deathscreen_titlemenu_button
-  label_base_color = #8B2E22
-  label_hover_color = #A63B2C
-  label_scale = 1.1
-  label_shadow = true
+  color = #B8965A
+  corner_radius_top_left = 2
+  corner_radius_top_right = 2
+  corner_radius_bottom_left = 2
+  corner_radius_bottom_right = 2
+  base_opacity = 0.75
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
 }
 
 

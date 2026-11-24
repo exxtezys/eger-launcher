@@ -1,1 +1,2 @@
-Variant 4 — palette oxblood_dark — mode 3
+Variant 4: v4_night_archive
+Palette: #2A241C, #221C16, #3A3228, #F0E4CC, #C9A96E, #E0C080, #C9A96E, #8A7248, #A89878, #C0B090, #0C0A08, #C9A96E, #F5EBD3, 0.38

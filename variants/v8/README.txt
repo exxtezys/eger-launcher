@@ -1,1 +1,2 @@
-Variant 8 — palette mono_ink — mode 3
+Variant 8: v8_mono_press
+Palette: #EEEEE8, #DDDDD4, #B0B0A8, #181818, #2A2A2A, #404040, #A09070, #807060, #787870, #949088, #0C0C0C, #A09070, #F5F5F0, 0.2

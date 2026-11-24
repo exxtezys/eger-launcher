@@ -1,1 +1,2 @@
-Variant 2 — palette ink_paper — mode 1
+Variant 2: v2_dossier_ink
+Palette: #E8E0D0, #D8CCB8, #B8A890, #1A1816, #3A2E22, #544232, #A08860, #7A6848, #7A7268, #968E82, #141210, #A08860, #F0E8D8, 0.22

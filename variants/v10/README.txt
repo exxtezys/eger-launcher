@@ -1,1 +1,2 @@
-Variant 10 — palette burgundy — mode 1
+Variant 10: v10_burgundy
+Palette: #E8DDD0, #D8CAB8, #B8A898, #241418, #6A2028, #842832, #C9A96E, #8A7248, #8A7868, #A09488, #140C0E, #B8965A, #F5EDE4, 0.22

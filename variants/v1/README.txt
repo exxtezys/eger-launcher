@@ -1,1 +1,2 @@
-Variant 1 — palette cream_oxblood — mode 0
+Variant 1: v1_cream_oxblood
+Palette: #F5E8C6, #E6D5B0, #C4B48A, #211812, #8B2E22, #A63B2C, #C9A96E, #8A7248, #8A7860, #A89878, #1A1410, #B8965A, #F5EBD3, 0.2

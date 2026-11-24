@@ -1,1 +1,2 @@
-Variant 7 — palette rustic — mode 2
+Variant 7: v7_rustic_red
+Palette: #E6D8BC, #D4C4A4, #B8A888, #281810, #7A2E18, #943820, #C9A96E, #8A7248, #8A7860, #A09078, #180C08, #B8965A, #F5E8D0, 0.22

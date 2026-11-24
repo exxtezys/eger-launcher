@@ -1,1 +1,2 @@
-Variant 9 — palette forest_brass — mode 0
+Variant 9: v9_olive_field
+Palette: #DCE4CC, #CCD4B8, #A8B090, #1C2414, #3A4A22, #4A5E2C, #B8A060, #8A7848, #7A8468, #96A084, #101408, #B0A060, #F0F4E4, 0.22

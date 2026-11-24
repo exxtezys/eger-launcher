@@ -1,1 +1,2 @@
-Variant 3 — palette walnut_brass — mode 2
+Variant 3: v3_walnut_brass
+Palette: #DDD0B8, #CCBEA0, #A89878, #241A12, #6B3A1E, #854A28, #C9A96E, #8A7248, #8A7A62, #A09078, #181008, #C9A96E, #F5E8D0, 0.22

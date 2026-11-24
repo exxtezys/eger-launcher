@@ -1,1 +1,2 @@
-Variant 6 — palette slate_brass — mode 1
+Variant 6: v6_slate_steel
+Palette: #DDD8CC, #CCC6B8, #A8A298, #1E1E1C, #4A3A2A, #5E4A36, #B8A888, #8A7A60, #807A70, #9A9488, #121210, #B0A080, #F0ECE0, 0.22
