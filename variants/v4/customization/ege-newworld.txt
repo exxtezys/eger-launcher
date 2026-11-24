@@ -1,0 +1,256 @@
+type = fancymenu_layout
+
+layout-meta {
+  identifier = create_world_screen
+  layout_index = 0
+  is_enabled = true
+  render_custom_elements_behind_vanilla = true
+}
+
+menu_background {
+  image_path = [source:local]/config/fancymenu/assets/bg_4.png
+  slide = false
+  repeat_texture = false
+  background_type = image
+}
+
+customization {
+  action = backgroundoptions
+  keepaspectratio = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = panel
+  x = 40
+  y = 80
+  width = 820
+  height = 520
+  anchor_point = top-left
+  color = #2A1A14
+  corner_radius_top_left = 12
+  corner_radius_top_right = 12
+  corner_radius_bottom_left = 12
+  corner_radius_bottom_right = 12
+  base_opacity = 0.88
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = title1
+  source = ЕГЕРЬ
+  source_mode = direct
+  shadow = true
+  scale = 2.60
+  base_color = #C9A96E
+  x = 60
+  y = 90
+  width = 400
+  height = 60
+  anchor_point = top-left
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = title2
+  source = ЕГЕРЬ
+  source_mode = direct
+  shadow = true
+  scale = 2.60
+  base_color = #8B2E22
+  x = 56
+  y = 94
+  width = 400
+  height = 60
+  anchor_point = top-left
+}
+
+element {
+  element_type = shape
+  instance_identifier = rule1
+  x = 60
+  y = 152
+  width = 120
+  height = 3
+  anchor_point = top-left
+  color = #C9A96E
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+  base_opacity = 1.00
+}
+
+element {
+  element_type = shape
+  instance_identifier = rule2
+  x = 60
+  y = 157
+  width = 90
+  height = 2
+  anchor_point = top-left
+  color = #8B2E22
+  corner_radius_top_left = 0
+  corner_radius_top_right = 0
+  corner_radius_bottom_left = 0
+  corner_radius_bottom_right = 0
+  base_opacity = 1.00
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = sub
+  source = НАРКОМАТ ПИЩЕВОЙ ПРОМЫШЛЕННОСТИ · 1939
+  source_mode = direct
+  shadow = false
+  scale = 1.00
+  base_color = #A88866
+  x = 60
+  y = 168
+  width = 400
+  height = 20
+  anchor_point = top-left
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = headline
+  source = НОВАЯ СТАНЦИЯ
+  source_mode = direct
+  shadow = true
+  scale = 1.30
+  base_color = #C9A96E
+  x = 60
+  y = 202
+  width = 400
+  height = 24
+  anchor_point = top-left
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = subhead
+  source = Создание новой дегустационной точки
+  source_mode = direct
+  shadow = false
+  scale = 0.90
+  base_color = #A88866
+  x = 60
+  y = 226
+  width = 400
+  height = 16
+  anchor_point = top-left
+}
+
+element {
+  element_type = text_v2
+  instance_identifier = footer
+  source = © 1944 Опытная дегустационная станция
+  source_mode = direct
+  shadow = false
+  scale = 0.60
+  base_color = #A88866
+  x = 0
+  y = -12
+  width = 900
+  height = 12
+  anchor_point = bottom-centered
+}
+
+element {
+  element_type = shape
+  instance_identifier = rivet_0
+  x = 24
+  y = 100
+  width = 10
+  height = 10
+  anchor_point = top-left
+  color = #6B4222
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 1.00
+}
+
+element {
+  element_type = shape
+  instance_identifier = rivet_1
+  x = 24
+  y = 170
+  width = 10
+  height = 10
+  anchor_point = top-left
+  color = #6B4222
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 1.00
+}
+
+element {
+  element_type = shape
+  instance_identifier = rivet_2
+  x = 24
+  y = 240
+  width = 10
+  height = 10
+  anchor_point = top-left
+  color = #6B4222
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 1.00
+}
+
+element {
+  element_type = shape
+  instance_identifier = rivet_3
+  x = 24
+  y = 310
+  width = 10
+  height = 10
+  anchor_point = top-left
+  color = #6B4222
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 1.00
+}
+
+element {
+  element_type = shape
+  instance_identifier = rivet_4
+  x = 24
+  y = 380
+  width = 10
+  height = 10
+  anchor_point = top-left
+  color = #6B4222
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 1.00
+}
+
+element {
+  element_type = shape
+  instance_identifier = rivet_5
+  x = 24
+  y = 450
+  width = 10
+  height = 10
+  anchor_point = top-left
+  color = #6B4222
+  corner_radius_top_left = 5
+  corner_radius_top_right = 5
+  corner_radius_bottom_left = 5
+  corner_radius_bottom_right = 5
+  base_opacity = 1.00
+}
+
+
