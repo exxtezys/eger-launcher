@@ -136,16 +136,130 @@ def make_bg():
         motes.append([random.uniform(0,TW), random.uniform(0,TH), random.uniform(-0.35,0.35), random.uniform(-0.12,0.12), random.uniform(1.0,2.2), random.randint(25,75)])
 
     frames=[]
-    N=20
+    N=24
     for f in range(N):
         img = base.copy()
         d = ImageDraw.Draw(img,"RGBA")
+        # --- distant government building (right side, through window) ---
+        bx0, by0 = TW - 250, 82
+        bx1 = TW - 8
+        bmid = (bx0 + bx1) // 2
+        # atmospheric haze behind building
+        for hyaze in range(18):
+            a = int(22 * (1 - hyaze / 18))
+            d.rectangle((bx0 - 20, by0 - 30 - hyaze, bx1, by0 - 30 - hyaze + 1), fill=(120, 85, 60, a))
+        # main facade
+        d.rectangle((bx0, by0, bx1, TH - 18), fill=(52, 36, 26, 185))
+        # darker base plinth
+        d.rectangle((bx0 - 4, TH - 52, bx1, TH - 18), fill=(38, 27, 20, 190))
+        # cornice layers
+        d.rectangle((bx0 - 8, by0 - 4, bx1, by0 + 2), fill=(72, 52, 38, 200))
+        d.rectangle((bx0 - 12, by0 - 8, bx1, by0 - 3), fill=(60, 44, 32, 190))
+        # pediment / central risalit
+        ped_top = by0 - 42
+        d.polygon([(bmid - 62, by0 - 6), (bmid + 62, by0 - 6), (bmid, ped_top)], fill=(58, 41, 30, 210))
+        d.polygon([(bmid - 54, by0 - 7), (bmid + 54, by0 - 7), (bmid, ped_top + 7)], fill=(72, 52, 38, 120))
+        # entablature band
+        d.rectangle((bx0 - 6, by0 + 2, bx1, by0 + 12), fill=(66, 48, 35, 175))
+        # columns
+        for cx in range(bx0 + 18, bx1 - 14, 24):
+            col_h = TH - 30 - (by0 + 12)
+            d.rectangle((cx, by0 + 12, cx + 10, TH - 30), fill=(74, 54, 40, 175))
+            d.rectangle((cx + 1, by0 + 13, cx + 3, TH - 31), fill=(95, 72, 52, 55))
+            # capital
+            d.rectangle((cx - 2, by0 + 10, cx + 12, by0 + 16), fill=(82, 60, 44, 185))
+            d.rectangle((cx - 1, TH - 34, cx + 11, TH - 28), fill=(68, 50, 36, 180))
+        # windows with warm interior light
+        for row, wy in enumerate(range(by0 + 24, TH - 64, 28)):
+            for col, wx in enumerate(range(bx0 + 22, bx1 - 24, 30)):
+                lit = 118 + int(28 * math.sin(f * 0.28 + wx * 0.07 + wy * 0.11))
+                warm = (min(255, lit + 35), min(255, int(lit * 0.78)), 55, 150)
+                d.rectangle((wx, wy, wx + 12, wy + 16), fill=warm)
+                d.rectangle((wx, wy, wx + 12, wy + 16), outline=(90, 65, 45, 130))
+                # mullion
+                d.line((wx + 6, wy + 1, wx + 6, wy + 15), fill=(60, 42, 30, 120), width=1)
+                d.line((wx + 1, wy + 8, wx + 11, wy + 8), fill=(60, 42, 30, 120), width=1)
+        # central door
+        door_w, door_h = 28, 38
+        dx0 = bmid - door_w // 2
+        dy0 = TH - 30 - door_h
+        d.rectangle((dx0, dy0, dx0 + door_w, TH - 30), fill=(40, 28, 20, 200))
+        d.rectangle((dx0 + 2, dy0 + 2, dx0 + door_w - 2, TH - 30), outline=(110, 85, 55, 120))
+        d.arc((dx0 + 2, dy0 - 8, dx0 + door_w - 2, dy0 + 18), 180, 360, fill=(110, 85, 55, 140))
+        # small red banner accents on facade
+        for bx in (bx0 + 8, bx1 - 18):
+            d.rectangle((bx, by0 + 14, bx + 6, by0 + 34), fill=(150, 30, 35, 110))
+
+        # --- flagpole and waving Soviet flag ---
+        pole_x = bmid
+        pole_top = by0 - 58
+        pole_bot = by0 + 2
+        # pole shadow
+        d.line((pole_x + 2, pole_top + 2, pole_x + 2, pole_bot + 2), fill=(20, 14, 10, 90), width=2)
+        d.rectangle((pole_x - 2, pole_top, pole_x + 2, pole_bot), fill=(88, 66, 44, 235))
+        # finial
+        d.ellipse((pole_x - 4, pole_top - 6, pole_x + 4, pole_top + 2), fill=(200, 170, 70, 230), outline=(120, 90, 40, 200))
+        # warm glow behind flag
+        for gr in range(36, 0, -4):
+            ga = int(18 * (1 - gr / 36))
+            d.ellipse((pole_x - gr, pole_top - gr // 2, pole_x + 80 + gr, pole_top + 55 + gr // 2), fill=(180, 40, 30, ga))
+        # flag cloth with wave
+        flag_w, flag_h = 78, 46
+        wave_phase = f * 0.52
+        pts_top = []
+        pts_bot = []
+        for i in range(flag_w + 1):
+            tt = i / flag_w
+            wy_off = int(5 * math.sin(wave_phase + tt * 3.0)) + int(2 * math.sin(wave_phase * 1.6 + tt * 5.5))
+            taper = int(3 * tt)
+            x = pole_x + 3 + i
+            pts_top.append((x, pole_top + 5 + wy_off))
+            pts_bot.append((x, pole_top + 5 + flag_h + wy_off - taper))
+        poly = pts_top + pts_bot[::-1]
+        d.polygon(poly, fill=(210, 32, 40, 245))
+        # fabric folds (darker stripes)
+        for fold in range(1, 5):
+            fx = pole_x + 3 + int(flag_w * fold / 5)
+            fy_off = int(5 * math.sin(wave_phase + (fold / 5) * 3.0))
+            d.line((fx, pole_top + 7 + fy_off, fx - 2, pole_top + 5 + flag_h - int(3 * fold / 5) + fy_off),
+                   fill=(120, 18, 24, 55), width=1)
+        # gold fringe near hoist
+        for yy in range(pole_top + 6, pole_top + 5 + flag_h, 4):
+            fy_off = int(5 * math.sin(wave_phase + 0.02 * (yy - pole_top)))
+            d.point((pole_x + 4, yy + fy_off), fill=(220, 190, 70, 160))
+
+        # hammer & sickle (gold), positioned in canton
+        hx, hy = pole_x + 18, pole_top + 22
+        # star above hammer/sickle
+        star_r = 3
+        star_pts = []
+        for si in range(10):
+            ang = math.radians(-90 + si * 36)
+            rr = star_r if si % 2 == 0 else star_r * 0.45
+            star_pts.append((hx + rr * math.cos(ang), hy - 10 + rr * math.sin(ang)))
+        d.polygon(star_pts, fill=(230, 200, 80, 245))
+        # sickle arc
+        for ang in range(210, 345, 10):
+            a1 = math.radians(ang)
+            a2 = math.radians(ang + 10)
+            r1 = 8
+            x1, y1 = hx + int(r1 * math.cos(a1)), hy + int(r1 * math.sin(a1))
+            x2, y2 = hx + int(r1 * math.cos(a2)), hy + int(r1 * math.sin(a2))
+            d.line((x1, y1, x2, y2), fill=(230, 200, 80, 245), width=2)
+        # hammer handle
+        d.line((hx - 6, hy + 7, hx + 6, hy - 7), fill=(230, 200, 80, 245), width=2)
+        # hammer head
+        d.polygon([(hx + 2, hy - 10), (hx + 10, hy - 6), (hx + 8, hy - 2), (hx, hy - 6)], fill=(230, 200, 80, 245))
+
+        # --- lamp flicker ---
         flick = 0.5 + 0.5*math.sin(f*0.8) * 0.3 + 0.2*math.sin(f*2.1)
         glow_a = int(20 + 16*flick)
-        gx,gy = TW-210, 42
+        gx,gy = TW-320, 42
         for r in range(80,0,-10):
             a = int(glow_a*(1-r/80))
             d.ellipse((gx-r, gy-r, gx+r, gy+r), fill=(255,210,140,a))
+
+        # --- airship ---
         t = f/N
         ax = int(-120 + t*(TW+240))
         ay = int(38 + 6*math.sin(t*math.pi*2))
@@ -156,6 +270,8 @@ def make_bg():
         for wx in range(ax+22, ax+78, 14):
             la = int(130+50*math.sin(f*0.6+wx))
             d.rectangle((wx,ay+11,wx+3,ay+16), fill=(255,220,150,la))
+
+        # --- dust motes ---
         for m in motes:
             m[0]=(m[0]+m[2])%TW
             m[1]=(m[1]+m[3])%TH

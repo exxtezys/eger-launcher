@@ -279,7 +279,7 @@ element {
   corner_radius_top_right = 6
   corner_radius_bottom_left = 6
   corner_radius_bottom_right = 6
-  base_opacity = 0.35
+  base_opacity = 0.28
   appearance_delay = no_delay
   appearance_delay_seconds = 1.0
   fade_in_v2 = no_fading
@@ -306,7 +306,7 @@ element {
   corner_radius_top_right = 6
   corner_radius_bottom_left = 6
   corner_radius_bottom_right = 6
-  base_opacity = 0.88
+  base_opacity = 0.34
   appearance_delay = no_delay
   appearance_delay_seconds = 1.0
   fade_in_v2 = no_fading
@@ -334,7 +334,7 @@ element {
   fade_in_speed = 1.0
   fade_out = no_fading
   fade_out_speed = 1.0
-  base_opacity = 0.22
+  base_opacity = 0.06
   auto_sizing = false
   auto_sizing_base_screen_width = 1920
   auto_sizing_base_screen_height = 1080
@@ -344,6 +344,60 @@ element {
   y = 10
   width = 137
   height = 218
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = table_tint
+  x = 280
+  y = 10
+  width = 137
+  height = 218
+  anchor_point = top-left
+  color = #1A1410
+  corner_radius_top_left = 6
+  corner_radius_top_right = 6
+  corner_radius_bottom_left = 6
+  corner_radius_bottom_right = 6
+  base_opacity = 0.14
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
+  stretch_x = false
+  stretch_y = false
+  stay_on_screen = true
+}
+
+element {
+  element_type = shape
+  instance_identifier = panel_btn_scrim
+  x = 284
+  y = 108
+  width = 129
+  height = 110
+  anchor_point = top-left
+  color = #1A1410
+  corner_radius_top_left = 4
+  corner_radius_top_right = 4
+  corner_radius_bottom_left = 4
+  corner_radius_bottom_right = 4
+  base_opacity = 0.16
+  appearance_delay = no_delay
+  appearance_delay_seconds = 1.0
+  fade_in_v2 = no_fading
+  fade_in_speed = 1.0
+  fade_out = no_fading
+  fade_out_speed = 1.0
+  auto_sizing = false
+  sticky_anchor = false
   stretch_x = false
   stretch_y = false
   stay_on_screen = true

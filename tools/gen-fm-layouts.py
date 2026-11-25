@@ -285,9 +285,11 @@ def build_screen(name, ident, headline, subhead, form_no, status, body_lines, no
     b += shape("paper_b_r", GOLD_D, 271, 14, 1, 210, opacity=0.30)
     b += image("brass_paper", "brass_strip.png", 10, 10, 266, 4, opacity=0.55)
 
-    b += shape("table_shadow", DARK, 282, 12, 135, 218, radius=6, opacity=0.35)
-    b += shape("table", CREAM_D, 280, 10, 137, 218, radius=6, opacity=0.88)
-    b += image("table_tex", "paper_dark.png", 280, 10, 137, 218, opacity=0.22)
+    b += shape("table_shadow", DARK, 282, 12, 135, 218, radius=6, opacity=0.28)
+    b += shape("table", CREAM_D, 280, 10, 137, 218, radius=6, opacity=0.34)
+    b += image("table_tex", "paper_dark.png", 280, 10, 137, 218, opacity=0.06)
+    b += shape("table_tint", DARK, 280, 10, 137, 218, radius=6, opacity=0.14)
+    b += shape("panel_btn_scrim", DARK, 284, 108, 129, 110, radius=4, opacity=0.16)
     b += image("brass_top", "brass_strip.png", 280, 10, 137, 6, opacity=0.95)
     b += image("brass_bot", "brass_strip.png", 280, 222, 137, 6, opacity=0.95)
 
